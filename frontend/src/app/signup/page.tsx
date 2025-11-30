@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { signUp } from '@/lib/auth';
+import Header from '@/components/Header';
 
 export default function SignUpPage() {
   const t = useTranslations('auth');
@@ -58,8 +59,10 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100 px-4">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-xl p-8">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100">
+      <Header />
+      <div className="flex items-center justify-center px-4 py-16">
+        <div className="max-w-md w-full bg-white rounded-lg shadow-xl p-8">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900">{t('signupTitle')}</h1>
           <p className="text-gray-600 mt-2">{t('signupSubtitle')}</p>
@@ -144,6 +147,7 @@ export default function SignUpPage() {
             {t('loginLink')}
           </Link>
         </p>
+        </div>
       </div>
     </div>
   );

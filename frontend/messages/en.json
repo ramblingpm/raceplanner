@@ -13,9 +13,9 @@
   "nav": {
     "home": "Home",
     "dashboard": "Dashboard",
-    "login": "Log In",
+    "login": "Sign In",
     "signup": "Sign Up",
-    "logout": "Log Out"
+    "logout": "Sign Out"
   },
   "auth": {
     "email": "Email",
@@ -31,7 +31,7 @@
     "noAccount": "Don't have an account?",
     "hasAccount": "Already have an account?",
     "signupLink": "Sign up",
-    "loginLink": "Log in",
+    "loginLink": "Sign in",
     "loginError": "Invalid email or password",
     "signupError": "Error creating account",
     "loggingIn": "Signing in...",
@@ -42,7 +42,7 @@
     "sendResetLink": "Send Reset Link",
     "sendingResetLink": "Sending...",
     "resetPasswordEmailSent": "Check your email for a password reset link. It may take a few minutes to arrive.",
-    "backToLogin": "Back to Login",
+    "backToLogin": "Back to Sign In",
     "resetPasswordError": "Error sending reset link",
     "resetPasswordTitle": "Reset Your Password",
     "resetPasswordSubtitle": "Enter your new password below",
@@ -58,6 +58,10 @@
     "betaInviteRequired": "This app is currently in beta. Please contact us for an invite."
   },
   "home": {
+    "title": "Race Planner",
+    "subtitle": "Calculate your cycling race times and required speeds for optimal performance",
+    "getStarted": "Get Started",
+    "signIn": "Sign In",
     "hero": {
       "title": "Plan Your Race,",
       "titleHighlight": "Achieve Your Goals",
@@ -67,6 +71,18 @@
     },
     "features": {
       "title": "Everything You Need to Plan Your Perfect Race",
+      "planRace": {
+        "title": "Plan Your Race",
+        "description": "Enter your race details and planned start time"
+      },
+      "calculateResults": {
+        "title": "Calculate Results",
+        "description": "Get your finish time and required average speed"
+      },
+      "viewMap": {
+        "title": "View Race Map",
+        "description": "See your race route on an interactive map"
+      },
       "raceCalculation": {
         "title": "Race Time Calculator",
         "description": "Input your planned start time and estimated duration to calculate your finish time and required average speed."

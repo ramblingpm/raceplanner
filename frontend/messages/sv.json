@@ -58,6 +58,10 @@
     "betaInviteRequired": "Denna app är för närvarande i beta. Kontakta oss för en inbjudan."
   },
   "home": {
+    "title": "Race Planner",
+    "subtitle": "Beräkna dina cykeltävlingstider och nödvändiga hastigheter för optimal prestation",
+    "getStarted": "Kom igång",
+    "signIn": "Logga in",
     "hero": {
       "title": "Planera ditt lopp,",
       "titleHighlight": "Uppnå dina mål",
@@ -67,6 +71,18 @@
     },
     "features": {
       "title": "Allt du behöver för att planera ditt perfekta lopp",
+      "planRace": {
+        "title": "Planera ditt lopp",
+        "description": "Ange dina tävlingsdetaljer och planerad starttid"
+      },
+      "calculateResults": {
+        "title": "Beräkna resultat",
+        "description": "Få din sluttid och nödvändig medelhastighet"
+      },
+      "viewMap": {
+        "title": "Visa tävlingskarta",
+        "description": "Se din tävlingsrutt på en interaktiv karta"
+      },
       "raceCalculation": {
         "title": "Tidskalkylator",
         "description": "Ange din planerade starttid och uppskattad varaktighet för att beräkna din sluttid och nödvändig medelhastighet."
