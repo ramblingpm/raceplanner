@@ -2,12 +2,22 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import dynamic from 'next/dynamic';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import Header from '@/components/Header';
 import RaceCalculator from '@/components/RaceCalculator';
-import RaceMap from '@/components/RaceMap';
 import { supabase } from '@/lib/supabase';
 import { Race } from '@/types';
+
+// Dynamically import RaceMap with no SSR to avoid Leaflet window errors
+const RaceMap = dynamic(() => import('@/components/RaceMap'), {
+  ssr: false,
+  loading: () => (
+    <div className="h-96 bg-gray-100 rounded-lg flex items-center justify-center">
+      <p className="text-gray-500">Loading map...</p>
+    </div>
+  ),
+});
 
 export default function DashboardPage() {
   const t = useTranslations('dashboard');
@@ -19,11 +29,33 @@ export default function DashboardPage() {
   const [savedCalculations, setSavedCalculations] = useState<any[]>([]);
   const [editingCalculation, setEditingCalculation] = useState<any>(null);
   const [showPlanning, setShowPlanning] = useState(false);
+  const [selectedFeedZones, setSelectedFeedZones] = useState<any[]>([]);
+  const [availableFeedZones, setAvailableFeedZones] = useState<any[]>([]);
 
   useEffect(() => {
     fetchRaces();
     fetchSavedCalculations();
   }, []);
+
+  // Load feed zones when race is selected
+  useEffect(() => {
+    async function loadFeedZones() {
+      if (!selectedRace) {
+        setAvailableFeedZones([]);
+        return;
+      }
+
+      try {
+        const { getFeedZonesByRace } = await import('@/lib/feedZones');
+        const zones = await getFeedZonesByRace(selectedRace.id);
+        setAvailableFeedZones(zones);
+      } catch (error) {
+        console.error('Error loading feed zones:', error);
+      }
+    }
+
+    loadFeedZones();
+  }, [selectedRace]);
 
   const fetchRaces = async () => {
     try {
@@ -121,6 +153,14 @@ export default function DashboardPage() {
     setSelectedRace(null);
     setEditingCalculation(null);
   };
+
+  // Map selected feed zone IDs to full feed zone data for the map
+  const feedZonesForMap = selectedFeedZones
+    .map((selected) => {
+      const feedZone = availableFeedZones.find((fz) => fz.id === selected.feed_zone_id);
+      return feedZone;
+    })
+    .filter(Boolean);
 
   return (
   <ProtectedRoute>
@@ -318,6 +358,7 @@ export default function DashboardPage() {
                       race={selectedRace}
                       editingCalculation={editingCalculation}
                       onSaved={handleSaved}
+                      onFeedZonesChange={setSelectedFeedZones}
                     />
                   </>
                 )}
@@ -356,6 +397,7 @@ export default function DashboardPage() {
                     routeCoordinates={
                       selectedRace.route_geometry.coordinates as number[][]
                     }
+                    selectedFeedZones={feedZonesForMap as any}
                   />
                 ) : (
                   <div className="h-96 bg-gray-100 rounded-lg flex items-center justify-center">

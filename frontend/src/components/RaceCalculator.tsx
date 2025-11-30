@@ -1,9 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { calculateRace } from '@/utils/calculations';
-import { Race } from '@/types';
+import { Race, FeedZone } from '@/types';
+import { getFeedZonesByRace, savePlanFeedZones, getPlanFeedZones, calculateTotalFeedZoneTime } from '@/lib/feedZones';
+import FeedZoneSelector from './FeedZoneSelector';
 
 interface RaceCalculatorProps {
   race: Race;
@@ -13,6 +15,12 @@ interface RaceCalculatorProps {
     requiredSpeedKmh: number;
   }) => void;
   onSaved?: () => void;
+  onFeedZonesChange?: (feedZones: Array<{
+    feed_zone_id: string;
+    planned_duration_seconds: number;
+    planned_arrival_time?: string;
+    planned_departure_time?: string;
+  }>) => void;
 }
 
 export default function RaceCalculator({
@@ -20,6 +28,7 @@ export default function RaceCalculator({
   editingCalculation,
   onCalculate,
   onSaved,
+  onFeedZonesChange,
 }: RaceCalculatorProps) {
   const t = useTranslations('raceCalculator');
   const locale = useLocale();
@@ -66,6 +75,42 @@ export default function RaceCalculator({
     requiredSpeedKmh: number;
   } | null>(null);
 
+  // Feed zones state
+  const [availableFeedZones, setAvailableFeedZones] = useState<FeedZone[]>([]);
+  const [selectedFeedZones, setSelectedFeedZones] = useState<Array<{
+    feed_zone_id: string;
+    planned_duration_seconds: number;
+    planned_arrival_time?: string;
+    planned_departure_time?: string;
+  }>>([]);
+
+  // Load available feed zones for this race
+  useEffect(() => {
+    async function loadFeedZones() {
+      try {
+        const zones = await getFeedZonesByRace(race.id);
+        setAvailableFeedZones(zones);
+
+        // If editing, load existing feed zone selections
+        if (editingCalculation?.id) {
+          const planZones = await getPlanFeedZones(editingCalculation.id);
+          const selected = planZones.map((pz) => ({
+            feed_zone_id: pz.feed_zone_id,
+            planned_duration_seconds: pz.planned_duration_seconds,
+            planned_arrival_time: pz.planned_arrival_time,
+            planned_departure_time: pz.planned_departure_time,
+          }));
+          setSelectedFeedZones(selected);
+          onFeedZonesChange?.(selected);
+        }
+      } catch (error) {
+        console.error('Error loading feed zones:', error);
+      }
+    }
+
+    loadFeedZones();
+  }, [race.id, editingCalculation?.id, onFeedZonesChange]);
+
   const handleCalculate = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -79,11 +124,15 @@ export default function RaceCalculator({
     const stopDurationSeconds =
       parseInt(stopHours) * 3600 + parseInt(stopMinutes) * 60;
 
+    // Calculate total feed zone time and add to stop duration
+    const feedZoneTimeSeconds = calculateTotalFeedZoneTime(selectedFeedZones);
+    const totalStopDurationSeconds = stopDurationSeconds + feedZoneTimeSeconds;
+
     const calculationResult = calculateRace({
       distanceKm: race.distance_km,
       startTime: startDateTime,
       estimatedDurationSeconds: durationSeconds,
-      plannedStopDurationSeconds: stopDurationSeconds,
+      plannedStopDurationSeconds: totalStopDurationSeconds,
     });
 
     setResult(calculationResult);
@@ -105,6 +154,8 @@ export default function RaceCalculator({
         required_speed_kmh: calculationResult.requiredSpeedKmh,
       };
 
+      let calculationId = editingCalculation?.id;
+
       if (editingCalculation) {
         // Update existing calculation
         await supabase
@@ -112,8 +163,25 @@ export default function RaceCalculator({
           .update(calculationData)
           .eq('id', editingCalculation.id);
       } else {
-        // Insert new calculation
-        await supabase.from('race_calculations').insert(calculationData);
+        // Insert new calculation and get the ID
+        const { data: newCalc } = await supabase
+          .from('race_calculations')
+          .insert(calculationData)
+          .select()
+          .single();
+
+        if (newCalc) {
+          calculationId = newCalc.id;
+        }
+      }
+
+      // Save feed zones if calculation was created/updated
+      if (calculationId && selectedFeedZones.length > 0) {
+        try {
+          await savePlanFeedZones(calculationId, selectedFeedZones);
+        } catch (error) {
+          console.error('Error saving feed zones:', error);
+        }
       }
 
       onSaved?.();
@@ -252,6 +320,21 @@ export default function RaceCalculator({
             </div>
           </div>
         </div>
+
+        {/* Feed Zones Section */}
+        {availableFeedZones.length > 0 && (
+          <div className="pt-4 border-t border-gray-200">
+            <FeedZoneSelector
+              raceId={race.id}
+              availableFeedZones={availableFeedZones}
+              selectedFeedZones={selectedFeedZones}
+              onChange={(zones) => {
+                setSelectedFeedZones(zones);
+                onFeedZonesChange?.(zones);
+              }}
+            />
+          </div>
+        )}
 
         <button
           type="submit"

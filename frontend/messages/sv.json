@@ -141,7 +141,20 @@
     "updatePlan": "Uppdatera plan",
     "results": "Resultat",
     "finishTime": "Sluttid:",
-    "requiredSpeed": "Nödvändig medelhastighet:"
+    "requiredSpeed": "Nödvändig medelhastighet:",
+    "feedZones": "Depåer",
+    "feedZonesDescription": "Välj vilka depåer du planerar att stanna vid och hur länge du kommer att vara där",
+    "selectFeedZones": "Välj depåer",
+    "noFeedZones": "Inga depåer tillgängliga för denna tävling",
+    "feedZoneName": "Depå",
+    "stopDuration": "Stopptid",
+    "arrivalTime": "Ankomsttid",
+    "departureTime": "Avgångstid",
+    "optional": "Valfritt",
+    "addFeedZone": "Lägg till depå",
+    "removeFeedZone": "Ta bort",
+    "totalFeedZoneTime": "Total tid i depåer",
+    "km": "km"
   },
   "raceMap": {
     "title": "Tävlingsrutt",

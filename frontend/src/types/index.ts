@@ -31,3 +31,26 @@ export interface CalculationResult {
   distanceKm: number;
   durationSeconds: number;
 }
+
+export interface FeedZone {
+  id: string;
+  race_id: string;
+  name: string;
+  distance_from_start_km: number;
+  coordinates: {
+    lat: number;
+    lng: number;
+  };
+  order_index: number;
+  created_at: string;
+}
+
+export interface PlanFeedZone {
+  id: string;
+  calculation_id: string;
+  feed_zone_id: string;
+  planned_duration_seconds: number;
+  planned_arrival_time?: string;
+  planned_departure_time?: string;
+  feed_zone?: FeedZone; // Populated when joined
+}

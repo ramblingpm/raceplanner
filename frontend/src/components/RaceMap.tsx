@@ -4,17 +4,30 @@ import { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
+interface FeedZoneMarker {
+  id: string;
+  name: string;
+  coordinates: {
+    lat: number;
+    lng: number;
+  };
+  distance_from_start_km: number;
+}
+
 interface RaceMapProps {
   routeCoordinates?: number[][];
+  selectedFeedZones?: FeedZoneMarker[];
   className?: string;
 }
 
 export default function RaceMap({
   routeCoordinates,
+  selectedFeedZones = [],
   className = '',
 }: RaceMapProps) {
   const mapRef = useRef<L.Map | null>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
+  const markersRef = useRef<L.Marker[]>([]);
 
   useEffect(() => {
     if (!mapContainerRef.current) return;
@@ -32,6 +45,10 @@ export default function RaceMap({
       }).addTo(mapRef.current);
     }
 
+    // Clear existing markers
+    markersRef.current.forEach((marker) => marker.remove());
+    markersRef.current = [];
+
     // Draw route if coordinates are provided
     if (routeCoordinates && routeCoordinates.length > 0) {
       // Convert [lng, lat] to [lat, lng] for Leaflet
@@ -47,7 +64,7 @@ export default function RaceMap({
       }).addTo(mapRef.current);
 
       // Add start marker
-      L.marker(latLngs[0] as L.LatLngExpression, {
+      const startMarker = L.marker(latLngs[0] as L.LatLngExpression, {
         icon: L.divIcon({
           className: 'custom-marker',
           html: '<div style="background-color: #10b981; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white;"></div>',
@@ -55,9 +72,10 @@ export default function RaceMap({
       })
         .addTo(mapRef.current)
         .bindPopup('Start');
+      markersRef.current.push(startMarker);
 
       // Add finish marker
-      L.marker(latLngs[latLngs.length - 1] as L.LatLngExpression, {
+      const finishMarker = L.marker(latLngs[latLngs.length - 1] as L.LatLngExpression, {
         icon: L.divIcon({
           className: 'custom-marker',
           html: '<div style="background-color: #ef4444; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white;"></div>',
@@ -65,6 +83,42 @@ export default function RaceMap({
       })
         .addTo(mapRef.current)
         .bindPopup('Finish');
+      markersRef.current.push(finishMarker);
+
+      // Add feed zone markers
+      if (selectedFeedZones.length > 0) {
+        selectedFeedZones.forEach((feedZone) => {
+          const feedZoneMarker = L.marker(
+            [feedZone.coordinates.lat, feedZone.coordinates.lng],
+            {
+              icon: L.divIcon({
+                className: 'custom-marker',
+                html: `
+                  <div style="
+                    background-color: white;
+                    width: 30px;
+                    height: 30px;
+                    border-radius: 50%;
+                    border: 2px solid #f59e0b;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 16px;
+                  ">🍔</div>
+                `,
+                iconSize: [30, 30],
+                iconAnchor: [15, 15],
+              }),
+            }
+          )
+            .addTo(mapRef.current!)
+            .bindPopup(`
+              <strong>${feedZone.name}</strong><br/>
+              ${feedZone.distance_from_start_km} km from start
+            `);
+          markersRef.current.push(feedZoneMarker);
+        });
+      }
 
       // Fit map to route bounds
       mapRef.current.fitBounds(polyline.getBounds(), { padding: [50, 50] });
@@ -77,7 +131,7 @@ export default function RaceMap({
         mapRef.current = null;
       }
     };
-  }, [routeCoordinates]);
+  }, [routeCoordinates, selectedFeedZones]);
 
   return (
     <div

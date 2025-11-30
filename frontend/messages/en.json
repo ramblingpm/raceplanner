@@ -141,7 +141,20 @@
     "updatePlan": "Update Plan",
     "results": "Results",
     "finishTime": "Finish Time:",
-    "requiredSpeed": "Required Avg. Speed:"
+    "requiredSpeed": "Required Avg. Speed:",
+    "feedZones": "Feed Zones",
+    "feedZonesDescription": "Select which feed zones you plan to stop at and how long you'll spend there",
+    "selectFeedZones": "Select Feed Zones",
+    "noFeedZones": "No feed zones available for this race",
+    "feedZoneName": "Feed Zone",
+    "stopDuration": "Stop Duration",
+    "arrivalTime": "Arrival Time",
+    "departureTime": "Departure Time",
+    "optional": "Optional",
+    "addFeedZone": "Add Feed Zone",
+    "removeFeedZone": "Remove",
+    "totalFeedZoneTime": "Total Feed Zone Time",
+    "km": "km"
   },
   "raceMap": {
     "title": "Race Route",
