@@ -32,7 +32,23 @@ export default function SignUpPage() {
     setLoading(true);
 
     try {
+      // Check if email is invited (beta access)
+      const { supabase } = await import('@/lib/supabase');
+      const { data: inviteCheck, error: inviteError } = await supabase
+        .rpc('is_email_invited', { check_email: email });
+
+      if (inviteError || !inviteCheck) {
+        setError(t('betaInviteRequired'));
+        setLoading(false);
+        return;
+      }
+
+      // Proceed with signup
       await signUp(email, password);
+
+      // Mark invite as used
+      await supabase.rpc('mark_invite_used', { user_email: email });
+
       router.push('/dashboard');
     } catch (err) {
       setError(err instanceof Error ? err.message : t('signupError'));

@@ -54,7 +54,8 @@
     "passwordTooShort": "Password must be at least 6 characters",
     "updatePasswordError": "Error updating password",
     "invalidResetLink": "Invalid or expired reset link. Please request a new one.",
-    "passwordResetSuccess": "Password reset successfully! Please sign in with your new password."
+    "passwordResetSuccess": "Password reset successfully! Please sign in with your new password.",
+    "betaInviteRequired": "This app is currently in beta. Please contact us for an invite."
   },
   "home": {
     "hero": {

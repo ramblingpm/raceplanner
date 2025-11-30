@@ -54,7 +54,8 @@
     "passwordTooShort": "Lösenordet måste vara minst 6 tecken",
     "updatePasswordError": "Fel vid uppdatering av lösenord",
     "invalidResetLink": "Ogiltig eller utgången återställningslänk. Vänligen begär en ny.",
-    "passwordResetSuccess": "Lösenordet har återställts! Logga in med ditt nya lösenord."
+    "passwordResetSuccess": "Lösenordet har återställts! Logga in med ditt nya lösenord.",
+    "betaInviteRequired": "Denna app är för närvarande i beta. Kontakta oss för en inbjudan."
   },
   "home": {
     "hero": {
