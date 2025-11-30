@@ -5,6 +5,7 @@ import { signOut } from '@/lib/auth';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import LanguageSwitcher from './LanguageSwitcher';
+import { ArrowRightStartOnRectangleIcon } from '@heroicons/react/24/outline';
 
 export default function Header() {
   const { user } = useAuth();
@@ -27,15 +28,16 @@ export default function Header() {
             <>
               <span className="text-sm text-gray-600">{user.email}</span>
               <button
-                onClick={handleSignOut}
-                className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-md text-sm transition-colors"
+          onClick={handleSignOut}
+          className="bg-gray-200 hover:bg-gray-300 text-gray-800 p-2 rounded-md transition-colors"
+          title={tNav('logout')}
               >
-                {tNav('logout')}
+          <ArrowRightStartOnRectangleIcon className="w-5 h-5" />
               </button>
             </>
           )}
         </div>
-      </div>
-    </header>
-  );
-}
+            </div>
+          </header>
+        );
+      }
