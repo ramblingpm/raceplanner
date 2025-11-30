@@ -18,11 +18,12 @@ export default function LanguageSwitcher() {
         <button
           key={locale}
           onClick={() => handleLocaleChange(locale)}
-          className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+          className={`px-3 py-2 rounded-md text-2xl transition-all ${
             currentLocale === locale
-              ? 'bg-primary-600 text-white'
-              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              ? 'ring-2 ring-primary-600 ring-offset-2 scale-110'
+              : 'opacity-60 hover:opacity-100 hover:scale-105'
           }`}
+          title={locale === 'sv' ? 'Svenska' : 'English'}
         >
           {localeNames[locale]}
         </button>
