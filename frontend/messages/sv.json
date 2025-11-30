@@ -1,0 +1,127 @@
+{
+  "common": {
+    "appName": "Race Planner",
+    "loading": "Laddar...",
+    "error": "Fel",
+    "save": "Spara",
+    "cancel": "Avbryt",
+    "delete": "Ta bort",
+    "edit": "Redigera",
+    "copy": "Kopiera",
+    "submit": "Skicka"
+  },
+  "nav": {
+    "home": "Hem",
+    "dashboard": "Instrumentpanel",
+    "login": "Logga in",
+    "signup": "Registrera",
+    "logout": "Logga ut"
+  },
+  "auth": {
+    "email": "E-post",
+    "password": "Lösenord",
+    "emailPlaceholder": "du@exempel.se",
+    "passwordPlaceholder": "Ange ditt lösenord",
+    "loginTitle": "Välkommen tillbaka",
+    "loginSubtitle": "Logga in på ditt konto för att fortsätta",
+    "signupTitle": "Skapa konto",
+    "signupSubtitle": "Registrera dig för att börja planera dina tävlingar",
+    "loginButton": "Logga in",
+    "signupButton": "Registrera",
+    "noAccount": "Har du inget konto?",
+    "hasAccount": "Har du redan ett konto?",
+    "signupLink": "Registrera dig",
+    "loginLink": "Logga in",
+    "loginError": "Ogiltig e-post eller lösenord",
+    "signupError": "Fel vid skapande av konto",
+    "loggingIn": "Loggar in...",
+    "signingUp": "Skapar konto...",
+    "forgotPassword": "Glömt lösenord?",
+    "forgotPasswordTitle": "Återställ lösenord",
+    "forgotPasswordSubtitle": "Ange din e-post för att få en länk för återställning",
+    "sendResetLink": "Skicka återställningslänk",
+    "sendingResetLink": "Skickar...",
+    "resetPasswordEmailSent": "Kontrollera din e-post för en länk för lösenordsåterställning. Det kan ta några minuter innan den kommer fram.",
+    "backToLogin": "Tillbaka till inloggning",
+    "resetPasswordError": "Fel vid skickande av återställningslänk",
+    "resetPasswordTitle": "Återställ ditt lösenord",
+    "resetPasswordSubtitle": "Ange ditt nya lösenord nedan",
+    "newPassword": "Nytt lösenord",
+    "confirmNewPassword": "Bekräfta nytt lösenord",
+    "updatePassword": "Uppdatera lösenord",
+    "updatingPassword": "Uppdaterar...",
+    "passwordsDoNotMatch": "Lösenorden matchar inte",
+    "passwordTooShort": "Lösenordet måste vara minst 6 tecken",
+    "updatePasswordError": "Fel vid uppdatering av lösenord",
+    "invalidResetLink": "Ogiltig eller utgången återställningslänk. Vänligen begär en ny.",
+    "passwordResetSuccess": "Lösenordet har återställts! Logga in med ditt nya lösenord."
+  },
+  "home": {
+    "hero": {
+      "title": "Planera ditt lopp,",
+      "titleHighlight": "Uppnå dina mål",
+      "subtitle": "Beräkna sluttider, planera ditt tempo och visualisera din rutt. Perfekt för cyklister, löpare och tävlingsarrangörer.",
+      "cta": "Kom igång",
+      "ctaSecondary": "Läs mer"
+    },
+    "features": {
+      "title": "Allt du behöver för att planera ditt perfekta lopp",
+      "raceCalculation": {
+        "title": "Tidskalkylator",
+        "description": "Ange din planerade starttid och uppskattad varaktighet för att beräkna din sluttid och nödvändig medelhastighet."
+      },
+      "routeVisualization": {
+        "title": "Ruttvisualisering",
+        "description": "Se din tävlingsrutt på en interaktiv karta med detaljerad information och höjddata."
+      },
+      "multipleRaces": {
+        "title": "Stöd för flera tävlingar",
+        "description": "Planera och jämför olika tävlingar. Från maraton till ultralångdistans cykelevenemang."
+      }
+    }
+  },
+  "dashboard": {
+    "title": "Planera ditt lopp",
+    "welcome": "Välkommen till Race Planner",
+    "welcomeSubtitle": "Välj en tävling för att börja planera din strategi",
+    "availableRaces": "Tillgängliga tävlingar",
+    "moreComingSoon": "Fler tävlingar kommer snart!",
+    "selectRace": "Börja planera",
+    "backToRaces": "← Tillbaka till tävlingar",
+    "loadingRaces": "Laddar tävlingar...",
+    "noRaces": "Inga tävlingar tillgängliga ännu. Kom tillbaka snart!",
+    "otherRaces": "Andra tävlingar",
+    "myRecentPlans": "Mina senaste planer",
+    "editing": "Redigerar:",
+    "planName": "Planens namn",
+    "race": "Tävling",
+    "startTime": "Starttid",
+    "duration": "Varaktighet",
+    "stopTime": "Stopptid",
+    "finishTime": "Sluttid",
+    "avgSpeed": "Medelhastighet",
+    "actions": "Åtgärder",
+    "untitledPlan": "Namnlös plan",
+    "confirmDelete": "Är du säker på att du vill ta bort denna plan?"
+  },
+  "raceCalculator": {
+    "distance": "Distans",
+    "planLabel": "Planens etikett",
+    "planLabelPlaceholder": "t.ex. Konservativ plan, Optimistiskt mål, etc.",
+    "startDate": "Startdatum",
+    "startTime": "Planerad starttid",
+    "duration": "Uppskattad tävlingstid",
+    "plannedStopTime": "Planerad stopptid",
+    "hours": "Timmar",
+    "minutes": "Minuter",
+    "calculate": "Beräkna & spara plan",
+    "updatePlan": "Uppdatera plan",
+    "results": "Resultat",
+    "finishTime": "Sluttid:",
+    "requiredSpeed": "Nödvändig medelhastighet:"
+  },
+  "raceMap": {
+    "title": "Tävlingsrutt",
+    "noRouteData": "Ingen ruttdata tillgänglig för denna tävling"
+  }
+}

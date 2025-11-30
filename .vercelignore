@@ -1,0 +1,7 @@
+backend/
+scripts/
+supabase/
+node_modules/
+.env
+.env.local
+*.log

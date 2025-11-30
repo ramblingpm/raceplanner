@@ -1,0 +1,127 @@
+{
+  "common": {
+    "appName": "Race Planner",
+    "loading": "Loading...",
+    "error": "Error",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "copy": "Copy",
+    "submit": "Submit"
+  },
+  "nav": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "login": "Log In",
+    "signup": "Sign Up",
+    "logout": "Log Out"
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Password",
+    "emailPlaceholder": "you@example.com",
+    "passwordPlaceholder": "Enter your password",
+    "loginTitle": "Welcome Back",
+    "loginSubtitle": "Sign in to your account to continue",
+    "signupTitle": "Create Account",
+    "signupSubtitle": "Sign up to start planning your races",
+    "loginButton": "Sign In",
+    "signupButton": "Sign Up",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "signupLink": "Sign up",
+    "loginLink": "Log in",
+    "loginError": "Invalid email or password",
+    "signupError": "Error creating account",
+    "loggingIn": "Signing in...",
+    "signingUp": "Creating account...",
+    "forgotPassword": "Forgot password?",
+    "forgotPasswordTitle": "Reset Password",
+    "forgotPasswordSubtitle": "Enter your email to receive a password reset link",
+    "sendResetLink": "Send Reset Link",
+    "sendingResetLink": "Sending...",
+    "resetPasswordEmailSent": "Check your email for a password reset link. It may take a few minutes to arrive.",
+    "backToLogin": "Back to Login",
+    "resetPasswordError": "Error sending reset link",
+    "resetPasswordTitle": "Reset Your Password",
+    "resetPasswordSubtitle": "Enter your new password below",
+    "newPassword": "New Password",
+    "confirmNewPassword": "Confirm New Password",
+    "updatePassword": "Update Password",
+    "updatingPassword": "Updating...",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "passwordTooShort": "Password must be at least 6 characters",
+    "updatePasswordError": "Error updating password",
+    "invalidResetLink": "Invalid or expired reset link. Please request a new one.",
+    "passwordResetSuccess": "Password reset successfully! Please sign in with your new password."
+  },
+  "home": {
+    "hero": {
+      "title": "Plan Your Race,",
+      "titleHighlight": "Achieve Your Goals",
+      "subtitle": "Calculate finish times, plan your pace, and visualize your route. Perfect for cyclists, runners, and race planners.",
+      "cta": "Get Started",
+      "ctaSecondary": "Learn More"
+    },
+    "features": {
+      "title": "Everything You Need to Plan Your Perfect Race",
+      "raceCalculation": {
+        "title": "Race Time Calculator",
+        "description": "Input your planned start time and estimated duration to calculate your finish time and required average speed."
+      },
+      "routeVisualization": {
+        "title": "Route Visualization",
+        "description": "See your race route on an interactive map with detailed track information and elevation data."
+      },
+      "multipleRaces": {
+        "title": "Multiple Race Support",
+        "description": "Plan and compare different races. From marathons to ultra-distance cycling events."
+      }
+    }
+  },
+  "dashboard": {
+    "title": "Plan Your Race",
+    "welcome": "Welcome to Race Planner",
+    "welcomeSubtitle": "Select a race to start planning your strategy",
+    "availableRaces": "Available Races",
+    "moreComingSoon": "More races coming soon!",
+    "selectRace": "Start Planning",
+    "backToRaces": "← Back to Races",
+    "loadingRaces": "Loading races...",
+    "noRaces": "No races available yet. Check back soon!",
+    "otherRaces": "Other Races",
+    "myRecentPlans": "My Recent Plans",
+    "editing": "Editing:",
+    "planName": "Plan Name",
+    "race": "Race",
+    "startTime": "Start Time",
+    "duration": "Duration",
+    "stopTime": "Stop Time",
+    "finishTime": "Finish Time",
+    "avgSpeed": "Avg. Speed",
+    "actions": "Actions",
+    "untitledPlan": "Untitled Plan",
+    "confirmDelete": "Are you sure you want to delete this plan?"
+  },
+  "raceCalculator": {
+    "distance": "Distance",
+    "planLabel": "Plan Label",
+    "planLabelPlaceholder": "e.g., Conservative Plan, Optimistic Goal, etc.",
+    "startDate": "Start Date",
+    "startTime": "Planned Start Time",
+    "duration": "Estimated Race Duration",
+    "plannedStopTime": "Planned Stop Time",
+    "hours": "Hours",
+    "minutes": "Minutes",
+    "calculate": "Calculate & Save Plan",
+    "updatePlan": "Update Plan",
+    "results": "Results",
+    "finishTime": "Finish Time:",
+    "requiredSpeed": "Required Avg. Speed:"
+  },
+  "raceMap": {
+    "title": "Race Route",
+    "noRouteData": "No route data available for this race"
+  }
+}
