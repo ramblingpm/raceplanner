@@ -90,13 +90,10 @@ docs: update deployment guide
 
 ### Feature Ideas
 
-- Multiple race routes
-- Historical performance tracking
-- Weather integration
-- Elevation profile support
-- Social features (share results)
-- Export results as PDF/image
-- Mobile app (React Native)
+- More race routes
+- Official feed zone support
+- Social features (share plan)
+- Export results as PDF/image to paste on bar stem
 - Strava integration
 
 ## Code of Conduct
