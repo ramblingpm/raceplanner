@@ -15,10 +15,13 @@ export default function SignUpPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [signupEmail, setSignupEmail] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setSuccess(false);
 
     if (password !== confirmPassword) {
       setError(t('passwordsDoNotMatch'));
@@ -50,13 +53,50 @@ export default function SignUpPage() {
       // Mark invite as used
       await supabase.rpc('mark_invite_used', { user_email: email });
 
-      router.push('/dashboard');
+      // Show success message
+      setSignupEmail(email);
+      setSuccess(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : t('signupError'));
     } finally {
       setLoading(false);
     }
   };
+
+  // Show success message if signup was successful
+  if (success) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100">
+        <Header />
+        <div className="flex items-center justify-center px-4 py-16">
+          <div className="max-w-md w-full bg-white rounded-lg shadow-xl p-8">
+            <div className="text-center mb-6">
+              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+                <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('checkEmailTitle')}</h1>
+              <p className="text-gray-600">{t('checkEmailMessage')}</p>
+            </div>
+
+            <div className="bg-blue-50 border border-blue-200 rounded-md p-4 mb-6">
+              <p className="text-sm text-blue-800 font-medium mb-1">{t('checkEmailSentTo')}: {signupEmail}</p>
+
+            </div>
+              
+              <div className="text-center mb-6"><p className="text-gray-600">{t('checkSpamFolder')}</p></div>
+            <Link
+              href="/login"
+              className="block w-full text-center bg-primary-600 text-white py-2 px-4 rounded-md hover:bg-primary-700 transition-colors"
+            >
+              {t('backToLogin')}
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100">

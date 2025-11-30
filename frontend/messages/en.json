@@ -42,7 +42,7 @@
     "sendResetLink": "Send Reset Link",
     "sendingResetLink": "Sending...",
     "resetPasswordEmailSent": "Check your email for a password reset link. It may take a few minutes to arrive.",
-    "backToLogin": "Back to Sign In",
+    "backToLogin": "Go to Sign In",
     "resetPasswordError": "Error sending reset link",
     "resetPasswordTitle": "Reset Your Password",
     "resetPasswordSubtitle": "Enter your new password below",
@@ -55,7 +55,13 @@
     "updatePasswordError": "Error updating password",
     "invalidResetLink": "Invalid or expired reset link. Please request a new one.",
     "passwordResetSuccess": "Password reset successfully! Please sign in with your new password.",
-    "betaInviteRequired": "This app is currently in beta. Please contact us for an invite."
+    "betaInviteRequired": "This app is currently in beta. Please contact us for an invite.",
+    "signupSuccess": "Account created successfully! Please check your email to confirm your account.",
+    "checkEmailTitle": "Check Your Email",
+    "checkEmailSentTo": "Email sent to",
+    "checkEmailMessage": "We've sent a confirmation email to your inbox. Please click the link in the email to verify your account.",
+    "checkSpamFolder": "If you don't see the email please check your spam or junk folder.",
+    "resendEmail": "Resend confirmation email"
   },
   "home": {
     "title": "Race Planner",

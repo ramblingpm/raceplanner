@@ -42,7 +42,7 @@
     "sendResetLink": "Skicka återställningslänk",
     "sendingResetLink": "Skickar...",
     "resetPasswordEmailSent": "Kontrollera din e-post för en länk för lösenordsåterställning. Det kan ta några minuter innan den kommer fram.",
-    "backToLogin": "Tillbaka till inloggning",
+    "backToLogin": "Gå till inloggning",
     "resetPasswordError": "Fel vid skickande av återställningslänk",
     "resetPasswordTitle": "Återställ ditt lösenord",
     "resetPasswordSubtitle": "Ange ditt nya lösenord nedan",
@@ -55,7 +55,13 @@
     "updatePasswordError": "Fel vid uppdatering av lösenord",
     "invalidResetLink": "Ogiltig eller utgången återställningslänk. Vänligen begär en ny.",
     "passwordResetSuccess": "Lösenordet har återställts! Logga in med ditt nya lösenord.",
-    "betaInviteRequired": "Denna app är för närvarande i beta. Kontakta oss för en inbjudan."
+    "betaInviteRequired": "Denna app är för närvarande i beta. Kontakta oss för en inbjudan.",
+    "signupSuccess": "Konto skapat! Vänligen kontrollera din e-post för att bekräfta ditt konto.",
+    "checkEmailTitle": "Kontrollera din e-post",
+    "checkEmailSentTo": "E-post skickad till",
+    "checkEmailMessage": "Vi har skickat ett bekräftelsemail till din inkorg. Klicka på länken i e-postmeddelandet för att verifiera ditt konto.",
+    "checkSpamFolder": "Ser du inte e-postmeddelandet? Kontrollera din skräppost- eller skräpmapp.",
+    "resendEmail": "Skicka bekräftelsemail igen"
   },
   "home": {
     "title": "Race Planner",
