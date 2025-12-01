@@ -58,7 +58,7 @@ export async function savePlanFeedZones(
     .eq('calculation_id', calculationId);
 
   if (deleteError) {
-    console.error('Error deleting old plan feed zones:', error);
+    console.error('Error deleting old plan feed zones:', deleteError);
     throw deleteError;
   }
 
