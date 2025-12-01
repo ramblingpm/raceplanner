@@ -121,7 +121,7 @@ export default function RaceMap({
       }
 
       // Fit map to route bounds
-      mapRef.current.fitBounds(polyline.getBounds(), { padding: [50, 50] });
+      mapRef.current.fitBounds(polyline.getBounds(), { padding: [5, 5] });
     }
 
     return () => {
@@ -137,7 +137,7 @@ export default function RaceMap({
     <div
       ref={mapContainerRef}
       className={`rounded-lg overflow-hidden ${className}`}
-      style={{ height: '400px', width: '100%' }}
+      style={{ height: '600px', maxWidth: '800px', width: '100%', margin: '0 auto' }}
     />
   );
 }

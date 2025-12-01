@@ -14,7 +14,7 @@ interface RaceCalculatorProps {
     finishTime: Date;
     requiredSpeedKmh: number;
   }) => void;
-  onSaved?: () => void;
+  onSaved?: (isUpdate: boolean, calculationId?: string) => void;
   onFeedZonesChange?: (feedZones: Array<{
     feed_zone_id: string;
     planned_duration_seconds: number;
@@ -84,6 +84,23 @@ export default function RaceCalculator({
     planned_departure_time?: string;
   }>>([]);
 
+  // Update form fields when editingCalculation changes
+  useEffect(() => {
+    if (editingCalculation) {
+      setLabel(editingCalculation.label || '');
+      setStartDate(new Date(editingCalculation.planned_start_time).toISOString().split('T')[0]);
+      setStartTime(new Date(editingCalculation.planned_start_time).toTimeString().slice(0, 5));
+      setEstimatedHours(String(Math.floor(editingCalculation.estimated_duration_seconds / 3600)));
+      setEstimatedMinutes(String(Math.floor((editingCalculation.estimated_duration_seconds % 3600) / 60)));
+      setStopHours(editingCalculation.planned_stop_duration_seconds
+        ? String(Math.floor(editingCalculation.planned_stop_duration_seconds / 3600))
+        : '0');
+      setStopMinutes(editingCalculation.planned_stop_duration_seconds
+        ? String(Math.floor((editingCalculation.planned_stop_duration_seconds % 3600) / 60))
+        : '0');
+    }
+  }, [editingCalculation]);
+
   // Load available feed zones for this race
   useEffect(() => {
     async function loadFeedZones() {
@@ -102,6 +119,9 @@ export default function RaceCalculator({
           }));
           setSelectedFeedZones(selected);
           onFeedZonesChange?.(selected);
+        } else {
+          setSelectedFeedZones([]);
+          onFeedZonesChange?.([]);
         }
       } catch (error) {
         console.error('Error loading feed zones:', error);
@@ -113,6 +133,12 @@ export default function RaceCalculator({
 
   const handleCalculate = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validate that a plan label is provided
+    if (!label || label.trim() === '') {
+      alert(t('planLabelRequired') || 'Please provide a plan label');
+      return;
+    }
 
     const [hours, minutes] = startTime.split(':').map(Number);
     const startDateTime = new Date(startDate);
@@ -184,7 +210,8 @@ export default function RaceCalculator({
         }
       }
 
-      onSaved?.();
+      const isUpdate = !!editingCalculation;
+      onSaved?.(isUpdate, calculationId);
     }
   };
 
@@ -201,11 +228,12 @@ export default function RaceCalculator({
             htmlFor="label"
             className="block text-sm font-medium text-gray-700 mb-2"
           >
-            {t('planLabel')}
+            {t('planLabel')} <span className="text-red-600">*</span>
           </label>
           <input
             id="label"
             type="text"
+            required
             placeholder={t('planLabelPlaceholder')}
             value={label}
             onChange={(e) => setLabel(e.target.value)}

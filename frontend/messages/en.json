@@ -115,6 +115,7 @@
     "noRaces": "No races available yet. Check back soon!",
     "otherRaces": "Other Races",
     "myRecentPlans": "My Recent Plans",
+    "myPlans": "My Plans",
     "editing": "Editing:",
     "planName": "Plan Name",
     "race": "Race",
@@ -130,6 +131,7 @@
   "raceCalculator": {
     "distance": "Distance",
     "planLabel": "Plan Label",
+    "planLabelRequired": "Please provide a plan label",
     "planLabelPlaceholder": "e.g., Conservative Plan, Optimistic Goal, etc.",
     "startDate": "Start Date",
     "startTime": "Planned Start Time",
@@ -154,7 +156,10 @@
     "addFeedZone": "Add Feed Zone",
     "removeFeedZone": "Remove",
     "totalFeedZoneTime": "Total Feed Zone Time",
-    "km": "km"
+    "km": "km",
+    "feedZone": "Feed Zone",
+    "viewDetails": "View Details",
+    "collapse": "Collapse"
   },
   "raceMap": {
     "title": "Race Route",

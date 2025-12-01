@@ -8,6 +8,7 @@ import Header from '@/components/Header';
 import RaceCalculator from '@/components/RaceCalculator';
 import { supabase } from '@/lib/supabase';
 import { Race } from '@/types';
+import { PencilSquareIcon, DocumentDuplicateIcon, TrashIcon } from '@heroicons/react/24/outline';
 
 // Dynamically import RaceMap with no SSR to avoid Leaflet window errors
 const RaceMap = dynamic(() => import('@/components/RaceMap'), {
@@ -137,9 +138,32 @@ export default function DashboardPage() {
     }
   };
 
-  const handleSaved = () => {
-    fetchSavedCalculations();
-    setEditingCalculation(null);
+  const handleSaved = async (isUpdate: boolean, calculationId?: string) => {
+    await fetchSavedCalculations();
+
+    // Only clear editing state if this was a new plan
+    // Keep the plan open if it was an update
+    if (!isUpdate) {
+      setEditingCalculation(null);
+    } else if (calculationId) {
+      // Refresh the editing calculation data with the updated values
+      const { data } = await supabase
+        .from('race_calculations')
+        .select(`
+          *,
+          races (
+            id,
+            name,
+            distance_km
+          )
+        `)
+        .eq('id', calculationId)
+        .single();
+
+      if (data) {
+        setEditingCalculation(data);
+      }
+    }
   };
 
   const handleSelectRace = (race: Race) => {
@@ -243,7 +267,11 @@ export default function DashboardPage() {
                 {/* Mobile Cards */}
                 <div className="md:hidden space-y-4">
                   {savedCalculations.slice(0, 3).map((calc) => (
-                    <div key={calc.id} className="bg-white rounded-lg shadow-md p-4">
+                    <div
+                      key={calc.id}
+                      className="bg-white rounded-lg shadow-md p-4 cursor-pointer hover:shadow-lg transition-shadow"
+                      onClick={() => handleEdit(calc)}
+                    >
                       <div className="flex justify-between items-start mb-3">
                         <h4 className="font-semibold text-gray-900">
                           {calc.label || t('untitledPlan')}
@@ -294,7 +322,11 @@ export default function DashboardPage() {
 
                     <tbody className="bg-white divide-y divide-gray-200">
                       {savedCalculations.slice(0, 5).map((calc) => (
-                        <tr key={calc.id} className="hover:bg-gray-50">
+                        <tr
+                          key={calc.id}
+                          className="hover:bg-gray-50 cursor-pointer"
+                          onClick={() => handleEdit(calc)}
+                        >
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                             {calc.label || t('untitledPlan')}
                           </td>
@@ -410,108 +442,88 @@ export default function DashboardPage() {
         )}
 
         {/* Saved Calculations Section (Below Planner) */}
-        {savedCalculations.length > 0 && (
-          <div className="mt-8">
-            <h3 className="text-2xl font-bold mb-4 text-gray-900">
-              {t('myRecentPlans')}
-            </h3>
+        {showPlanning && savedCalculations.length > 0 && (
+          <>
+            {/* Show "My Recent Plans" only if there are more than 3 plans */}
+            {savedCalculations.length > 3 && (
+              <div className="mt-8">
+                <h3 className="text-2xl font-bold mb-4 text-gray-900">
+                  {t('myRecentPlans')}
+                </h3>
 
-            {/* Mobile Cards */}
-            <div className="md:hidden space-y-4">
-              {savedCalculations.map((calc) => (
-                <div key={calc.id} className="bg-white rounded-lg shadow-md p-4">
-                  <div className="flex justify-between items-start mb-3">
-                    <h4 className="font-semibold text-gray-900">
-                      {calc.label || t('untitledPlan')}
-                    </h4>
-                  </div>
-
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">{t('race')}:</span>
-                      <span className="text-gray-900">{calc.races?.name}</span>
-                    </div>
-
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">{t('startTime')}:</span>
-                      <span className="text-gray-900">
-                        {new Date(calc.planned_start_time)
-                          .toISOString()
-                          .slice(0, 10)}{' '}
-                        {new Date(calc.planned_start_time)
-                          .toTimeString()
-                          .slice(0, 5)}
-                      </span>
-                    </div>
-
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">{t('duration')}:</span>
-                      <span className="text-gray-900">
-                        {Math.floor(calc.estimated_duration_seconds / 3600)}h{' '}
-                        {Math.floor(
-                          (calc.estimated_duration_seconds % 3600) / 60
-                        )}
-                        m
-                      </span>
-                    </div>
-
-                    {calc.planned_stop_duration_seconds > 0 && (
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">{t('stopTime')}:</span>
-                        <span className="text-gray-900">
-                          {Math.floor(calc.planned_stop_duration_seconds / 3600)}h{' '}
-                          {Math.floor(
-                            (calc.planned_stop_duration_seconds % 3600) / 60
-                          )}
-                          m
-                        </span>
+                {/* Mobile Cards */}
+                <div className="md:hidden space-y-3">
+                  {savedCalculations.slice(0, 3).map((calc) => (
+                    <div key={calc.id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
+                      {/* Header with gradient */}
+                      <div className="bg-gradient-to-r from-primary-50 to-blue-50 px-4 py-3 border-b border-gray-200">
+                        <h4 className="font-bold text-gray-900 text-base">
+                          {calc.label || t('untitledPlan')}
+                        </h4>
+                        <p className="text-xs text-gray-600 mt-0.5">{calc.races?.name}</p>
                       </div>
-                    )}
 
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">{t('finishTime')}:</span>
-                      <span className="text-gray-900">
-                        {new Date(calc.calculated_finish_time)
-                          .toTimeString()
-                          .slice(0, 5)}
-                      </span>
+                      {/* Content */}
+                      <div className="px-4 py-3">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-xs text-gray-500 mb-1">{t('startTime')}</p>
+                            <p className="text-xl font-bold text-gray-900">
+                              {new Date(calc.planned_start_time).toTimeString().slice(0, 5)}
+                            </p>
+                            <p className="text-xs text-gray-500 mt-1">
+                              {Math.floor(calc.estimated_duration_seconds / 3600)}h {Math.floor((calc.estimated_duration_seconds % 3600) / 60)}m duration
+                            </p>
+                          </div>
+
+                          <div className="text-right">
+                            <p className="text-xs text-gray-500 mb-1">{t('avgSpeed')}</p>
+                            <p className="text-2xl font-bold text-primary-600">{calc.required_speed_kmh}</p>
+                            <p className="text-xs text-gray-500">km/h</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Actions */}
+                      <div className="px-3 py-2 bg-gray-50 border-t border-gray-200 flex gap-1.5 justify-end">
+                        <button
+                          onClick={() => handleEdit(calc)}
+                          className="group relative p-2 rounded-lg text-blue-700 bg-blue-50 hover:bg-blue-100 transition-colors"
+                          title={tCommon('edit')}
+                        >
+                          <PencilSquareIcon className="w-5 h-5" />
+                          <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 text-xs font-medium text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                            {tCommon('edit')}
+                          </span>
+                        </button>
+
+                        <button
+                          onClick={() => handleCopy(calc)}
+                          className="group relative p-2 rounded-lg text-green-700 bg-green-50 hover:bg-green-100 transition-colors"
+                          title={tCommon('copy')}
+                        >
+                          <DocumentDuplicateIcon className="w-5 h-5" />
+                          <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 text-xs font-medium text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                            {tCommon('copy')}
+                          </span>
+                        </button>
+
+                        <button
+                          onClick={() => handleDelete(calc.id)}
+                          className="group relative p-2 rounded-lg text-red-700 bg-red-50 hover:bg-red-100 transition-colors"
+                          title={tCommon('delete')}
+                        >
+                          <TrashIcon className="w-5 h-5" />
+                          <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 text-xs font-medium text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                            {tCommon('delete')}
+                          </span>
+                        </button>
+                      </div>
                     </div>
-
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">{t('avgSpeed')}:</span>
-                      <span className="text-gray-900">
-                        {calc.required_speed_kmh} km/h
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 flex gap-2 border-t pt-3">
-                    <button
-                      onClick={() => handleEdit(calc)}
-                      className="flex-1 bg-blue-600 text-white py-2 px-3 rounded-md text-sm hover:bg-blue-700"
-                    >
-                      {tCommon('edit')}
-                    </button>
-
-                    <button
-                      onClick={() => handleCopy(calc)}
-                      className="flex-1 bg-green-600 text-white py-2 px-3 rounded-md text-sm hover:bg-green-700"
-                    >
-                      {tCommon('copy')}
-                    </button>
-
-                    <button
-                      onClick={() => handleDelete(calc.id)}
-                      className="flex-1 bg-red-600 text-white py-2 px-3 rounded-md text-sm hover:bg-red-700"
-                    >
-                      {tCommon('delete')}
-                    </button>
-                  </div>
+                  ))}
                 </div>
-              ))}
-            </div>
 
-            {/* Desktop Table */}
+            {/* Desktop Table - Recent Plans */}
             <div className="hidden md:block bg-white rounded-lg shadow-md overflow-hidden">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
@@ -526,22 +538,13 @@ export default function DashboardPage() {
                       {t('startTime')}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      {t('duration')}
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      {t('finishTime')}
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       {t('avgSpeed')}
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      {t('actions')}
                     </th>
                   </tr>
                 </thead>
 
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {savedCalculations.map((calc) => (
+                  {savedCalculations.slice(0, 3).map((calc) => (
                     <tr key={calc.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {calc.label || t('untitledPlan')}
@@ -561,44 +564,7 @@ export default function DashboardPage() {
                       </td>
 
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {Math.floor(calc.estimated_duration_seconds / 3600)}h{' '}
-                        {Math.floor(
-                          (calc.estimated_duration_seconds % 3600) / 60
-                        )}
-                        m
-                      </td>
-
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {new Date(calc.calculated_finish_time)
-                          .toTimeString()
-                          .slice(0, 5)}
-                      </td>
-
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {calc.required_speed_kmh} km/h
-                      </td>
-
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button
-                          onClick={() => handleEdit(calc)}
-                          className="text-blue-600 hover:text-blue-900 mr-3"
-                        >
-                          {tCommon('edit')}
-                        </button>
-
-                        <button
-                          onClick={() => handleCopy(calc)}
-                          className="text-green-600 hover:text-green-900 mr-3"
-                        >
-                          {tCommon('copy')}
-                        </button>
-
-                        <button
-                          onClick={() => handleDelete(calc.id)}
-                          className="text-red-600 hover:text-red-900"
-                        >
-                          {tCommon('delete')}
-                        </button>
                       </td>
                     </tr>
                   ))}
@@ -606,6 +572,196 @@ export default function DashboardPage() {
               </table>
             </div>
           </div>
+            )}
+
+            {/* "My Plans" Section - Always show all plans when in planning mode */}
+            <div className="mt-8">
+              <h3 className="text-2xl font-bold mb-4 text-gray-900">
+                {t('myPlans')}
+              </h3>
+
+              {/* Mobile Cards - All Plans */}
+              <div className="md:hidden space-y-3">
+                {savedCalculations.map((calc) => (
+                  <div key={calc.id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
+                    {/* Header with gradient */}
+                    <div className="bg-gradient-to-r from-primary-50 to-blue-50 px-4 py-3 border-b border-gray-200">
+                      <h4 className="font-bold text-gray-900 text-base">
+                        {calc.label || t('untitledPlan')}
+                      </h4>
+                      <p className="text-xs text-gray-600 mt-0.5">{calc.races?.name}</p>
+                    </div>
+
+                    {/* Content */}
+                    <div className="px-4 py-3">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-xs text-gray-500 mb-1">{t('startTime')}</p>
+                          <p className="text-xl font-bold text-gray-900">
+                            {new Date(calc.planned_start_time).toTimeString().slice(0, 5)}
+                          </p>
+                          <p className="text-xs text-gray-500 mt-1">
+                            {Math.floor(calc.estimated_duration_seconds / 3600)}h {Math.floor((calc.estimated_duration_seconds % 3600) / 60)}m duration
+                          </p>
+                        </div>
+
+                        <div className="text-right">
+                          <p className="text-xs text-gray-500 mb-1">{t('avgSpeed')}</p>
+                          <p className="text-2xl font-bold text-primary-600">{calc.required_speed_kmh}</p>
+                          <p className="text-xs text-gray-500">km/h</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="px-3 py-2 bg-gray-50 border-t border-gray-200 flex gap-1.5 justify-end">
+                      <button
+                        onClick={() => handleEdit(calc)}
+                        className="group relative p-2 rounded-lg text-blue-700 bg-blue-50 hover:bg-blue-100 transition-colors"
+                        title={tCommon('edit')}
+                      >
+                        <PencilSquareIcon className="w-5 h-5" />
+                        <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 text-xs font-medium text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                          {tCommon('edit')}
+                        </span>
+                      </button>
+
+                      <button
+                        onClick={() => handleCopy(calc)}
+                        className="group relative p-2 rounded-lg text-green-700 bg-green-50 hover:bg-green-100 transition-colors"
+                        title={tCommon('copy')}
+                      >
+                        <DocumentDuplicateIcon className="w-5 h-5" />
+                        <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 text-xs font-medium text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                          {tCommon('copy')}
+                        </span>
+                      </button>
+
+                      <button
+                        onClick={() => handleDelete(calc.id)}
+                        className="group relative p-2 rounded-lg text-red-700 bg-red-50 hover:bg-red-100 transition-colors"
+                        title={tCommon('delete')}
+                      >
+                        <TrashIcon className="w-5 h-5" />
+                        <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 text-xs font-medium text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                          {tCommon('delete')}
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Desktop Table - All Plans */}
+              <div className="hidden md:block bg-white rounded-lg shadow-md overflow-hidden">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        {t('planName')}
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        {t('race')}
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        {t('startTime')}
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        {t('duration')}
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        {t('finishTime')}
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        {t('avgSpeed')}
+                      </th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        {t('actions')}
+                      </th>
+                    </tr>
+                  </thead>
+
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {savedCalculations.map((calc) => (
+                      <tr key={calc.id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                          {calc.label || t('untitledPlan')}
+                        </td>
+
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {calc.races?.name}
+                        </td>
+
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {new Date(calc.planned_start_time)
+                            .toISOString()
+                            .slice(0, 10)}{' '}
+                          {new Date(calc.planned_start_time)
+                            .toTimeString()
+                            .slice(0, 5)}
+                        </td>
+
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {Math.floor(calc.estimated_duration_seconds / 3600)}h{' '}
+                          {Math.floor(
+                            (calc.estimated_duration_seconds % 3600) / 60
+                          )}
+                          m
+                        </td>
+
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {new Date(calc.calculated_finish_time)
+                            .toTimeString()
+                            .slice(0, 5)}
+                        </td>
+
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {calc.required_speed_kmh} km/h
+                        </td>
+
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                          <div className="flex items-center justify-end gap-1.5">
+                            <button
+                              onClick={() => handleEdit(calc)}
+                              className="group relative p-2 rounded-md text-blue-700 bg-blue-50 hover:bg-blue-100 transition-colors"
+                              title={tCommon('edit')}
+                            >
+                              <PencilSquareIcon className="w-4 h-4" />
+                              <span className="absolute bottom-full right-0 mb-1 px-2 py-1 text-xs font-medium text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                                {tCommon('edit')}
+                              </span>
+                            </button>
+
+                            <button
+                              onClick={() => handleCopy(calc)}
+                              className="group relative p-2 rounded-md text-green-700 bg-green-50 hover:bg-green-100 transition-colors"
+                              title={tCommon('copy')}
+                            >
+                              <DocumentDuplicateIcon className="w-4 h-4" />
+                              <span className="absolute bottom-full right-0 mb-1 px-2 py-1 text-xs font-medium text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                                {tCommon('copy')}
+                              </span>
+                            </button>
+
+                            <button
+                              onClick={() => handleDelete(calc.id)}
+                              className="group relative p-2 rounded-md text-red-700 bg-red-50 hover:bg-red-100 transition-colors"
+                              title={tCommon('delete')}
+                            >
+                              <TrashIcon className="w-4 h-4" />
+                              <span className="absolute bottom-full right-0 mb-1 px-2 py-1 text-xs font-medium text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                                {tCommon('delete')}
+                              </span>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </>
         )}
       </main>
     </div>

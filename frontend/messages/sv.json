@@ -115,6 +115,7 @@
     "noRaces": "Inga tävlingar tillgängliga ännu. Kom tillbaka snart!",
     "otherRaces": "Andra tävlingar",
     "myRecentPlans": "Mina senaste planer",
+    "myPlans": "Mina planer",
     "editing": "Redigerar:",
     "planName": "Planens namn",
     "race": "Tävling",
@@ -130,6 +131,7 @@
   "raceCalculator": {
     "distance": "Distans",
     "planLabel": "Planens etikett",
+    "planLabelRequired": "Vänligen ange en etikett för planen",
     "planLabelPlaceholder": "t.ex. Konservativ plan, Optimistiskt mål, etc.",
     "startDate": "Startdatum",
     "startTime": "Planerad starttid",
@@ -154,7 +156,10 @@
     "addFeedZone": "Lägg till depå",
     "removeFeedZone": "Ta bort",
     "totalFeedZoneTime": "Total tid i depåer",
-    "km": "km"
+    "km": "km",
+    "feedZone": "Depå",
+    "viewDetails": "Visa detaljer",
+    "collapse": "Dölj"
   },
   "raceMap": {
     "title": "Tävlingsrutt",
