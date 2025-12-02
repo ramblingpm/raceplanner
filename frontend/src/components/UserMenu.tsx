@@ -3,15 +3,18 @@
 import { useState, useRef, useEffect } from 'react';
 import { useAuth } from './AuthProvider';
 import { signOut } from '@/lib/auth';
+import { isAdmin } from '@/lib/admin';
 import { useTranslations, useLocale } from 'next-intl';
-import { ArrowRightStartOnRectangleIcon, UserCircleIcon } from '@heroicons/react/24/outline';
+import { ArrowRightStartOnRectangleIcon, UserCircleIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
 import { locales, localeNames, Locale } from '@/i18n/config';
+import Link from 'next/link';
 
 export default function UserMenu() {
   const { user } = useAuth();
   const tNav = useTranslations('nav');
   const currentLocale = useLocale() as Locale;
   const [isOpen, setIsOpen] = useState(false);
+  const [isAdminUser, setIsAdminUser] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   const handleSignOut = async () => {
@@ -23,6 +26,22 @@ export default function UserMenu() {
     document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000`;
     window.location.reload();
   };
+
+  // Check admin status
+  useEffect(() => {
+    async function checkAdmin() {
+      if (user) {
+        try {
+          const adminStatus = await isAdmin(user.id);
+          setIsAdminUser(adminStatus);
+        } catch (error) {
+          console.error('Error checking admin status:', error);
+          setIsAdminUser(false);
+        }
+      }
+    }
+    checkAdmin();
+  }, [user]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -84,6 +103,20 @@ export default function UserMenu() {
               ))}
             </div>
           </div>
+
+          {/* Admin link - only show if user is admin */}
+          {user && isAdminUser && (
+            <div className="px-2 py-2 border-b border-gray-200">
+              <Link
+                href="/admin"
+                onClick={() => setIsOpen(false)}
+                className="w-full flex items-center gap-3 px-4 py-2 text-sm text-blue-700 hover:bg-blue-50 rounded-md transition-colors"
+              >
+                <ShieldCheckIcon className="w-5 h-5" />
+                Admin Panel
+              </Link>
+            </div>
+          )}
 
           {/* Logout button - only show if logged in */}
           {user && (
