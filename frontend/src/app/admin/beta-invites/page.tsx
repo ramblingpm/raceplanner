@@ -89,17 +89,17 @@ export default function BetaInvitesPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Beta Invites</h2>
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Beta Invites</h2>
           <p className="mt-1 text-sm text-gray-500">
             Manage beta access invitations
           </p>
         </div>
         <button
           onClick={() => setShowAddForm(!showAddForm)}
-          className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors"
+          className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors whitespace-nowrap"
         >
           {showAddForm ? 'Cancel' : '+ Add Invite'}
         </button>
@@ -176,11 +176,11 @@ export default function BetaInvitesPage() {
               />
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <button
                 type="submit"
                 disabled={submitting}
-                className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="w-full sm:w-auto px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 {submitting ? 'Creating...' : 'Create Invite'}
               </button>
@@ -192,7 +192,7 @@ export default function BetaInvitesPage() {
                   setInvitedBy('');
                   setNotes('');
                 }}
-                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 transition-colors"
+                className="w-full sm:w-auto px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 transition-colors"
               >
                 Cancel
               </button>
@@ -210,71 +210,120 @@ export default function BetaInvitesPage() {
             No beta invites yet. Click &quot;Add Invite&quot; to create one.
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Email
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Invited By
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Notes
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Created
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {invites.map((invite) => (
-                  <tr key={invite.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">
+          <>
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50 border-b border-gray-200">
+                  <tr>
+                    <th className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Email
+                    </th>
+                    <th className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Status
+                    </th>
+                    <th className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Invited By
+                    </th>
+                    <th className="hidden lg:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Notes
+                    </th>
+                    <th className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Created
+                    </th>
+                    <th className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {invites.map((invite) => (
+                    <tr key={invite.id} className="hover:bg-gray-50">
+                      <td className="px-4 lg:px-6 py-4">
+                        <div className="text-sm font-medium text-gray-900 break-all">
+                          {invite.email}
+                        </div>
+                      </td>
+                      <td className="px-4 lg:px-6 py-4 whitespace-nowrap">
+                        {invite.used ? (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            Used
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                            Pending
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-4 lg:px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {invite.invited_by || '-'}
+                      </td>
+                      <td className="hidden lg:table-cell px-6 py-4 text-sm text-gray-500 max-w-xs truncate">
+                        {invite.notes || '-'}
+                      </td>
+                      <td className="px-4 lg:px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <span className="hidden lg:inline">{formatDate(invite.created_at)}</span>
+                        <span className="lg:hidden">{new Date(invite.created_at).toLocaleDateString()}</span>
+                      </td>
+                      <td className="px-4 lg:px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button
+                          onClick={() => handleDelete(invite.id)}
+                          className="text-red-600 hover:text-red-900"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="md:hidden divide-y divide-gray-200">
+              {invites.map((invite) => (
+                <div key={invite.id} className="p-4 hover:bg-gray-50">
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-medium text-gray-900 break-all">
                         {invite.email}
                       </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-xs text-gray-500 mt-1">
+                        {formatDate(invite.created_at)}
+                      </div>
+                    </div>
+                    <div className="ml-2">
                       {invite.used ? (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                           Used
                         </span>
                       ) : (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
                           Pending
                         </span>
                       )}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {invite.invited_by || '-'}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">
-                      {invite.notes || '-'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {formatDate(invite.created_at)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button
-                        onClick={() => handleDelete(invite.id)}
-                        className="text-red-600 hover:text-red-900"
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                    </div>
+                  </div>
+                  {invite.invited_by && (
+                    <div className="text-xs text-gray-500 mb-1">
+                      <span className="font-medium">Invited by:</span> {invite.invited_by}
+                    </div>
+                  )}
+                  {invite.notes && (
+                    <div className="text-xs text-gray-500 mb-2">
+                      <span className="font-medium">Notes:</span> {invite.notes}
+                    </div>
+                  )}
+                  <button
+                    onClick={() => handleDelete(invite.id)}
+                    className="text-sm text-red-600 hover:text-red-900 font-medium"
+                  >
+                    Delete
+                  </button>
+                </div>
+              ))}
+            </div>
+          </>
         )}
       </div>
 

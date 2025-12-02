@@ -43,27 +43,27 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900">Admin Overview</h2>
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Admin Overview</h2>
         <p className="mt-1 text-sm text-gray-500">
           Manage your application settings and users
         </p>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white rounded-lg shadow-sm p-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
           <div className="flex items-center">
             <div className="flex-1">
               <p className="text-sm font-medium text-gray-600">Total Invites</p>
-              <p className="mt-2 text-3xl font-semibold text-gray-900">
+              <p className="mt-2 text-2xl sm:text-3xl font-semibold text-gray-900">
                 {stats.totalInvites}
               </p>
             </div>
             <div className="flex-shrink-0">
               <svg
-                className="w-12 h-12 text-blue-500"
+                className="w-10 h-10 sm:w-12 sm:h-12 text-blue-500"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -79,17 +79,17 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm p-6">
+        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
           <div className="flex items-center">
             <div className="flex-1">
               <p className="text-sm font-medium text-gray-600">Used Invites</p>
-              <p className="mt-2 text-3xl font-semibold text-green-600">
+              <p className="mt-2 text-2xl sm:text-3xl font-semibold text-green-600">
                 {stats.usedInvites}
               </p>
             </div>
             <div className="flex-shrink-0">
               <svg
-                className="w-12 h-12 text-green-500"
+                className="w-10 h-10 sm:w-12 sm:h-12 text-green-500"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -105,19 +105,19 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm p-6">
+        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
           <div className="flex items-center">
             <div className="flex-1">
               <p className="text-sm font-medium text-gray-600">
                 Pending Invites
               </p>
-              <p className="mt-2 text-3xl font-semibold text-yellow-600">
+              <p className="mt-2 text-2xl sm:text-3xl font-semibold text-yellow-600">
                 {stats.pendingInvites}
               </p>
             </div>
             <div className="flex-shrink-0">
               <svg
-                className="w-12 h-12 text-yellow-500"
+                className="w-10 h-10 sm:w-12 sm:h-12 text-yellow-500"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -135,11 +135,11 @@ export default function AdminDashboard() {
       </div>
 
       {/* Quick Actions */}
-      <div className="bg-white rounded-lg shadow-sm p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+      <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
+        <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">
           Quick Actions
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <a
             href="/admin/beta-invites"
             className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
