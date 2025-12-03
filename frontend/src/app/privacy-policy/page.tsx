@@ -1,8 +1,11 @@
 import Link from 'next/link';
 import Header from '@/components/Header';
+import { useTranslations } from 'next-intl';
 
 export default function PrivacyPolicyPage() {
+  const t = useTranslations('common');
   const privacyEmail = process.env.NEXT_PUBLIC_PRIVACY_EMAIL || 'privacy@raceplanner.com';
+  const appName = t('appName');
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -16,8 +19,8 @@ export default function PrivacyPolicyPage() {
             <section>
               <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-3">1. Introduction</h2>
               <p className="text-gray-700">
-                Welcome to Race Planner. We respect your privacy and are committed to protecting your personal data.
-                This privacy policy explains how we collect, use, and protect your information when you use our cycling race planning service.
+                Welcome to {appName}. We respect your privacy and are committed to protecting your personal data.
+                This privacy policy explains how we collect, use, and protect your information when you use our service.
               </p>
             </section>
 

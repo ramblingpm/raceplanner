@@ -1,7 +1,7 @@
 # Feed Zones Implementation
 
 ## Overview
-This document describes the feed zone feature implementation for Race Planner, allowing users to plan stops at predefined feed zones along race routes.
+This document describes the feed zone feature implementation, allowing users to plan stops at predefined feed zones along race routes.
 
 ## Completed Steps
 

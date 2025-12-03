@@ -1,8 +1,11 @@
 import Link from 'next/link';
 import Header from '@/components/Header';
+import { useTranslations } from 'next-intl';
 
 export default function TermsOfServicePage() {
+  const t = useTranslations('common');
   const supportEmail = process.env.NEXT_PUBLIC_SUPPORT_EMAIL || 'support@raceplanner.com';
+  const appName = t('appName');
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -16,7 +19,7 @@ export default function TermsOfServicePage() {
             <section>
               <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-3">1. Acceptance of Terms</h2>
               <p className="text-gray-700">
-                By accessing and using Race Planner (&quot;the Service&quot;), you accept and agree to be bound by these
+                By accessing and using {appName} (&quot;the Service&quot;), you accept and agree to be bound by these
                 Terms of Service. If you do not agree to these terms, please do not use the Service.
               </p>
             </section>
@@ -24,7 +27,7 @@ export default function TermsOfServicePage() {
             <section>
               <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-3">2. Description of Service</h2>
               <p className="text-gray-700">
-                The Service is a web-based tool that helps users calculate and plan race times, speeds,
+                {appName} is a web-based tool that helps users calculate and plan race times, speeds,
                 and strategies. The Service is currently in beta testing and is invite-only.
               </p>
             </section>

@@ -1,6 +1,6 @@
 # Quick Start Guide
 
-Get up and running with Race Planner in 10 minutes!
+Get up and running with in 10 minutes!
 
 ## Prerequisites
 

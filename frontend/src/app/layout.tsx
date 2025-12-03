@@ -9,10 +9,12 @@ import ConsentManager from '@/components/ConsentManager';
 
 const inter = Inter({ subsets: ['latin'] });
 
+const appName = process.env.NEXT_PUBLIC_APP_NAME || 'Race Planner';
+const appDescription = process.env.NEXT_PUBLIC_APP_DESCRIPTION || 'Calculate your race times and required speeds for optimal performance';
+
 export const metadata: Metadata = {
-  title: 'Race Planner - Cycling Race Calculator',
-  description:
-    'Calculate your cycling race times and required speeds for optimal performance',
+  title: `${appName} - Race Calculator`,
+  description: appDescription,
 };
 
 export default async function RootLayout({
