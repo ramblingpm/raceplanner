@@ -17,6 +17,8 @@ export default function SignUpPage() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [signupEmail, setSignupEmail] = useState('');
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,6 +32,11 @@ export default function SignUpPage() {
 
     if (password.length < 6) {
       setError(t('passwordTooShort'));
+      return;
+    }
+
+    if (!acceptedTerms || !acceptedPrivacy) {
+      setError('You must accept the Terms of Service and Privacy Policy to create an account.');
       return;
     }
 
@@ -52,6 +59,10 @@ export default function SignUpPage() {
 
       // Mark invite as used
       await supabase.rpc('mark_invite_used', { user_email: email });
+
+      // Set cookie consent (user agreed during signup)
+      const { setConsentStatus } = await import('@/lib/consent');
+      setConsentStatus('accepted');
 
       // Show success message
       setSignupEmail(email);
@@ -169,9 +180,59 @@ export default function SignUpPage() {
             />
           </div>
 
+          {/* Terms and Privacy Checkboxes */}
+          <div className="space-y-3 border-t pt-4">
+            <div className="flex items-start">
+              <div className="flex items-center h-5">
+                <input
+                  id="accept-terms"
+                  type="checkbox"
+                  checked={acceptedTerms}
+                  onChange={(e) => setAcceptedTerms(e.target.checked)}
+                  className="w-4 h-4 border-gray-300 rounded text-primary-600 focus:ring-primary-500"
+                  required
+                />
+              </div>
+              <label htmlFor="accept-terms" className="ml-2 text-sm text-gray-700">
+                I accept the{' '}
+                <Link
+                  href="/terms"
+                  target="_blank"
+                  className="text-primary-600 hover:text-primary-700 underline"
+                >
+                  Terms of Service
+                </Link>
+              </label>
+            </div>
+
+            <div className="flex items-start">
+              <div className="flex items-center h-5">
+                <input
+                  id="accept-privacy"
+                  type="checkbox"
+                  checked={acceptedPrivacy}
+                  onChange={(e) => setAcceptedPrivacy(e.target.checked)}
+                  className="w-4 h-4 border-gray-300 rounded text-primary-600 focus:ring-primary-500"
+                  required
+                />
+              </div>
+              <label htmlFor="accept-privacy" className="ml-2 text-sm text-gray-700">
+                I accept the{' '}
+                <Link
+                  href="/privacy-policy"
+                  target="_blank"
+                  className="text-primary-600 hover:text-primary-700 underline"
+                >
+                  Privacy Policy
+                </Link>
+                {' '}and consent to cookies for analytics
+              </label>
+            </div>
+          </div>
+
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || !acceptedTerms || !acceptedPrivacy}
             className="w-full bg-primary-600 text-white py-2 px-4 rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {loading ? t('signingUp') : t('signupButton')}
