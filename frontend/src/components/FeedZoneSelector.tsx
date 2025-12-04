@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { FeedZone, PlanFeedZone } from '@/types';
 import { TrashIcon } from '@heroicons/react/24/outline';
+import { trackFeedZoneAdded, trackFeedZoneRemoved } from '@/lib/analytics';
 
 interface SelectedFeedZone {
   feed_zone_id: string;
@@ -14,6 +15,7 @@ interface SelectedFeedZone {
 
 interface FeedZoneSelectorProps {
   raceId: string;
+  raceName?: string;
   availableFeedZones: FeedZone[];
   selectedFeedZones?: SelectedFeedZone[];
   onChange: (feedZones: SelectedFeedZone[]) => void;
@@ -21,6 +23,7 @@ interface FeedZoneSelectorProps {
 
 export default function FeedZoneSelector({
   raceId,
+  raceName = 'Unknown Race',
   availableFeedZones,
   selectedFeedZones = [],
   onChange,
@@ -38,6 +41,7 @@ export default function FeedZoneSelector({
   }, [selectedFeedZones]);
 
   const handleAddFeedZone = (feedZoneId: string) => {
+    const feedZone = getFeedZoneById(feedZoneId);
     const newFeedZone: SelectedFeedZone = {
       feed_zone_id: feedZoneId,
       planned_duration_seconds: 600, // Default 10 minutes
@@ -46,12 +50,25 @@ export default function FeedZoneSelector({
     setLocalFeedZones(updated);
     onChange(updated);
     setShowAddDropdown(false);
+
+    // Track feed zone added
+    if (feedZone) {
+      trackFeedZoneAdded(feedZone.name, raceName);
+    }
   };
 
   const handleRemoveFeedZone = (index: number) => {
+    const removedFeedZone = localFeedZones[index];
+    const feedZone = getFeedZoneById(removedFeedZone.feed_zone_id);
+
     const updated = localFeedZones.filter((_, i) => i !== index);
     setLocalFeedZones(updated);
     onChange(updated);
+
+    // Track feed zone removed
+    if (feedZone) {
+      trackFeedZoneRemoved(feedZone.name, raceName);
+    }
   };
 
   const handleFeedZoneChange = (index: number, field: keyof SelectedFeedZone, value: any) => {

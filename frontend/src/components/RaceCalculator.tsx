@@ -6,15 +6,25 @@ import { calculateRace } from '@/utils/calculations';
 import { Race, FeedZone } from '@/types';
 import { getFeedZonesByRace, savePlanFeedZones, getPlanFeedZones, calculateTotalFeedZoneTime } from '@/lib/feedZones';
 import FeedZoneSelector from './FeedZoneSelector';
+import { trackPlanCreated, trackPlanUpdated } from '@/lib/analytics';
 
 interface RaceCalculatorProps {
   race: Race;
   editingCalculation?: any; // For editing existing plans
-  onCalculate?: (result: {
-    finishTime: Date;
-    requiredSpeedKmh: number;
-  }) => void;
+  onCalculate?: (
+    result: {
+      finishTime: Date;
+      requiredSpeedKmh: number;
+    },
+    planDetails: {
+      label: string;
+      startTime: Date;
+      durationSeconds: number;
+      stopDurationSeconds: number;
+    }
+  ) => void;
   onSaved?: (isUpdate: boolean, calculationId?: string) => void;
+  onCancel?: () => void;
   onFeedZonesChange?: (feedZones: Array<{
     feed_zone_id: string;
     planned_duration_seconds: number;
@@ -28,9 +38,11 @@ export default function RaceCalculator({
   editingCalculation,
   onCalculate,
   onSaved,
+  onCancel,
   onFeedZonesChange,
 }: RaceCalculatorProps) {
   const t = useTranslations('raceCalculator');
+  const tCommon = useTranslations('common');
   const locale = useLocale();
 
   // Set defaults based on race name or editing calculation
@@ -131,8 +143,8 @@ export default function RaceCalculator({
     loadFeedZones();
   }, [race.id, editingCalculation?.id, onFeedZonesChange]);
 
-  const handleCalculate = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleCalculate = (e?: React.FormEvent) => {
+    e?.preventDefault();
 
     // Validate that a plan label is provided
     if (!label || label.trim() === '') {
@@ -162,7 +174,42 @@ export default function RaceCalculator({
     });
 
     setResult(calculationResult);
-    onCalculate?.(calculationResult);
+
+    const planDetails = {
+      label,
+      startTime: startDateTime,
+      durationSeconds,
+      stopDurationSeconds: totalStopDurationSeconds,
+    };
+
+    onCalculate?.(calculationResult, planDetails);
+  };
+
+  const handleSave = async () => {
+    // Calculate first if no result
+    if (!result) {
+      handleCalculate();
+      // Wait a moment for state to update
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+
+    if (!result) return;
+
+    // Validate that a plan label is provided
+    if (!label || label.trim() === '') {
+      alert(t('planLabelRequired') || 'Please provide a plan label');
+      return;
+    }
+
+    const [hours, minutes] = startTime.split(':').map(Number);
+    const startDateTime = new Date(startDate);
+    startDateTime.setHours(hours, minutes, 0, 0);
+
+    const durationSeconds =
+      parseInt(estimatedHours) * 3600 + parseInt(estimatedMinutes) * 60;
+
+    const stopDurationSeconds =
+      parseInt(stopHours) * 3600 + parseInt(stopMinutes) * 60;
 
     // Save or update calculation in database
     const { supabase } = await import('@/lib/supabase');
@@ -176,8 +223,8 @@ export default function RaceCalculator({
         planned_start_time: startDateTime.toISOString(),
         estimated_duration_seconds: durationSeconds,
         planned_stop_duration_seconds: stopDurationSeconds,
-        calculated_finish_time: calculationResult.finishTime.toISOString(),
-        required_speed_kmh: calculationResult.requiredSpeedKmh,
+        calculated_finish_time: result.finishTime.toISOString(),
+        required_speed_kmh: result.requiredSpeedKmh,
       };
 
       let calculationId = editingCalculation?.id;
@@ -188,6 +235,9 @@ export default function RaceCalculator({
           .from('race_calculations')
           .update(calculationData)
           .eq('id', editingCalculation.id);
+
+        // Track plan update
+        trackPlanUpdated(editingCalculation.id, calculationData.label);
       } else {
         // Insert new calculation and get the ID
         const { data: newCalc } = await supabase
@@ -199,6 +249,13 @@ export default function RaceCalculator({
         if (newCalc) {
           calculationId = newCalc.id;
         }
+
+        // Track plan creation
+        trackPlanCreated(
+          race.name,
+          calculationData.label,
+          Math.round(durationSeconds / 60)
+        );
       }
 
       // Save feed zones if calculation was created/updated
@@ -354,6 +411,7 @@ export default function RaceCalculator({
           <div className="pt-4 border-t border-gray-200">
             <FeedZoneSelector
               raceId={race.id}
+              raceName={race.name}
               availableFeedZones={availableFeedZones}
               selectedFeedZones={selectedFeedZones}
               onChange={(zones) => {
@@ -364,39 +422,33 @@ export default function RaceCalculator({
           </div>
         )}
 
-        <button
-          type="submit"
-          className="w-full bg-primary-600 text-white py-2 px-4 rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors"
-        >
-          {editingCalculation ? t('updatePlan') : t('calculate')}
-        </button>
-      </form>
-
-      {result && (
-        <div className="mt-6 p-4 bg-primary-50 rounded-lg border border-primary-200">
-          <h3 className="font-semibold text-lg mb-3 text-gray-900">
-            {t('results')}
-          </h3>
-          <div className="space-y-2">
-            <div className="flex justify-between">
-              <span className="text-gray-700">{t('finishTime')}</span>
-              <span className="font-semibold text-gray-900">
-                {result.finishTime.toLocaleTimeString(locale === 'sv' ? 'sv-SE' : 'en-US', {
-                  hour: '2-digit',
-                  minute: '2-digit',
-                  hour12: locale !== 'sv',
-                })}
-              </span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-700">{t('requiredSpeed')}</span>
-              <span className="font-semibold text-gray-900">
-                {result.requiredSpeedKmh} km/h
-              </span>
-            </div>
-          </div>
+        <div className="flex gap-3">
+          <button
+            type="button"
+            onClick={handleCalculate}
+            className="flex-1 bg-gray-600 text-white py-2 px-4 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
+          >
+            {t('calculate')}
+          </button>
+          <button
+            type="button"
+            onClick={handleSave}
+            disabled={!result}
+            className="flex-1 bg-primary-600 text-white py-2 px-4 rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+          >
+            {editingCalculation ? t('updatePlan') : tCommon('save')}
+          </button>
+          {onCancel && (
+            <button
+              type="button"
+              onClick={onCancel}
+              className="flex-1 bg-white text-gray-700 py-2 px-4 rounded-md border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
+            >
+              {tCommon('cancel')}
+            </button>
+          )}
         </div>
-      )}
+      </form>
     </div>
   );
 }

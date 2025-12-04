@@ -126,7 +126,12 @@
     "avgSpeed": "Medelhastighet",
     "actions": "Åtgärder",
     "untitledPlan": "Namnlös plan",
-    "confirmDelete": "Är du säker på att du vill ta bort denna plan?"
+    "confirmDelete": "Är du säker på att du vill ta bort denna plan?",
+    "addPlan": "Lägg till plan",
+    "editPlan": "Redigera plan",
+    "noPlans": "Du har inte skapat några planer ännu. Börja med att lägga till din första plan!",
+    "createFirstPlan": "Skapa din första plan",
+    "distance": "Distans"
   },
   "raceCalculator": {
     "distance": "Distans",
