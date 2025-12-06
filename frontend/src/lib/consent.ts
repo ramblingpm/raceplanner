@@ -148,9 +148,18 @@ export function setUserId(userId: string | null) {
   if (!gtag) return;
 
   if (userId) {
+    // Set user_id using the recommended method
+    gtag('set', 'user_id', userId);
+
+    // Also set in config for backwards compatibility
     gtag('config', GA4_MEASUREMENT_ID, {
       user_id: userId,
     });
+
+    console.log('GA4 User ID set:', userId);
+  } else {
+    // Clear user_id
+    gtag('set', 'user_id', null);
   }
 }
 
