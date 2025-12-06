@@ -6,6 +6,8 @@ import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { signIn } from '@/lib/auth';
 import Header from '@/components/Header';
+import PageViewTracker from '@/components/PageViewTracker';
+import { trackFormStart, trackFormSubmit, trackLogin } from '@/lib/analytics';
 
 export default function LoginPage() {
   const t = useTranslations('auth');
@@ -16,6 +18,14 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
+  const [formStarted, setFormStarted] = useState(false);
+
+  const handleFormStart = () => {
+    if (!formStarted) {
+      trackFormStart('login_form', { page: 'login' });
+      setFormStarted(true);
+    }
+  };
 
   useEffect(() => {
     if (searchParams.get('reset') === 'success') {
@@ -29,8 +39,15 @@ export default function LoginPage() {
     setSuccess('');
     setLoading(true);
 
+    // Track form submission attempt
+    trackFormSubmit('login_form', { page: 'login' });
+
     try {
       await signIn(email, password);
+
+      // Track successful login
+      trackLogin('email');
+
       router.push('/dashboard');
     } catch (err) {
       setError(err instanceof Error ? err.message : t('loginError'));
@@ -41,6 +58,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100">
+      <PageViewTracker pageName="Login Page" />
       <Header />
       <div className="flex items-center justify-center px-4 py-16">
         <div className="max-w-md w-full bg-white rounded-lg shadow-xl p-8">
@@ -75,6 +93,7 @@ export default function LoginPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              onFocus={handleFormStart}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900"
               placeholder={t('emailPlaceholder')}
             />

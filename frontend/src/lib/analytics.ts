@@ -153,3 +153,23 @@ export function trackNavigation(destination: string, source: string) {
     source,
   });
 }
+
+/**
+ * Track form submissions with specific form names
+ */
+export function trackFormSubmit(formName: string, additionalData?: Record<string, any>) {
+  trackEvent('form_submit', {
+    form_name: formName,
+    ...additionalData,
+  });
+}
+
+/**
+ * Track when a user starts filling out a form
+ */
+export function trackFormStart(formName: string, additionalData?: Record<string, any>) {
+  trackEvent('form_start', {
+    form_name: formName,
+    ...additionalData,
+  });
+}

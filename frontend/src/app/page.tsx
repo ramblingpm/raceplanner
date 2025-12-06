@@ -1,12 +1,16 @@
+'use client';
+
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import Header from '@/components/Header';
+import PageViewTracker from '@/components/PageViewTracker';
 
 export default function HomePage() {
   const t = useTranslations('home');
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100">
+      <PageViewTracker pageName="Home Page" />
       <Header />
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto text-center">

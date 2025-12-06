@@ -7,6 +7,7 @@ import { ProtectedRoute } from '@/components/ProtectedRoute';
 import Header from '@/components/Header';
 import RaceCalculator from '@/components/RaceCalculator';
 import Modal from '@/components/Modal';
+import PageViewTracker from '@/components/PageViewTracker';
 import { supabase } from '@/lib/supabase';
 import { Race } from '@/types';
 import { PencilSquareIcon, DocumentDuplicateIcon, TrashIcon, PlusIcon } from '@heroicons/react/24/outline';
@@ -234,6 +235,7 @@ export default function DashboardPage() {
 
   return (
   <ProtectedRoute>
+    <PageViewTracker pageName="Dashboard" />
     <div className="min-h-screen bg-gray-50">
       <Header />
 

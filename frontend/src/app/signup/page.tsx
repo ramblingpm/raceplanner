@@ -6,6 +6,8 @@ import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { signUp } from '@/lib/auth';
 import Header from '@/components/Header';
+import PageViewTracker from '@/components/PageViewTracker';
+import { trackFormStart, trackFormSubmit, trackSignup } from '@/lib/analytics';
 
 export default function SignUpPage() {
   const t = useTranslations('auth');
@@ -19,6 +21,14 @@ export default function SignUpPage() {
   const [signupEmail, setSignupEmail] = useState('');
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
+  const [formStarted, setFormStarted] = useState(false);
+
+  const handleFormStart = () => {
+    if (!formStarted) {
+      trackFormStart('signup_form', { page: 'signup' });
+      setFormStarted(true);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,6 +52,9 @@ export default function SignUpPage() {
 
     setLoading(true);
 
+    // Track form submission attempt
+    trackFormSubmit('signup_form', { page: 'signup' });
+
     try {
       // Check if email is invited (beta access)
       const { supabase } = await import('@/lib/supabase');
@@ -63,6 +76,9 @@ export default function SignUpPage() {
       // Set cookie consent (user agreed during signup)
       const { setConsentStatus } = await import('@/lib/consent');
       setConsentStatus('accepted');
+
+      // Track successful signup
+      trackSignup('email');
 
       // Show success message
       setSignupEmail(email);
@@ -111,6 +127,7 @@ export default function SignUpPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100">
+      <PageViewTracker pageName="Signup Page" />
       <Header />
       <div className="flex items-center justify-center px-4 py-16">
         <div className="max-w-md w-full bg-white rounded-lg shadow-xl p-8">
@@ -139,6 +156,7 @@ export default function SignUpPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              onFocus={handleFormStart}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900"
               placeholder={t('emailPlaceholder')}
             />
