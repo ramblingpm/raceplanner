@@ -90,15 +90,8 @@ export async function isBetaUser(email: string): Promise<boolean> {
  * Call this after successful login or when loading an authenticated user
  */
 export async function trackUserAuthentication(user: AuthUser) {
-  console.log('🔍 trackUserAuthentication called with user:', user.id);
-
-  if (!user.email) {
-    console.warn('⚠️ No user email found, skipping tracking');
-    return;
-  }
+  if (!user.email) return;
 
   const isBeta = await isBetaUser(user.email);
-  console.log('✅ Calling trackUserLogin with:', { userId: user.id, email: user.email, isBeta });
-
   await trackUserLogin(user.id, user.email, isBeta);
 }
