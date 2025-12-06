@@ -47,6 +47,31 @@ export function hasConsent(): boolean {
 }
 
 /**
+ * Wait for Google Analytics to be ready
+ * Returns a promise that resolves when gtag is available
+ */
+function waitForGoogleAnalytics(maxWaitMs: number = 5000): Promise<boolean> {
+  return new Promise((resolve) => {
+    if ((window as any).gtag) {
+      resolve(true);
+      return;
+    }
+
+    const startTime = Date.now();
+    const checkInterval = setInterval(() => {
+      if ((window as any).gtag) {
+        clearInterval(checkInterval);
+        resolve(true);
+      } else if (Date.now() - startTime > maxWaitMs) {
+        clearInterval(checkInterval);
+        console.warn('Google Analytics failed to load within timeout');
+        resolve(false);
+      }
+    }, 100);
+  });
+}
+
+/**
  * Initialize Google Analytics
  * Only call this after consent is given
  */
@@ -139,10 +164,17 @@ export function trackPageView(path: string, title?: string) {
  * @example
  * setUserId('123e4567-e89b-12d3-a456-426614174000')
  */
-export function setUserId(userId: string | null) {
+export async function setUserId(userId: string | null) {
   if (typeof window === 'undefined') return;
   if (!hasConsent()) return;
   if (!GA4_MEASUREMENT_ID) return;
+
+  // Wait for GA to be ready
+  const isReady = await waitForGoogleAnalytics();
+  if (!isReady) {
+    console.warn('Cannot set user ID: Google Analytics not ready');
+    return;
+  }
 
   const gtag = (window as any).gtag;
   if (!gtag) return;
@@ -176,9 +208,16 @@ export function setUserId(userId: string | null) {
  *   signup_date: '2025-01-15'
  * })
  */
-export function setUserProperties(properties: Record<string, string | number | boolean>) {
+export async function setUserProperties(properties: Record<string, string | number | boolean>) {
   if (typeof window === 'undefined') return;
   if (!hasConsent()) return;
+
+  // Wait for GA to be ready
+  const isReady = await waitForGoogleAnalytics();
+  if (!isReady) {
+    console.warn('Cannot set user properties: Google Analytics not ready');
+    return;
+  }
 
   const gtag = (window as any).gtag;
   if (!gtag) return;
@@ -197,19 +236,31 @@ export function setUserProperties(properties: Record<string, string | number | b
  * @example
  * trackUserLogin('user-id-123', 'user@example.com', true)
  */
-export function trackUserLogin(userId: string, email: string, isBetaUser: boolean = false) {
-  if (typeof window === 'undefined') return;
-  if (!hasConsent()) return;
+export async function trackUserLogin(userId: string, email: string, isBetaUser: boolean = false) {
+  console.log('🔍 trackUserLogin called:', { userId, email, isBetaUser });
 
+  if (typeof window === 'undefined') {
+    console.warn('⚠️ Window is undefined, skipping tracking');
+    return;
+  }
+
+  if (!hasConsent()) {
+    console.warn('⚠️ No consent, skipping tracking');
+    return;
+  }
+
+  console.log('✅ Setting user ID:', userId);
   // Set the user ID for this session
-  setUserId(userId);
+  await setUserId(userId);
 
+  console.log('✅ Setting user properties');
   // Set user properties
-  setUserProperties({
+  await setUserProperties({
     beta_user: isBetaUser ? 'yes' : 'no',
     user_email_domain: email.split('@')[1] || 'unknown',
   });
 
+  console.log('✅ Tracking login event');
   // Track the login event
   trackEvent('login', {
     method: 'email',
@@ -220,8 +271,8 @@ export function trackUserLogin(userId: string, email: string, isBetaUser: boolea
 /**
  * Clear user tracking (call on logout)
  */
-export function clearUserTracking() {
+export async function clearUserTracking() {
   if (typeof window === 'undefined') return;
 
-  setUserId(null);
+  await setUserId(null);
 }

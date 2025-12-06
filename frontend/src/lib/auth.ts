@@ -29,7 +29,7 @@ export async function signOut() {
   if (error) throw error;
 
   // Clear user tracking in GA4
-  clearUserTracking();
+  await clearUserTracking();
 }
 
 export async function getCurrentUser(): Promise<AuthUser | null> {
@@ -90,8 +90,15 @@ export async function isBetaUser(email: string): Promise<boolean> {
  * Call this after successful login or when loading an authenticated user
  */
 export async function trackUserAuthentication(user: AuthUser) {
-  if (!user.email) return;
+  console.log('🔍 trackUserAuthentication called with user:', user.id);
+
+  if (!user.email) {
+    console.warn('⚠️ No user email found, skipping tracking');
+    return;
+  }
 
   const isBeta = await isBetaUser(user.email);
-  trackUserLogin(user.id, user.email, isBeta);
+  console.log('✅ Calling trackUserLogin with:', { userId: user.id, email: user.email, isBeta });
+
+  await trackUserLogin(user.id, user.email, isBeta);
 }
