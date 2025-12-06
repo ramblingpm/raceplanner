@@ -53,18 +53,22 @@ export function hasConsent(): boolean {
 function waitForGoogleAnalytics(maxWaitMs: number = 5000): Promise<boolean> {
   return new Promise((resolve) => {
     if ((window as any).gtag) {
+      console.log('✅ Google Analytics already loaded');
       resolve(true);
       return;
     }
 
+    console.log('⏳ Waiting for Google Analytics to load...');
     const startTime = Date.now();
     const checkInterval = setInterval(() => {
       if ((window as any).gtag) {
         clearInterval(checkInterval);
+        const waitTime = Date.now() - startTime;
+        console.log(`✅ Google Analytics loaded after ${waitTime}ms`);
         resolve(true);
       } else if (Date.now() - startTime > maxWaitMs) {
         clearInterval(checkInterval);
-        console.warn('Google Analytics failed to load within timeout');
+        console.warn('❌ Google Analytics failed to load within timeout');
         resolve(false);
       }
     }, 100);
@@ -80,12 +84,17 @@ export function initializeGoogleAnalytics() {
 
   // Check if GA4 ID is configured
   if (!GA4_MEASUREMENT_ID) {
-    console.warn('Google Analytics not initialized: NEXT_PUBLIC_GA4_MEASUREMENT_ID is not set');
+    console.warn('❌ Google Analytics not initialized: NEXT_PUBLIC_GA4_MEASUREMENT_ID is not set');
     return;
   }
 
   // Check if already initialized
-  if ((window as any).gtag) return;
+  if ((window as any).gtag) {
+    console.log('ℹ️ Google Analytics already initialized');
+    return;
+  }
+
+  console.log('📊 Initializing Google Analytics with ID:', GA4_MEASUREMENT_ID);
 
   // Load Google Analytics script
   const script1 = document.createElement('script');
@@ -102,6 +111,8 @@ export function initializeGoogleAnalytics() {
     gtag('config', '${GA4_MEASUREMENT_ID}');
   `;
   document.head.appendChild(script2);
+
+  console.log('📊 Google Analytics scripts added to page');
 }
 
 /**
@@ -129,9 +140,14 @@ export function trackEvent(eventName: string, eventParams?: Record<string, any>)
   if (!hasConsent()) return;
 
   const gtag = (window as any).gtag;
-  if (!gtag) return;
+  if (!gtag) {
+    console.warn('⚠️ Cannot track event: gtag not available');
+    return;
+  }
 
+  console.log('📤 Tracking event:', eventName, eventParams);
   gtag('event', eventName, eventParams);
+  console.log('✅ Event tracked successfully');
 }
 
 /**
@@ -165,21 +181,39 @@ export function trackPageView(path: string, title?: string) {
  * setUserId('123e4567-e89b-12d3-a456-426614174000')
  */
 export async function setUserId(userId: string | null) {
-  if (typeof window === 'undefined') return;
-  if (!hasConsent()) return;
-  if (!GA4_MEASUREMENT_ID) return;
+  if (typeof window === 'undefined') {
+    console.warn('⚠️ setUserId: Window is undefined');
+    return;
+  }
+
+  if (!hasConsent()) {
+    console.warn('⚠️ setUserId: No consent given');
+    return;
+  }
+
+  if (!GA4_MEASUREMENT_ID) {
+    console.warn('⚠️ setUserId: GA4_MEASUREMENT_ID not configured');
+    return;
+  }
+
+  console.log('🔄 setUserId called with:', userId);
 
   // Wait for GA to be ready
   const isReady = await waitForGoogleAnalytics();
   if (!isReady) {
-    console.warn('Cannot set user ID: Google Analytics not ready');
+    console.warn('❌ Cannot set user ID: Google Analytics not ready');
     return;
   }
 
   const gtag = (window as any).gtag;
-  if (!gtag) return;
+  if (!gtag) {
+    console.warn('❌ gtag function not available');
+    return;
+  }
 
   if (userId) {
+    console.log('📤 Sending user_id to GA4:', userId);
+
     // Set user_id using the recommended method
     gtag('set', 'user_id', userId);
 
@@ -188,10 +222,15 @@ export async function setUserId(userId: string | null) {
       user_id: userId,
     });
 
-    console.log('GA4 User ID set:', userId);
+    console.log('✅ GA4 User ID set successfully:', userId);
+
+    // Log the dataLayer to verify
+    console.log('📊 Current dataLayer:', (window as any).dataLayer);
   } else {
+    console.log('🧹 Clearing user_id from GA4');
     // Clear user_id
     gtag('set', 'user_id', null);
+    console.log('✅ GA4 User ID cleared');
   }
 }
 
@@ -212,17 +251,21 @@ export async function setUserProperties(properties: Record<string, string | numb
   if (typeof window === 'undefined') return;
   if (!hasConsent()) return;
 
+  console.log('🔄 setUserProperties called with:', properties);
+
   // Wait for GA to be ready
   const isReady = await waitForGoogleAnalytics();
   if (!isReady) {
-    console.warn('Cannot set user properties: Google Analytics not ready');
+    console.warn('❌ Cannot set user properties: Google Analytics not ready');
     return;
   }
 
   const gtag = (window as any).gtag;
   if (!gtag) return;
 
+  console.log('📤 Sending user properties to GA4:', properties);
   gtag('set', 'user_properties', properties);
+  console.log('✅ User properties set successfully');
 }
 
 /**
