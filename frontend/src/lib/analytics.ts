@@ -5,6 +5,9 @@
 
 import { trackEvent } from './consent';
 
+// Re-export user tracking functions for convenience
+export { setUserId, setUserProperties, trackUserLogin, clearUserTracking } from './consent';
+
 /**
  * Track when a user selects a race
  */

@@ -4,10 +4,10 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { signUp } from '@/lib/auth';
+import { signUp, trackUserAuthentication } from '@/lib/auth';
 import Header from '@/components/Header';
 import PageViewTracker from '@/components/PageViewTracker';
-import { trackFormStart, trackFormSubmit, trackSignup } from '@/lib/analytics';
+import { trackFormStart, trackFormSubmit } from '@/lib/analytics';
 
 export default function SignUpPage() {
   const t = useTranslations('auth');
@@ -68,7 +68,7 @@ export default function SignUpPage() {
       }
 
       // Proceed with signup
-      await signUp(email, password);
+      const { user } = await signUp(email, password);
 
       // Mark invite as used
       await supabase.rpc('mark_invite_used', { user_email: email });
@@ -77,8 +77,10 @@ export default function SignUpPage() {
       const { setConsentStatus } = await import('@/lib/consent');
       setConsentStatus('accepted');
 
-      // Track successful signup
-      trackSignup('email');
+      // Track user authentication in GA4
+      if (user) {
+        await trackUserAuthentication(user);
+      }
 
       // Show success message
       setSignupEmail(email);

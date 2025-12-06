@@ -1,5 +1,6 @@
 import { supabase } from './supabase';
 import { User } from '@supabase/supabase-js';
+import { trackUserLogin, clearUserTracking } from './consent';
 
 export interface AuthUser extends User {}
 
@@ -26,6 +27,9 @@ export async function signIn(email: string, password: string) {
 export async function signOut() {
   const { error } = await supabase.auth.signOut();
   if (error) throw error;
+
+  // Clear user tracking in GA4
+  clearUserTracking();
 }
 
 export async function getCurrentUser(): Promise<AuthUser | null> {
@@ -59,4 +63,35 @@ export async function updatePassword(newPassword: string) {
 
   if (error) throw error;
   return data;
+}
+
+/**
+ * Check if a user is a beta user (invited via beta_invites table)
+ */
+export async function isBetaUser(email: string): Promise<boolean> {
+  try {
+    const { data, error } = await supabase
+      .rpc('is_email_invited', { check_email: email });
+
+    if (error) {
+      console.error('Error checking beta status:', error);
+      return false;
+    }
+
+    return data === true;
+  } catch (error) {
+    console.error('Error checking beta status:', error);
+    return false;
+  }
+}
+
+/**
+ * Track user authentication in Google Analytics
+ * Call this after successful login or when loading an authenticated user
+ */
+export async function trackUserAuthentication(user: AuthUser) {
+  if (!user.email) return;
+
+  const isBeta = await isBetaUser(user.email);
+  trackUserLogin(user.id, user.email, isBeta);
 }

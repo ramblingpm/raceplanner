@@ -185,6 +185,105 @@ function MyComponent() {
    - **Configure > Events** - See event parameters
    - **Explore > Free Form** - Create custom reports
 
+## Tracking Individual Users (Beta Users)
+
+The app now tracks individual user activity using GA4's User ID feature. This allows you to see exactly when specific users (like your beta testers) last logged in or viewed pages.
+
+### User Properties Tracked
+
+Each logged-in user has the following properties set:
+- **user_id**: The Supabase user ID (automatically tracked by GA4)
+- **beta_user**: "yes" or "no" - indicates if the user is a beta tester
+- **user_email_domain**: The domain of the user's email (e.g., "gmail.com")
+
+#### Setting Up Custom Dimensions (One-Time Setup)
+
+To see user properties in GA4 reports, you need to register them as custom dimensions:
+
+1. Go to **Admin > Data Display > Custom Definitions**
+2. Click **Create custom dimension**
+3. Create the following dimensions:
+   - **Dimension name**: Beta User
+   - **Scope**: User
+   - **User property**: beta_user
+   - Click **Save**
+4. Repeat for:
+   - **Dimension name**: User Email Domain
+   - **Scope**: User
+   - **User property**: user_email_domain
+   - Click **Save**
+
+Note: It may take 24-48 hours for custom dimensions to start populating in reports.
+
+### How to View User Activity in GA4
+
+#### Option 1: User Explorer Report
+
+1. Go to **Reports > User > User Explorer**
+2. You'll see a list of all users with their User IDs
+3. Click on any User ID to see:
+   - Last login time
+   - Last page viewed
+   - All events for that user
+   - Session history
+
+#### Option 2: Create a Custom Report for Beta Users
+
+1. Go to **Explore** in GA4
+2. Click **Create a new exploration**
+3. Choose **Free form** exploration
+4. In **Dimensions**, add:
+   - User ID
+   - Event name
+   - Page location
+   - beta_user (custom user property)
+5. In **Metrics**, add:
+   - Event count
+   - Active users
+6. In **Settings**:
+   - Drag "beta_user" to **Filters**
+   - Set filter to "beta_user = yes"
+   - Drag "User ID" and "Event name" to Rows
+   - Drag "Event count" to Values
+7. Save the exploration as "Beta User Activity"
+
+#### Option 3: Real-Time View for Beta Users
+
+1. Go to **Reports > Realtime**
+2. Look for the "User properties" card
+3. Click on "beta_user" to filter by beta users
+4. See which beta users are currently active
+
+#### Option 4: Create an Audience for Beta Users
+
+1. Go to **Admin > Data Display > Audiences**
+2. Click **New Audience**
+3. Click **Create a custom audience**
+4. Set condition: `beta_user = yes`
+5. Name it "Beta Users"
+6. Save
+
+Now you can filter any report by the "Beta Users" audience to see only beta user activity.
+
+### Quick Query: Last Activity for Each Beta User
+
+To quickly see when each beta user was last active:
+
+1. Go to **Explore > Create a new exploration**
+2. Choose **Free form**
+3. Add dimensions:
+   - User ID
+   - User email domain
+   - beta_user
+4. Add metrics:
+   - Sessions
+   - Event count
+5. Add filters:
+   - beta_user = yes
+6. Sort by "Sessions" descending
+
+This will show you all beta users and their session counts, helping you identify who's most/least active.
+
 ## Event Naming Conventions
 
 Follow these conventions for consistent tracking:

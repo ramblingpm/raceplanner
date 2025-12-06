@@ -4,10 +4,10 @@ import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { signIn } from '@/lib/auth';
+import { signIn, trackUserAuthentication } from '@/lib/auth';
 import Header from '@/components/Header';
 import PageViewTracker from '@/components/PageViewTracker';
-import { trackFormStart, trackFormSubmit, trackLogin } from '@/lib/analytics';
+import { trackFormStart, trackFormSubmit } from '@/lib/analytics';
 
 export default function LoginPage() {
   const t = useTranslations('auth');
@@ -43,10 +43,12 @@ export default function LoginPage() {
     trackFormSubmit('login_form', { page: 'login' });
 
     try {
-      await signIn(email, password);
+      const { user } = await signIn(email, password);
 
-      // Track successful login
-      trackLogin('email');
+      // Track user authentication in GA4
+      if (user) {
+        await trackUserAuthentication(user);
+      }
 
       router.push('/dashboard');
     } catch (err) {

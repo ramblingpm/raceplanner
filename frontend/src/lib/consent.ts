@@ -121,3 +121,89 @@ export function trackPageView(path: string, title?: string) {
     page_title: title,
   });
 }
+
+/**
+ * Set the user ID for tracking specific users across sessions
+ * This allows you to see individual user activity in GA4
+ *
+ * @param userId - The user's unique ID (e.g., from Supabase auth)
+ *
+ * @example
+ * setUserId('123e4567-e89b-12d3-a456-426614174000')
+ */
+export function setUserId(userId: string | null) {
+  if (typeof window === 'undefined') return;
+  if (!hasConsent()) return;
+
+  const gtag = (window as any).gtag;
+  if (!gtag) return;
+
+  if (userId) {
+    gtag('config', 'G-83ZSZHNKMB', {
+      user_id: userId,
+    });
+  }
+}
+
+/**
+ * Set user properties in Google Analytics
+ * These properties persist across sessions and help segment users
+ *
+ * @param properties - Object containing user properties
+ *
+ * @example
+ * setUserProperties({
+ *   beta_user: 'yes',
+ *   user_type: 'premium',
+ *   signup_date: '2025-01-15'
+ * })
+ */
+export function setUserProperties(properties: Record<string, string | number | boolean>) {
+  if (typeof window === 'undefined') return;
+  if (!hasConsent()) return;
+
+  const gtag = (window as any).gtag;
+  if (!gtag) return;
+
+  gtag('set', 'user_properties', properties);
+}
+
+/**
+ * Track user login and set user ID
+ * Call this after successful login/signup
+ *
+ * @param userId - The user's unique ID
+ * @param email - The user's email (for identifying beta users)
+ * @param isBetaUser - Whether the user is a beta user
+ *
+ * @example
+ * trackUserLogin('user-id-123', 'user@example.com', true)
+ */
+export function trackUserLogin(userId: string, email: string, isBetaUser: boolean = false) {
+  if (typeof window === 'undefined') return;
+  if (!hasConsent()) return;
+
+  // Set the user ID for this session
+  setUserId(userId);
+
+  // Set user properties
+  setUserProperties({
+    beta_user: isBetaUser ? 'yes' : 'no',
+    user_email_domain: email.split('@')[1] || 'unknown',
+  });
+
+  // Track the login event
+  trackEvent('login', {
+    method: 'email',
+    beta_user: isBetaUser,
+  });
+}
+
+/**
+ * Clear user tracking (call on logout)
+ */
+export function clearUserTracking() {
+  if (typeof window === 'undefined') return;
+
+  setUserId(null);
+}

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { AuthUser, getCurrentUser, onAuthStateChange } from '@/lib/auth';
+import { AuthUser, getCurrentUser, onAuthStateChange, trackUserAuthentication } from '@/lib/auth';
 
 interface AuthContextType {
   user: AuthUser | null;
@@ -22,12 +22,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     getCurrentUser().then((user) => {
       setUser(user);
       setLoading(false);
+
+      // Track user in GA4 if they're already logged in
+      if (user) {
+        trackUserAuthentication(user);
+      }
     });
 
     // Listen for changes on auth state
     const { data: subscription } = onAuthStateChange((user) => {
       setUser(user);
       setLoading(false);
+
+      // Track user in GA4 when auth state changes
+      if (user) {
+        trackUserAuthentication(user);
+      }
     });
 
     return () => {
