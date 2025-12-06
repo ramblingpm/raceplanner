@@ -1,6 +1,7 @@
 export interface Race {
   id: string;
   name: string;
+  slug: string;
   distance_km: number;
   route_geometry?: {
     type: string;
