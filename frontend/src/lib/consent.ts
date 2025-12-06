@@ -5,6 +5,7 @@
 
 const CONSENT_COOKIE_NAME = 'cookie_consent';
 const CONSENT_COOKIE_MAX_AGE = 365 * 24 * 60 * 60; // 1 year in seconds
+const GA4_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID || '';
 
 export type ConsentStatus = 'accepted' | 'rejected' | 'pending';
 
@@ -52,13 +53,19 @@ export function hasConsent(): boolean {
 export function initializeGoogleAnalytics() {
   if (typeof window === 'undefined') return;
 
+  // Check if GA4 ID is configured
+  if (!GA4_MEASUREMENT_ID) {
+    console.warn('Google Analytics not initialized: NEXT_PUBLIC_GA4_MEASUREMENT_ID is not set');
+    return;
+  }
+
   // Check if already initialized
   if ((window as any).gtag) return;
 
   // Load Google Analytics script
   const script1 = document.createElement('script');
   script1.async = true;
-  script1.src = 'https://www.googletagmanager.com/gtag/js?id=G-83ZSZHNKMB';
+  script1.src = `https://www.googletagmanager.com/gtag/js?id=${GA4_MEASUREMENT_ID}`;
   document.head.appendChild(script1);
 
   // Initialize gtag
@@ -67,7 +74,7 @@ export function initializeGoogleAnalytics() {
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', 'G-83ZSZHNKMB');
+    gtag('config', '${GA4_MEASUREMENT_ID}');
   `;
   document.head.appendChild(script2);
 }
@@ -112,11 +119,12 @@ export function trackEvent(eventName: string, eventParams?: Record<string, any>)
 export function trackPageView(path: string, title?: string) {
   if (typeof window === 'undefined') return;
   if (!hasConsent()) return;
+  if (!GA4_MEASUREMENT_ID) return;
 
   const gtag = (window as any).gtag;
   if (!gtag) return;
 
-  gtag('config', 'G-83ZSZHNKMB', {
+  gtag('config', GA4_MEASUREMENT_ID, {
     page_path: path,
     page_title: title,
   });
@@ -134,12 +142,13 @@ export function trackPageView(path: string, title?: string) {
 export function setUserId(userId: string | null) {
   if (typeof window === 'undefined') return;
   if (!hasConsent()) return;
+  if (!GA4_MEASUREMENT_ID) return;
 
   const gtag = (window as any).gtag;
   if (!gtag) return;
 
   if (userId) {
-    gtag('config', 'G-83ZSZHNKMB', {
+    gtag('config', GA4_MEASUREMENT_ID, {
       user_id: userId,
     });
   }

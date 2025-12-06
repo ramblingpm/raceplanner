@@ -4,10 +4,28 @@
 
 The Race Planner app uses Google Analytics 4 (GA4) to track user interactions and behavior. All tracking respects user cookie consent and GDPR/CCPA compliance.
 
-## Tracking ID
+## Configuration
 
-- **GA4 Measurement ID**: `G-83ZSZHNKMB`
-- Configured in: `src/lib/consent.ts`
+### Environment Variable
+
+The GA4 Measurement ID is configured via environment variable:
+
+- **Environment Variable**: `NEXT_PUBLIC_GA4_MEASUREMENT_ID`
+- **Location**: `frontend/.env`
+- **Example Value**: `G-83ZSZHNKMB`
+
+**Important**: The `NEXT_PUBLIC_` prefix is required for Next.js to expose the variable to the browser.
+
+### Setup
+
+1. Add to your `.env` file:
+   ```
+   NEXT_PUBLIC_GA4_MEASUREMENT_ID=G-83ZSZHNKMB
+   ```
+
+2. For production, add the same variable to your deployment environment (Vercel, Netlify, etc.)
+
+3. The tracking code is in: `src/lib/consent.ts`
 
 ## How It Works
 
@@ -315,9 +333,9 @@ console.log(hasConsent());
 4. Watch events appear in real-time
 
 ### Enable GA Debug Mode:
-Add to browser console:
+Add to browser console (replace with your GA4 ID):
 ```javascript
-window['ga-disable-G-83ZSZHNKMB'] = false;
+window['ga-disable-YOUR-GA4-ID'] = false;
 ```
 
 ## Privacy & Compliance
@@ -362,4 +380,4 @@ For issues or questions:
 ---
 
 **Last Updated**: December 2025
-**GA4 Property ID**: G-83ZSZHNKMB
+**GA4 Configuration**: Set via `NEXT_PUBLIC_GA4_MEASUREMENT_ID` environment variable
