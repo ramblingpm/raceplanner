@@ -8,7 +8,7 @@ export default function CookieConsent() {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    // Only show banner if consent is pending (not decided yet)
+    // Only show modal if consent is pending (not decided yet)
     const status = getConsentStatus();
     if (status === 'pending') {
       // Small delay to avoid flash on page load
@@ -29,37 +29,57 @@ export default function CookieConsent() {
   if (!show) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t-2 border-gray-200 shadow-2xl">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="flex-1">
-            <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-2">
-              🍪 We use cookies
-            </h3>
-            <p className="text-xs sm:text-sm text-gray-600">
+    <>
+      {/* Backdrop overlay - blocks all interaction */}
+      <div
+        className="fixed inset-0 bg-black bg-opacity-60 z-[100] backdrop-blur-sm"
+        aria-hidden="true"
+      />
+
+      {/* Modal */}
+      <div className="fixed inset-0 z-[101] flex items-center justify-center p-4">
+        <div
+          className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-8 md:p-10 animate-in fade-in zoom-in duration-300"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="cookie-consent-title"
+        >
+          <div className="text-center mb-6">
+            <div className="text-6xl mb-4">🍪</div>
+            <h2
+              id="cookie-consent-title"
+              className="text-2xl md:text-3xl font-bold text-gray-900 mb-3"
+            >
+              We use cookies
+            </h2>
+            <p className="text-base md:text-lg text-gray-600 leading-relaxed">
               We use cookies to improve your experience and analyze site usage with Google Analytics.{' '}
-              <Link href="/privacy-policy" className="text-primary-600 hover:text-primary-700 underline">
+              <Link
+                href="/privacy-policy"
+                className="text-gray-900 hover:text-gray-700 underline font-medium"
+              >
                 Learn more in our Privacy Policy
               </Link>
               .
             </p>
           </div>
-          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
+
+          <div className="flex flex-col sm:flex-row gap-4 mt-8">
             <button
               onClick={handleReject}
-              className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 transition-colors"
+              className="flex-1 px-6 py-4 text-base font-semibold text-gray-900 bg-white border-2 border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-4 focus:ring-gray-300 transition-all"
             >
               Reject
             </button>
             <button
               onClick={handleAccept}
-              className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors"
+              className="flex-1 px-6 py-4 text-base font-semibold text-white bg-gray-900 rounded-lg hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-900 focus:ring-offset-2 transition-all"
             >
               Accept All
             </button>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
