@@ -1,16 +1,19 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   getBetaInvites,
   createBetaInvite,
   deleteBetaInvite,
+  approveBetaInvite,
   type BetaInvite,
 } from '@/lib/admin';
 import { useAuth } from '@/components/AuthProvider';
 
 export default function BetaInvitesPage() {
   const { user } = useAuth();
+  const t = useTranslations('admin.betaInvites');
   const [invites, setInvites] = useState<BetaInvite[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -34,7 +37,7 @@ export default function BetaInvitesPage() {
       setInvites(data);
       setError(null);
     } catch (err) {
-      setError('Failed to load beta invites. Please try again.');
+      setError(t('errorLoad'));
       console.error('Error loading invites:', err);
     } finally {
       setLoading(false);
@@ -49,14 +52,14 @@ export default function BetaInvitesPage() {
 
     try {
       await createBetaInvite(email.trim(), invitedBy.trim() || undefined, notes.trim() || undefined);
-      setSuccess('Beta invite created successfully!');
+      setSuccess(t('successCreated'));
       setEmail('');
       setInvitedBy('');
       setNotes('');
       setShowAddForm(false);
       await loadInvites();
     } catch (err: any) {
-      setError(err.message || 'Failed to create beta invite. Please try again.');
+      setError(err.message || t('errorCreate'));
       console.error('Error creating invite:', err);
     } finally {
       setSubmitting(false);
@@ -64,17 +67,37 @@ export default function BetaInvitesPage() {
   }
 
   async function handleDelete(inviteId: string) {
-    if (!confirm('Are you sure you want to delete this beta invite?')) {
+    if (!confirm(t('confirmDelete'))) {
       return;
     }
 
     try {
       await deleteBetaInvite(inviteId);
-      setSuccess('Beta invite deleted successfully!');
+      setSuccess(t('successDeleted'));
       await loadInvites();
     } catch (err: any) {
-      setError(err.message || 'Failed to delete beta invite. Please try again.');
+      setError(err.message || t('errorDelete'));
       console.error('Error deleting invite:', err);
+    }
+  }
+
+  async function handleApprove(inviteId: string) {
+    if (!user?.id) {
+      setError(t('mustBeLoggedIn'));
+      return;
+    }
+
+    if (!confirm(t('confirmApprove'))) {
+      return;
+    }
+
+    try {
+      await approveBetaInvite(inviteId, user.id);
+      setSuccess(t('successApproved'));
+      await loadInvites();
+    } catch (err: any) {
+      setError(err.message || t('errorApprove'));
+      console.error('Error approving invite:', err);
     }
   }
 
@@ -92,16 +115,16 @@ export default function BetaInvitesPage() {
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Beta Invites</h2>
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900">{t('title')}</h2>
           <p className="mt-1 text-sm text-gray-500">
-            Manage beta access invitations
+            {t('subtitle')}
           </p>
         </div>
         <button
           onClick={() => setShowAddForm(!showAddForm)}
           className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors whitespace-nowrap"
         >
-          {showAddForm ? 'Cancel' : '+ Add Invite'}
+          {showAddForm ? t('cancel') : t('addInvite')}
         </button>
       </div>
 
@@ -121,7 +144,7 @@ export default function BetaInvitesPage() {
       {showAddForm && (
         <div className="bg-white rounded-lg shadow-sm p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            Add New Beta Invite
+            {t('addNewTitle')}
           </h3>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -129,7 +152,7 @@ export default function BetaInvitesPage() {
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Email Address *
+                {t('emailLabel')} *
               </label>
               <input
                 type="email"
@@ -138,7 +161,7 @@ export default function BetaInvitesPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900"
-                placeholder="user@example.com"
+                placeholder={t('emailPlaceholder')}
               />
             </div>
 
@@ -147,7 +170,7 @@ export default function BetaInvitesPage() {
                 htmlFor="invitedBy"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Invited By
+                {t('invitedByLabel')}
               </label>
               <input
                 type="text"
@@ -155,7 +178,7 @@ export default function BetaInvitesPage() {
                 value={invitedBy}
                 onChange={(e) => setInvitedBy(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900"
-                placeholder="your@email.com or name"
+                placeholder={t('invitedByPlaceholder')}
               />
             </div>
 
@@ -164,7 +187,7 @@ export default function BetaInvitesPage() {
                 htmlFor="notes"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Notes
+                {t('notesLabel')}
               </label>
               <textarea
                 id="notes"
@@ -172,7 +195,7 @@ export default function BetaInvitesPage() {
                 onChange={(e) => setNotes(e.target.value)}
                 rows={3}
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900"
-                placeholder="Optional notes about this invite..."
+                placeholder={t('notesPlaceholder')}
               />
             </div>
 
@@ -182,7 +205,7 @@ export default function BetaInvitesPage() {
                 disabled={submitting}
                 className="w-full sm:w-auto px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
-                {submitting ? 'Creating...' : 'Create Invite'}
+                {submitting ? t('creating') : t('createInvite')}
               </button>
               <button
                 type="button"
@@ -194,7 +217,7 @@ export default function BetaInvitesPage() {
                 }}
                 className="w-full sm:w-auto px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 transition-colors"
               >
-                Cancel
+                {t('cancel')}
               </button>
             </div>
           </form>
@@ -204,10 +227,10 @@ export default function BetaInvitesPage() {
       {/* Invites Table */}
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         {loading ? (
-          <div className="p-8 text-center text-gray-500">Loading invites...</div>
+          <div className="p-8 text-center text-gray-500">{t('loading')}</div>
         ) : invites.length === 0 ? (
           <div className="p-8 text-center text-gray-500">
-            No beta invites yet. Click &quot;Add Invite&quot; to create one.
+            {t('noInvites')}
           </div>
         ) : (
           <>
@@ -217,22 +240,22 @@ export default function BetaInvitesPage() {
                 <thead className="bg-gray-50 border-b border-gray-200">
                   <tr>
                     <th className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Email
+                      {t('email')}
                     </th>
                     <th className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Status
+                      {t('status')}
                     </th>
                     <th className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Invited By
+                      {t('invitedBy')}
                     </th>
                     <th className="hidden lg:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Notes
+                      {t('notes')}
                     </th>
                     <th className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Created
+                      {t('created')}
                     </th>
                     <th className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Actions
+                      {t('actions')}
                     </th>
                   </tr>
                 </thead>
@@ -247,11 +270,15 @@ export default function BetaInvitesPage() {
                       <td className="px-4 lg:px-6 py-4 whitespace-nowrap">
                         {invite.used ? (
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                            Used
+                            {t('statusUsed')}
+                          </span>
+                        ) : invite.approved ? (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            {t('statusApproved')}
                           </span>
                         ) : (
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                            Pending
+                            {t('statusPendingApproval')}
                           </span>
                         )}
                       </td>
@@ -266,12 +293,22 @@ export default function BetaInvitesPage() {
                         <span className="lg:hidden">{new Date(invite.created_at).toLocaleDateString()}</span>
                       </td>
                       <td className="px-4 lg:px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <button
-                          onClick={() => handleDelete(invite.id)}
-                          className="text-red-600 hover:text-red-900"
-                        >
-                          Delete
-                        </button>
+                        <div className="flex gap-3">
+                          {!invite.approved && !invite.used && (
+                            <button
+                              onClick={() => handleApprove(invite.id)}
+                              className="text-blue-600 hover:text-blue-900 font-medium"
+                            >
+                              {t('approve')}
+                            </button>
+                          )}
+                          <button
+                            onClick={() => handleDelete(invite.id)}
+                            className="text-red-600 hover:text-red-900"
+                          >
+                            {t('delete')}
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -295,31 +332,45 @@ export default function BetaInvitesPage() {
                     <div className="ml-2">
                       {invite.used ? (
                         <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                          Used
+                          {t('statusUsed')}
+                        </span>
+                      ) : invite.approved ? (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                          {t('statusApproved')}
                         </span>
                       ) : (
                         <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                          Pending
+                          {t('statusPendingApproval')}
                         </span>
                       )}
                     </div>
                   </div>
                   {invite.invited_by && (
                     <div className="text-xs text-gray-500 mb-1">
-                      <span className="font-medium">Invited by:</span> {invite.invited_by}
+                      <span className="font-medium">{t('invitedBy')}:</span> {invite.invited_by}
                     </div>
                   )}
                   {invite.notes && (
                     <div className="text-xs text-gray-500 mb-2">
-                      <span className="font-medium">Notes:</span> {invite.notes}
+                      <span className="font-medium">{t('notes')}:</span> {invite.notes}
                     </div>
                   )}
-                  <button
-                    onClick={() => handleDelete(invite.id)}
-                    className="text-sm text-red-600 hover:text-red-900 font-medium"
-                  >
-                    Delete
-                  </button>
+                  <div className="flex gap-3">
+                    {!invite.approved && !invite.used && (
+                      <button
+                        onClick={() => handleApprove(invite.id)}
+                        className="text-sm text-blue-600 hover:text-blue-900 font-medium"
+                      >
+                        {t('approve')}
+                      </button>
+                    )}
+                    <button
+                      onClick={() => handleDelete(invite.id)}
+                      className="text-sm text-red-600 hover:text-red-900 font-medium"
+                    >
+                      {t('delete')}
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -328,23 +379,29 @@ export default function BetaInvitesPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-white rounded-lg shadow-sm p-4">
-          <div className="text-sm text-gray-500">Total Invites</div>
+          <div className="text-sm text-gray-500">{t('totalInvites')}</div>
           <div className="text-2xl font-semibold text-gray-900 mt-1">
             {invites.length}
           </div>
         </div>
         <div className="bg-white rounded-lg shadow-sm p-4">
-          <div className="text-sm text-gray-500">Used</div>
-          <div className="text-2xl font-semibold text-green-600 mt-1">
-            {invites.filter((i) => i.used).length}
+          <div className="text-sm text-gray-500">{t('pendingApproval')}</div>
+          <div className="text-2xl font-semibold text-yellow-600 mt-1">
+            {invites.filter((i) => !i.approved && !i.used).length}
           </div>
         </div>
         <div className="bg-white rounded-lg shadow-sm p-4">
-          <div className="text-sm text-gray-500">Pending</div>
-          <div className="text-2xl font-semibold text-yellow-600 mt-1">
-            {invites.filter((i) => !i.used).length}
+          <div className="text-sm text-gray-500">{t('approved')}</div>
+          <div className="text-2xl font-semibold text-blue-600 mt-1">
+            {invites.filter((i) => i.approved && !i.used).length}
+          </div>
+        </div>
+        <div className="bg-white rounded-lg shadow-sm p-4">
+          <div className="text-sm text-gray-500">{t('used')}</div>
+          <div className="text-2xl font-semibold text-green-600 mt-1">
+            {invites.filter((i) => i.used).length}
           </div>
         </div>
       </div>

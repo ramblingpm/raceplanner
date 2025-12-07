@@ -94,6 +94,28 @@ export async function deleteBetaInvite(inviteId: string) {
   }
 }
 
+/**
+ * Approve a beta invite (admin only)
+ */
+export async function approveBetaInvite(inviteId: string, adminUserId: string) {
+  try {
+    const { data, error } = await supabase.rpc('approve_beta_invite', {
+      invite_id: inviteId,
+      admin_user_id: adminUserId,
+    });
+
+    if (error) {
+      console.error('Error approving beta invite:', error);
+      throw error;
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error approving beta invite:', error);
+    throw error;
+  }
+}
+
 export interface BetaInvite {
   id: string;
   email: string;
@@ -101,6 +123,9 @@ export interface BetaInvite {
   notes: string | null;
   used: boolean;
   used_at: string | null;
+  approved: boolean;
+  approved_at: string | null;
+  approved_by: string | null;
   created_at: string;
   updated_at: string;
 }
