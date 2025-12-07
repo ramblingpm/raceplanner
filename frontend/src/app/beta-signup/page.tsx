@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
+import { Turnstile } from '@marsidev/react-turnstile';
 import Header from '@/components/Header';
 import PageViewTracker from '@/components/PageViewTracker';
 import { trackFormStart, trackFormSubmit } from '@/lib/analytics';
@@ -17,6 +18,7 @@ export default function BetaSignupPage() {
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
   const [formStarted, setFormStarted] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string>('');
 
   const handleFormStart = () => {
     if (!formStarted) {
@@ -62,7 +64,10 @@ export default function BetaSignupPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email: email.toLowerCase() }),
+        body: JSON.stringify({
+          email: email.toLowerCase(),
+          turnstileToken: turnstileToken
+        }),
       }).catch((emailError) => {
         // Log but don't show error to user - emails are best-effort
         console.error('Failed to send beta signup emails:', emailError);
@@ -222,9 +227,28 @@ export default function BetaSignupPage() {
               </div>
             </div>
 
+            {/* Turnstile Bot Protection */}
+            <div className="flex justify-center">
+              <Turnstile
+                siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'}
+                onSuccess={(token) => {
+                  console.log('✅ Turnstile token received');
+                  setTurnstileToken(token);
+                }}
+                onError={() => {
+                  console.error('❌ Turnstile error');
+                  setTurnstileToken('');
+                }}
+                onExpire={() => {
+                  console.log('⏱️ Turnstile token expired');
+                  setTurnstileToken('');
+                }}
+              />
+            </div>
+
             <button
               type="submit"
-              disabled={loading || !acceptedTerms || !acceptedPrivacy}
+              disabled={loading || !acceptedTerms || !acceptedPrivacy || !turnstileToken}
               className="w-full bg-gray-900 text-white py-3 px-4 rounded-lg hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold"
             >
               {loading ? t('submitting') : t('requestAccess')}

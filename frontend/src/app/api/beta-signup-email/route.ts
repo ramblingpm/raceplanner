@@ -1,19 +1,32 @@
 import { Resend } from 'resend';
 import { NextRequest, NextResponse } from 'next/server';
+import { verifyTurnstileToken } from '@/lib/turnstile';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: NextRequest) {
   try {
-
-
-    const { email } = await request.json();
+    const { email, turnstileToken } = await request.json();
 
 
     if (!email) {
       console.log('❌ No email provided');
       return NextResponse.json({ error: 'Email is required' }, { status: 400 });
     }
+
+    // Verify Turnstile token
+    if (!turnstileToken) {
+      console.log('❌ No Turnstile token provided');
+      return NextResponse.json({ error: 'Bot verification required' }, { status: 400 });
+    }
+
+    const isValidToken = await verifyTurnstileToken(turnstileToken);
+    if (!isValidToken) {
+      console.log('❌ Invalid Turnstile token');
+      return NextResponse.json({ error: 'Bot verification failed' }, { status: 403 });
+    }
+
+    console.log('✅ Turnstile verification passed');
 
     const fromEmail = process.env.EMAIL_FROM || 'onboarding@resend.dev';
     const adminEmail = process.env.ADMIN_EMAIL || 'admin@raceplanner.com';
