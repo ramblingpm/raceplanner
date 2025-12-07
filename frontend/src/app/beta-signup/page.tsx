@@ -55,6 +55,19 @@ export default function BetaSignupPage() {
         throw rpcError;
       }
 
+      // Send confirmation emails (to user and admin)
+      // Don't block success UI on email sending - it's best-effort
+      fetch('/api/beta-signup-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: email.toLowerCase() }),
+      }).catch((emailError) => {
+        // Log but don't show error to user - emails are best-effort
+        console.error('Failed to send beta signup emails:', emailError);
+      });
+
       // Always show success to prevent information disclosure
       setSuccess(true);
     } catch (err) {
