@@ -18,6 +18,9 @@ CREATE INDEX IF NOT EXISTS idx_email_action_tokens_expires_at ON email_action_to
 -- Enable RLS
 ALTER TABLE email_action_tokens ENABLE ROW LEVEL SECURITY;
 
+-- Drop existing policy if it exists (for idempotent migrations)
+DROP POLICY IF EXISTS "No direct access to email action tokens" ON email_action_tokens;
+
 -- RLS policies (tokens should only be accessible via RPC functions)
 CREATE POLICY "No direct access to email action tokens"
   ON email_action_tokens
