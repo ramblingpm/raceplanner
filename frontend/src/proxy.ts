@@ -30,7 +30,7 @@ function getLocaleFromHeader(request: NextRequest): Locale {
   return defaultLocale;
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const cookieLocale = request.cookies.get('NEXT_LOCALE')?.value;
 
   let locale: string;
