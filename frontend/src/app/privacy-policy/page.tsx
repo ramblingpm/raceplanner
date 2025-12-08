@@ -13,7 +13,7 @@ export default function PrivacyPolicyPage() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         <div className="bg-white rounded-lg shadow-sm p-6 sm:p-8">
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">Privacy Policy</h1>
-          <p className="text-sm text-gray-500 mb-8">Last updated: {new Date().toLocaleDateString()}</p>
+          <p className="text-sm text-gray-500 mb-8">Last updated: {new Date().toLocaleDateString()} . English version only.</p>
 
           <div className="prose prose-sm sm:prose max-w-none space-y-6">
             <section>
@@ -89,6 +89,13 @@ export default function PrivacyPolicyPage() {
                 <li>
                   <strong>Google Analytics:</strong> Usage analytics (with consent) (
                   <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-primary-600 hover:text-primary-700 underline">
+                    Privacy Policy
+                  </a>
+                  )
+                </li>
+                                <li>
+                  <strong>Cloudflare Turnstile:</strong> Bot-protection service used to distinguish humans from automated traffic. Cloudflare processes limited technical data (such as IP address and browser information) solely for security purposes. (
+                  <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener noreferrer" className="text-primary-600 hover:text-primary-700 underline">
                     Privacy Policy
                   </a>
                   )

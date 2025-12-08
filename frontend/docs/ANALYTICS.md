@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Race Planner app uses Google Analytics 4 (GA4) to track user interactions and behavior. All tracking respects user cookie consent and GDPR/CCPA compliance.
+The app uses Google Analytics 4 (GA4) to track user interactions and behavior. All tracking respects user cookie consent and GDPR/CCPA compliance.
 
 ## Configuration
 
@@ -196,7 +196,7 @@ function MyComponent() {
 ## Viewing Analytics Data
 
 1. Log in to [Google Analytics](https://analytics.google.com/)
-2. Select your Race Planner property
+2. Select your app property
 3. Navigate to:
    - **Reports > Engagement > Events** - View all tracked events
    - **Reports > Engagement > Conversions** - Track conversion goals
