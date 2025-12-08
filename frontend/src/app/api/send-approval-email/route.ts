@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
     // In the future, you could store user's preferred locale in beta_invites table
     const locale = defaultLocale;
     const validLocale = locales.includes(locale) ? locale : defaultLocale;
-    const messages = (await import(`../../../../../messages/${validLocale}.json`)).default;
+    const messages = (await import(`../../../../messages/${validLocale}.json`)).default;
     const appName = messages.common.appName;
 
     const fromEmail = process.env.EMAIL_FROM || 'onboarding@resend.dev';
