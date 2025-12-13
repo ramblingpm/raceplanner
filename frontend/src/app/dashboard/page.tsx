@@ -6,9 +6,10 @@ import { useRouter } from 'next/navigation';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import Header from '@/components/Header';
 import PageViewTracker from '@/components/PageViewTracker';
+import WizardModal from '@/components/wizard/WizardModal';
 import { supabase } from '@/lib/supabase';
 import { Race } from '@/types';
-import { DocumentDuplicateIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { DocumentDuplicateIcon, TrashIcon, PlusIcon } from '@heroicons/react/24/outline';
 import {
   trackPlanCopied,
   trackPlanDeleted,
@@ -23,6 +24,7 @@ export default function DashboardPage() {
   const [races, setRaces] = useState<Race[]>([]);
   const [loading, setLoading] = useState(true);
   const [savedCalculations, setSavedCalculations] = useState<any[]>([]);
+  const [isWizardOpen, setIsWizardOpen] = useState(false);
 
   useEffect(() => {
     fetchRaces();
@@ -115,6 +117,15 @@ export default function DashboardPage() {
     router.push(`/${race.slug}`);
   };
 
+  const handleOpenWizard = () => {
+    setIsWizardOpen(true);
+  };
+
+  const handleWizardComplete = () => {
+    // Refresh saved calculations
+    fetchSavedCalculations();
+  };
+
   return (
     <ProtectedRoute>
       <PageViewTracker pageName="Dashboard" />
@@ -137,7 +148,16 @@ export default function DashboardPage() {
                 <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
                   {t('welcome')} {tCommon('appName')}
                 </h1>
-                <p className="text-xl text-gray-600">{t('welcomeSubtitle')}</p>
+                <p className="text-xl text-gray-600 mb-6">{t('welcomeSubtitle')}</p>
+
+                {/* Create Plan Button */}
+                <button
+                  onClick={handleOpenWizard}
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors shadow-md hover:shadow-lg"
+                >
+                  <PlusIcon className="w-5 h-5" />
+                  Create New Plan
+                </button>
               </div>
 
               {/* Race Cards */}
@@ -313,6 +333,13 @@ export default function DashboardPage() {
           )}
         </main>
       </div>
+
+      {/* Wizard Modal */}
+      <WizardModal
+        isOpen={isWizardOpen}
+        onClose={() => setIsWizardOpen(false)}
+        onComplete={handleWizardComplete}
+      />
     </ProtectedRoute>
   );
 }

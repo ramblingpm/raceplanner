@@ -8,6 +8,7 @@ import { ProtectedRoute } from '@/components/ProtectedRoute';
 import Header from '@/components/Header';
 import RaceCalculator from '@/components/RaceCalculator';
 import Modal from '@/components/Modal';
+import WizardModal from '@/components/wizard/WizardModal';
 import PageViewTracker from '@/components/PageViewTracker';
 import { supabase } from '@/lib/supabase';
 import { Race } from '@/types';
@@ -51,6 +52,7 @@ export default function RacePage() {
   const [selectedFeedZones, setSelectedFeedZones] = useState<any[]>([]);
   const [availableFeedZones, setAvailableFeedZones] = useState<any[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [calculationResult, setCalculationResult] = useState<{
     finishTime: Date;
     requiredSpeedKmh: number;
@@ -154,10 +156,13 @@ export default function RacePage() {
 
   const handleAddPlan = () => {
     setEditingCalculation(null);
-    setCalculationResult(null);
-    setPlanDetails(null);
-    setIsModalOpen(true);
+    setIsWizardOpen(true);
     trackAddPlanModalOpened(savedCalculations.length === 0 ? 'empty_state' : 'race_page_header');
+  };
+
+  const handleWizardComplete = () => {
+    // Refresh saved calculations
+    fetchSavedCalculations();
   };
 
   const handleCloseModal = () => {
@@ -586,6 +591,14 @@ export default function RacePage() {
               </div>
             </div>
           </Modal>
+
+          {/* Wizard Modal for New Plans */}
+          <WizardModal
+            isOpen={isWizardOpen}
+            onClose={() => setIsWizardOpen(false)}
+            onComplete={handleWizardComplete}
+            initialRace={race || undefined}
+          />
         </main>
       </div>
     </ProtectedRoute>

@@ -176,3 +176,51 @@ export function trackFormStart(formName: string, additionalData?: Record<string,
     ...additionalData,
   });
 }
+
+/**
+ * Wizard Analytics
+ */
+export function trackWizardOpened(source: 'dashboard' | 'race_page') {
+  trackEvent('wizard_opened', {
+    source,
+  });
+}
+
+export function trackWizardStepViewed(step: number) {
+  trackEvent('wizard_step_viewed', {
+    step,
+  });
+}
+
+export function trackWizardStepCompleted(step: number) {
+  trackEvent('wizard_step_completed', {
+    step,
+  });
+}
+
+export function trackWizardRaceSelected(raceName: string, raceId: string) {
+  trackEvent('wizard_race_selected', {
+    race_name: raceName,
+    race_id: raceId,
+  });
+}
+
+export function trackWizardAbandoned(step: number, reason: 'cancelled' | 'closed') {
+  trackEvent('wizard_abandoned', {
+    step,
+    reason,
+  });
+}
+
+export function trackWizardCompleted(totalTimeSeconds: number, raceName: string) {
+  trackEvent('wizard_completed', {
+    total_time_seconds: totalTimeSeconds,
+    race_name: raceName,
+  });
+}
+
+export function trackWizardEditClicked(section: 'race' | 'time' | 'feed_zones') {
+  trackEvent('wizard_edit_clicked', {
+    section,
+  });
+}
