@@ -13,6 +13,7 @@ import {
   trackPlanCopied,
   trackPlanDeleted,
   trackAddPlanModalOpened,
+  trackButtonClick,
 } from '@/lib/analytics';
 
 export default function DashboardPage() {
@@ -110,6 +111,7 @@ export default function DashboardPage() {
   };
 
   const handleSelectRace = (race: Race) => {
+    trackButtonClick('select_race', 'dashboard', { race_name: race.name });
     router.push(`/${race.slug}`);
   };
 

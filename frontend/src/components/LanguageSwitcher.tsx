@@ -2,11 +2,13 @@
 
 import { useLocale } from 'next-intl';
 import { locales, localeNames, Locale } from '@/i18n/config';
+import { trackLanguageChanged } from '@/lib/analytics';
 
 export default function LanguageSwitcher() {
   const currentLocale = useLocale() as Locale;
 
   const handleLocaleChange = (newLocale: Locale) => {
+    trackLanguageChanged(currentLocale, newLocale);
     // Set cookie and reload
     document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000`; // 1 year
     window.location.reload();

@@ -8,6 +8,7 @@ import { useTranslations, useLocale } from 'next-intl';
 import { ArrowRightStartOnRectangleIcon, UserCircleIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
 import { locales, localeNames, Locale } from '@/i18n/config';
 import Link from 'next/link';
+import { trackLanguageChanged } from '@/lib/analytics';
 
 export default function UserMenu() {
   const { user } = useAuth();
@@ -23,6 +24,7 @@ export default function UserMenu() {
   };
 
   const handleLocaleChange = (newLocale: Locale) => {
+    trackLanguageChanged(currentLocale, newLocale);
     document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000`;
     window.location.reload();
   };

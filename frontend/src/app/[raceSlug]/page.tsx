@@ -20,6 +20,8 @@ import {
   trackPlanCopied,
   trackAddPlanModalOpened,
   trackModalCancelled,
+  trackMapViewed,
+  trackButtonClick,
 } from '@/lib/analytics';
 
 // Dynamically import RaceMap with no SSR to avoid Leaflet window errors
@@ -73,6 +75,13 @@ export default function RacePage() {
       trackRaceSelected(race.name, race.id);
     }
   }, [race]);
+
+  // Track when modal opens with map
+  useEffect(() => {
+    if (isModalOpen && race) {
+      trackMapViewed(race.name);
+    }
+  }, [isModalOpen, race?.name]);
 
   const fetchRace = async () => {
     try {
@@ -238,7 +247,10 @@ export default function RacePage() {
         <main className="container mx-auto px-4 py-8">
           {/* Back Button */}
           <button
-            onClick={() => router.push('/dashboard')}
+            onClick={() => {
+              trackButtonClick('back_to_dashboard', 'race_page', { race_name: race?.name });
+              router.push('/dashboard');
+            }}
             className="mb-6 text-primary-600 hover:text-primary-700 font-medium flex items-center gap-2"
           >
             ← {t('backToRaces')}

@@ -6,7 +6,7 @@ import { calculateRace } from '@/utils/calculations';
 import { Race, FeedZone } from '@/types';
 import { getFeedZonesByRace, savePlanFeedZones, getPlanFeedZones, calculateTotalFeedZoneTime } from '@/lib/feedZones';
 import FeedZoneSelector from './FeedZoneSelector';
-import { trackPlanCreated, trackPlanUpdated } from '@/lib/analytics';
+import { trackPlanCreated, trackPlanUpdated, trackButtonClick } from '@/lib/analytics';
 
 interface RaceCalculatorProps {
   race: Race;
@@ -186,6 +186,16 @@ export default function RaceCalculator({
   };
 
   const handleSave = async () => {
+    // Track save button click
+    trackButtonClick(
+      editingCalculation ? 'save_plan_edit' : 'save_plan_create',
+      'race_calculator',
+      {
+        plan_label: label || 'Untitled',
+        race_name: race.name
+      }
+    );
+
     // Calculate first if no result
     if (!result) {
       handleCalculate();
