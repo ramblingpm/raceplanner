@@ -8,7 +8,7 @@ import { getFeedZonesByRace } from '@/lib/feedZones';
 import { FeedZone } from '@/types';
 
 export default function FeedZonesStep() {
-  const t = useTranslations('raceCalculator');
+  const t = useTranslations('wizard');
   const { state, updatePlanData, nextStep } = useWizard();
   const { race, planData } = state;
   const [availableFeedZones, setAvailableFeedZones] = useState<FeedZone[]>([]);
@@ -84,7 +84,7 @@ export default function FeedZonesStep() {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading feed zones...</p>
+          <p className="text-gray-600">{t('loadingFeedZones')}</p>
         </div>
       </div>
     );
@@ -95,10 +95,10 @@ export default function FeedZonesStep() {
       {/* Header */}
       <div className="mb-6">
         <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
-          {t('addFeedZones')} <span className="text-gray-500 text-xl font-normal">(Optional)</span>
+          {t('addFeedZones')} <span className="text-gray-500 text-xl font-normal">({t('optional')})</span>
         </h2>
         <p className="text-sm sm:text-base text-gray-600">
-          Plan your pit stops for food and drinks
+          {t('feedZonesPitStopsDescription')}
         </p>
       </div>
 
@@ -108,11 +108,11 @@ export default function FeedZonesStep() {
           <div className="flex items-center gap-2 mb-1">
             <span className="text-2xl">🍔</span>
             <h3 className="text-sm font-semibold text-amber-900">
-              {planData.selectedFeedZones.length} Feed Zone{planData.selectedFeedZones.length !== 1 ? 's' : ''}
+              {planData.selectedFeedZones.length} {planData.selectedFeedZones.length !== 1 ? t('feedZoneCountPlural') : t('feedZoneCount')}
             </h3>
           </div>
           <p className="text-sm text-amber-700">
-            Total stop time: <span className="font-semibold">{totalMinutes} minutes</span>
+            {t('totalStopTime')} <span className="font-semibold">{totalMinutes} {t('minutes')}</span>
           </p>
         </div>
       )}
@@ -126,11 +126,11 @@ export default function FeedZonesStep() {
                 <div className="flex-1">
                   <h4 className="font-semibold text-gray-900">{zone.name}</h4>
                   <p className="text-sm text-gray-600">
-                    {zone.distance_from_start_km} km from start
+                    {zone.distance_from_start_km} {t('kmFromStart')}
                   </p>
                   <div className="mt-3">
                     <label className="block text-xs font-medium text-gray-700 mb-1">
-                      Stop duration (minutes)
+                      {t('stopDurationMinutes')}
                     </label>
                     <input
                       type="number"
@@ -145,7 +145,7 @@ export default function FeedZonesStep() {
                 <button
                   onClick={() => handleRemoveFeedZone(zone.feed_zone_id)}
                   className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                  aria-label="Remove feed zone"
+                  aria-label={t('removeFeedZone')}
                 >
                   <TrashIcon className="w-5 h-5" />
                 </button>
@@ -159,7 +159,7 @@ export default function FeedZonesStep() {
       {unselectedZones.length > 0 && (
         <div className="mb-6">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            {planData.selectedFeedZones.length > 0 ? 'Add more feed zones' : 'Add a feed zone'}
+            {planData.selectedFeedZones.length > 0 ? t('addMoreFeedZones') : t('addFeedZone')}
           </label>
           <select
             onChange={(e) => {
@@ -173,7 +173,7 @@ export default function FeedZonesStep() {
             defaultValue=""
           >
             <option value="" disabled>
-              - select feed zone -
+              {t('selectFeedZone')}
             </option>
             {unselectedZones.map((zone) => (
               <option key={zone.id} value={zone.id}>
@@ -187,7 +187,7 @@ export default function FeedZonesStep() {
       {/* Empty State */}
       {availableFeedZones.length === 0 && (
         <div className="text-center py-12 mb-6">
-          <p className="text-gray-500">No feed zones available for this race</p>
+          <p className="text-gray-500">{t('noFeedZones')}</p>
         </div>
       )}
 
@@ -198,14 +198,14 @@ export default function FeedZonesStep() {
             onClick={handleSkip}
             className="w-full py-3 px-6 rounded-lg font-semibold bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
           >
-            Skip (No Feed Zones)
+            {t('skipNoFeedZones')}
           </button>
         ) : (
           <button
             onClick={handleNext}
             className="w-full py-3 px-6 rounded-lg font-semibold text-white bg-primary-600 hover:bg-primary-700 transition-colors"
           >
-            Next: Review Plan
+            {t('nextReviewPlan')}
           </button>
         )}
       </div>

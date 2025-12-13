@@ -1,19 +1,21 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useWizard } from './WizardContext';
 import { CheckIcon } from '@heroicons/react/24/solid';
 
-const steps = [
-  { number: 1, label: 'Select Race', shortLabel: 'Race' },
-  { number: 2, label: 'Plan Time', shortLabel: 'Time' },
-  { number: 3, label: 'Feed Zones', shortLabel: 'Stops' },
-  { number: 4, label: 'Review', shortLabel: 'Review' },
-  { number: 5, label: 'Save Plan', shortLabel: 'Save' },
-];
-
 export default function WizardStepIndicator() {
+  const t = useTranslations('wizard');
   const { state, goToStep, canGoToStep, isStepComplete } = useWizard();
   const { currentStep } = state;
+
+  const steps = [
+    { number: 1, label: t('selectRace'), shortLabel: t('selectRaceShort') },
+    { number: 2, label: t('planTime'), shortLabel: t('planTimeShort') },
+    { number: 3, label: t('feedZones'), shortLabel: t('feedZonesShort') },
+    { number: 4, label: t('review'), shortLabel: t('reviewShort') },
+    { number: 5, label: t('savePlan'), shortLabel: t('savePlanShort') },
+  ];
 
   return (
     <>

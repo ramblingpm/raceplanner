@@ -5,7 +5,7 @@ import { useTranslations, useLocale } from 'next-intl';
 import { useWizard } from '../WizardContext';
 
 export default function PlanTimeStep() {
-  const t = useTranslations('raceCalculator');
+  const t = useTranslations('wizard');
   const locale = useLocale();
   const { state, updatePlanData, nextStep, calculateResults } = useWizard();
   const { race, planData } = state;
@@ -52,7 +52,7 @@ export default function PlanTimeStep() {
   if (!race) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <p className="text-gray-600">Please select a race first</p>
+        <p className="text-gray-600">{t('selectRaceFirst')}</p>
       </div>
     );
   }
@@ -62,17 +62,17 @@ export default function PlanTimeStep() {
       {/* Header */}
       <div className="mb-6">
         <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
-          Plan Your Time
+          {t('planYourTime')}
         </h2>
         <p className="text-sm sm:text-base text-gray-600 mb-1">
-          For: <span className="font-semibold text-gray-900">{race.name}</span>
+          {t('for')} <span className="font-semibold text-gray-900">{race.name}</span>
         </p>
         <p className="text-sm text-gray-500">
           {race.distance_km} km
         </p>
                   {allowedDates && (
             <p className="mt-2 text-xs text-gray-500">
-              Race dates: {new Date(allowedDates.min).toLocaleDateString(locale, { month: 'short', day: 'numeric', year: 'numeric' })} - {new Date(allowedDates.max).toLocaleDateString(locale, { month: 'short', day: 'numeric', year: 'numeric' })}
+              {t('raceDates')} {new Date(allowedDates.min).toLocaleDateString(locale, { month: 'short', day: 'numeric', year: 'numeric' })} - {new Date(allowedDates.max).toLocaleDateString(locale, { month: 'short', day: 'numeric', year: 'numeric' })}
             </p>
           )}
       </div>
@@ -160,13 +160,13 @@ export default function PlanTimeStep() {
         {state.calculatedResults && (
           <div className="bg-primary-50 border border-primary-200 rounded-lg p-4">
             <h3 className="text-sm font-medium text-primary-900 mb-1">
-              Estimated Finish Time
+              {t('estimatedFinishTime')}
             </h3>
             <p className="text-lg font-semibold text-primary-700">
               {formatFinishTime()}
             </p>
             <p className="text-sm text-primary-600 mt-1">
-              Required pace: {state.calculatedResults.requiredSpeedKmh.toFixed(1)} km/h
+              {t('requiredPace')} {state.calculatedResults.requiredSpeedKmh.toFixed(1)} km/h
             </p>
           </div>
         )}
@@ -178,7 +178,7 @@ export default function PlanTimeStep() {
           onClick={handleNext}
           className="w-full py-3 px-6 rounded-lg font-semibold text-white transition-colors bg-primary-600 hover:bg-primary-700"
         >
-          Next: Feed Zones (Optional)
+          {t('nextFeedZones')}
         </button>
       </div>
     </div>

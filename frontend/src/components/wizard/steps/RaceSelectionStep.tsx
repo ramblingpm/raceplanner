@@ -55,7 +55,7 @@ export default function RaceSelectionStep() {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading races...</p>
+          <p className="text-gray-600">{t('loadingRaces')}</p>
         </div>
       </div>
     );
@@ -66,10 +66,10 @@ export default function RaceSelectionStep() {
       {/* Header */}
       <div className="mb-6">
         <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
-          Select a Race
+          {t('selectRaceTitle')}
         </h2>
         <p className="text-sm sm:text-base text-gray-600">
-          Choose the race you want to create a plan for
+          {t('selectRaceDescription')}
         </p>
       </div>
 
@@ -80,7 +80,7 @@ export default function RaceSelectionStep() {
             <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input
               type="text"
-              placeholder="Search races..."
+              placeholder={t('searchRaces')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
@@ -123,7 +123,7 @@ export default function RaceSelectionStep() {
                 </span>
                 {selectedRace?.id === race.id && (
                   <span className="text-xs font-semibold text-primary-600 bg-primary-50 px-2 py-1 rounded">
-                    Selected
+                    {t('selected')}
                   </span>
                 )}
               </div>
@@ -136,7 +136,7 @@ export default function RaceSelectionStep() {
       {filteredRaces.length === 0 && (
         <div className="text-center py-12">
           <p className="text-gray-500">
-            {searchQuery ? 'No races found matching your search' : 'No races available'}
+            {searchQuery ? t('noRacesFoundSearch') : t('noRacesAvailable')}
           </p>
         </div>
       )}
@@ -152,7 +152,7 @@ export default function RaceSelectionStep() {
               : 'bg-gray-300 cursor-not-allowed'
           }`}
         >
-          Next: Plan Time
+          {t('nextPlanTime')}
         </button>
       </div>
     </div>
