@@ -71,6 +71,12 @@ export async function POST(request: NextRequest) {
       `,
     });
 
+    console.log('📧 User email result:', JSON.stringify(userEmailResult, null, 2));
+
+    if (userEmailResult.error) {
+      console.error('❌ User email error:', userEmailResult.error);
+    }
+
 
 
     // Get the beta invite for this email to create action tokens
@@ -139,6 +145,11 @@ export async function POST(request: NextRequest) {
       `,
     });
 
+    console.log('📧 Admin email result:', JSON.stringify(adminEmailResult, null, 2));
+
+    if (adminEmailResult.error) {
+      console.error('❌ Admin email error:', adminEmailResult.error);
+    }
 
     return NextResponse.json({
       success: true,
