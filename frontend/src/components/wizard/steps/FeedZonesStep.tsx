@@ -102,20 +102,6 @@ export default function FeedZonesStep() {
         </p>
       </div>
 
-      {/* Summary */}
-      {planData.selectedFeedZones.length > 0 && (
-        <div className="bg-warning-subtle border border-warning rounded-lg p-4 mb-6">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-2xl">🍔</span>
-            <h3 className="text-sm font-semibold text-warning-foreground">
-              {planData.selectedFeedZones.length} {planData.selectedFeedZones.length !== 1 ? t('feedZoneCountPlural') : t('feedZoneCount')}
-            </h3>
-          </div>
-          <p className="text-sm text-warning-foreground">
-            {t('totalStopTime')} <span className="font-semibold">{totalMinutes} {t('minutes')}</span>
-          </p>
-        </div>
-      )}
 
       {/* Selected Feed Zones */}
       {planData.selectedFeedZones.length > 0 && (
@@ -190,6 +176,67 @@ export default function FeedZonesStep() {
           <p className="text-text-muted">{t('noFeedZones')}</p>
         </div>
       )}
+
+      {/* Summary - Estimated Finish */}
+      {planData.selectedFeedZones.length > 0 && (() => {
+        // Calculate finish times
+        const totalDurationSeconds = (planData.durationHours * 3600) + (planData.durationMinutes * 60);
+        const totalFeedZoneSeconds = planData.selectedFeedZones.reduce((sum, z) => sum + z.planned_duration_seconds, 0);
+        const newDurationSeconds = totalDurationSeconds + totalFeedZoneSeconds;
+
+        // Parse start time
+        const [hours, minutes] = planData.startTime.split(':').map(Number);
+        const startDateTime = new Date(planData.startDate);
+        startDateTime.setHours(hours, minutes, 0, 0);
+
+        // Calculate finish time
+        const newFinish = new Date(startDateTime.getTime() + (newDurationSeconds * 1000));
+
+        const formatTime = (date: Date) => {
+          const h = String(date.getHours()).padStart(2, '0');
+          const m = String(date.getMinutes()).padStart(2, '0');
+          return `${h}:${m}`;
+        };
+
+        const formatDate = (date: Date) => {
+          const day = String(date.getDate()).padStart(2, '0');
+          const month = date.toLocaleString('sv-SE', { month: 'short' });
+          return `${day} ${month}`;
+        };
+
+        // Calculate required speed: distance / actual riding time
+        // Riding time = total duration - feed zone stops
+        const ridingTimeSeconds = totalDurationSeconds - totalFeedZoneSeconds;
+        const needsSpeed = race ? (race.distance_km / (ridingTimeSeconds / 3600)).toFixed(1) : null;
+        const totalMinutes = Math.floor(totalFeedZoneSeconds / 60);
+
+        return (
+          <div className="bg-info-subtle border border-info rounded-lg p-4 mb-6">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-2xl">🍔</span>
+              <h3 className="text-sm font-semibold text-info-foreground">
+                {planData.selectedFeedZones.length} {planData.selectedFeedZones.length !== 1 ? t('feedZoneCountPlural') : t('feedZoneCount')}
+              </h3>
+            </div>
+            <p className="text-sm text-info-foreground mb-2">
+              {t('totalStopTime')} <span className="font-semibold">{totalMinutes} {t('minutes')}</span>
+            </p>
+            <div className="border-t border-info/20 pt-3 mt-3 space-y-1">
+              <p className="text-sm text-info-foreground font-semibold">
+                {t('estimatedFinishTime')}
+              </p>
+              <p className="text-2xl font-bold text-info-foreground">
+                {formatDate(newFinish)} {formatTime(newFinish)}
+              </p>
+              {needsSpeed && (
+                <p className="text-sm text-info-foreground/90 mt-2">
+                  {t('requiredPace')}: <span className="font-semibold">{needsSpeed} km/h</span>
+                </p>
+              )}
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Action Buttons */}
       <div className="sticky bottom-0 left-0 right-0 bg-surface-background border-t border-border p-4 space-y-3">
