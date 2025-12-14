@@ -4,7 +4,7 @@ import { createContext, useContext, useState, useCallback, ReactNode, useEffect 
 import { Race } from '@/types';
 import { calculateRace } from '@/utils/calculations';
 import { supabase } from '@/lib/supabase';
-import { savePlanFeedZones } from '@/lib/feedZones';
+import { savePlanFeedZones, getPlanFeedZones } from '@/lib/feedZones';
 import { trackWizardStepViewed, trackWizardStepCompleted, trackWizardRaceSelected, trackWizardCompleted } from '@/lib/analytics';
 
 // Types
@@ -81,7 +81,7 @@ interface WizardProviderProps {
 export function WizardProvider({ children, initialRace, editingCalculation }: WizardProviderProps) {
   const [state, setState] = useState<WizardState>(() => {
     const isEditing = !!editingCalculation;
-    const race = initialRace || null;
+    const race = initialRace || editingCalculation?.races || null;
 
     // If editing, populate from existing calculation
     let planData: PlanData;
@@ -102,7 +102,7 @@ export function WizardProvider({ children, initialRace, editingCalculation }: Wi
     }
 
     return {
-      currentStep: initialRace ? 2 : 1, // Skip step 1 if race is provided
+      currentStep: initialRace || editingCalculation ? 2 : 1, // Skip step 1 if race is provided or editing
       race,
       planData,
       calculatedResults: null,
@@ -111,6 +111,32 @@ export function WizardProvider({ children, initialRace, editingCalculation }: Wi
       wizardStartTime: Date.now(),
     };
   });
+
+  // Load feed zones when editing
+  useEffect(() => {
+    if (editingCalculation?.id) {
+      getPlanFeedZones(editingCalculation.id)
+        .then((planFeedZones) => {
+          const wizardFeedZones: WizardFeedZone[] = planFeedZones.map((pfz) => ({
+            feed_zone_id: pfz.feed_zone_id,
+            name: pfz.feed_zone?.name || '',
+            distance_from_start_km: pfz.feed_zone?.distance_from_start_km || 0,
+            planned_duration_seconds: pfz.planned_duration_seconds,
+          }));
+
+          setState(prev => ({
+            ...prev,
+            planData: {
+              ...prev.planData,
+              selectedFeedZones: wizardFeedZones,
+            },
+          }));
+        })
+        .catch((error) => {
+          console.error('Error loading feed zones for editing:', error);
+        });
+    }
+  }, [editingCalculation?.id]);
 
   const goToStep = useCallback((step: number) => {
     if (step >= 1 && step <= 5) {

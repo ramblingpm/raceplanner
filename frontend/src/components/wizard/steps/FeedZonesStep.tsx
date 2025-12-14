@@ -75,10 +75,6 @@ export default function FeedZonesStep() {
     zone => !planData.selectedFeedZones.some(sz => sz.feed_zone_id === zone.id)
   );
 
-  const totalMinutes = Math.floor(
-    planData.selectedFeedZones.reduce((sum, z) => sum + z.planned_duration_seconds, 0) / 60
-  );
-
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">

@@ -25,6 +25,7 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [savedCalculations, setSavedCalculations] = useState<any[]>([]);
   const [isWizardOpen, setIsWizardOpen] = useState(false);
+  const [editingCalculation, setEditingCalculation] = useState<any>(null);
 
   useEffect(() => {
     fetchRaces();
@@ -72,11 +73,8 @@ export default function DashboardPage() {
 
   const handleEdit = (calculation: any) => {
     trackAddPlanModalOpened('edit_existing_plan');
-    // Navigate to the race page with the calculation
-    const raceSlug = calculation.races?.slug;
-    if (raceSlug) {
-      router.push(`/${raceSlug}`);
-    }
+    setEditingCalculation(calculation);
+    setIsWizardOpen(true);
   };
 
   const handleCopy = async (calculation: any) => {
@@ -124,6 +122,12 @@ export default function DashboardPage() {
   const handleWizardComplete = () => {
     // Refresh saved calculations
     fetchSavedCalculations();
+    setEditingCalculation(null);
+  };
+
+  const handleWizardClose = () => {
+    setIsWizardOpen(false);
+    setEditingCalculation(null);
   };
 
   return (
@@ -252,80 +256,101 @@ export default function DashboardPage() {
 
                   {/* Desktop Table */}
                   <div className="hidden md:block bg-surface-background rounded-lg shadow-md overflow-hidden border border-border">
-                    <table className="min-w-full divide-y divide-border">
-                      <thead className="bg-surface-1">
-                        <tr>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                            {t('planName')}
-                          </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                            {t('race')}
-                          </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                            {t('startTime')}
-                          </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
-                            {t('avgSpeed')}
-                          </th>
-                          <th className="px-6 py-3 text-right text-xs font-medium text-text-muted uppercase tracking-wider">
-                            {t('actions')}
-                          </th>
-                        </tr>
-                      </thead>
-
-                      <tbody className="bg-surface-background divide-y divide-border">
-                        {savedCalculations.slice(0, 5).map((calc) => (
-                          <tr
-                            key={calc.id}
-                            className="hover:bg-surface-1 cursor-pointer"
-                            onClick={() => handleEdit(calc)}
-                          >
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-text-primary">
-                              {calc.label || t('untitledPlan')}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
-                              {calc.races?.name}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
-                              {new Date(calc.planned_start_time)
-                                .toISOString()
-                                .slice(0, 10)}{' '}
-                              {new Date(calc.planned_start_time)
-                                .toTimeString()
-                                .slice(0, 5)}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
-                              {calc.required_speed_kmh} km/h
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                              <div className="flex items-center justify-end gap-1.5">
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleCopy(calc);
-                                  }}
-                                  className="group relative p-2 rounded-md text-success bg-success-subtle hover:bg-success-subtle-hover transition-colors"
-                                  title={tCommon('copy')}
-                                >
-                                  <DocumentDuplicateIcon className="w-4 h-4" />
-                                </button>
-
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleDelete(calc.id);
-                                  }}
-                                  className="group relative p-2 rounded-md text-error bg-error-subtle hover:bg-error-subtle-hover transition-colors"
-                                  title={tCommon('delete')}
-                                >
-                                  <TrashIcon className="w-4 h-4" />
-                                </button>
-                              </div>
-                            </td>
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full divide-y divide-border">
+                        <thead className="bg-surface-1">
+                          <tr>
+                            <th className="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider whitespace-nowrap">
+                              {t('planName')}
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider whitespace-nowrap">
+                              {t('race')}
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider whitespace-nowrap">
+                              {t('startTime')}
+                            </th>
+                            <th className="hidden lg:table-cell px-4 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider whitespace-nowrap">
+                              {t('duration')}
+                            </th>
+                            <th className="hidden xl:table-cell px-4 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider whitespace-nowrap">
+                              {t('finishTime')}
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider whitespace-nowrap">
+                              {t('avgSpeed')}
+                            </th>
+                            <th className="px-4 py-3 text-right text-xs font-medium text-text-muted uppercase tracking-wider whitespace-nowrap">
+                              {t('actions')}
+                            </th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        </thead>
+
+                        <tbody className="bg-surface-background divide-y divide-border">
+                          {savedCalculations.slice(0, 5).map((calc) => {
+                            const startTime = new Date(calc.planned_start_time);
+                            const finishTime = new Date(calc.calculated_finish_time);
+                            const durationHours = Math.floor(calc.estimated_duration_seconds / 3600);
+                            const durationMinutes = Math.floor((calc.estimated_duration_seconds % 3600) / 60);
+
+                            return (
+                              <tr
+                                key={calc.id}
+                                className="hover:bg-surface-1 cursor-pointer"
+                                onClick={() => handleEdit(calc)}
+                              >
+                                <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-text-primary">
+                                  <div className="max-w-[150px] overflow-hidden text-ellipsis" title={calc.label || t('untitledPlan')}>
+                                    {calc.label || t('untitledPlan')}
+                                  </div>
+                                </td>
+                                <td className="px-4 py-4 whitespace-nowrap text-sm text-text-secondary">
+                                  <div className="max-w-[120px] overflow-hidden text-ellipsis" title={calc.races?.name}>
+                                    {calc.races?.name}
+                                  </div>
+                                </td>
+                                <td className="px-4 py-4 whitespace-nowrap text-sm text-text-secondary">
+                                  {startTime.toISOString().slice(0, 10)}{' '}
+                                  {startTime.toTimeString().slice(0, 5)}
+                                </td>
+                                <td className="hidden lg:table-cell px-4 py-4 whitespace-nowrap text-sm text-text-secondary">
+                                  {durationHours}h {durationMinutes}m
+                                </td>
+                                <td className="hidden xl:table-cell px-4 py-4 whitespace-nowrap text-sm text-text-secondary">
+                                  {finishTime.toTimeString().slice(0, 5)}
+                                </td>
+                                <td className="px-4 py-4 whitespace-nowrap text-sm text-text-secondary">
+                                  {calc.required_speed_kmh.toFixed(2)} km/h
+                                </td>
+                                <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                  <div className="flex items-center justify-end gap-1.5">
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleCopy(calc);
+                                      }}
+                                      className="group relative p-2 rounded-md text-success bg-success-subtle hover:bg-success-subtle-hover transition-colors"
+                                      title={tCommon('copy')}
+                                    >
+                                      <DocumentDuplicateIcon className="w-4 h-4" />
+                                    </button>
+
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleDelete(calc.id);
+                                      }}
+                                      className="group relative p-2 rounded-md text-error bg-error-subtle hover:bg-error-subtle-hover transition-colors"
+                                      title={tCommon('delete')}
+                                    >
+                                      <TrashIcon className="w-4 h-4" />
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </div>
               )}
@@ -337,8 +362,9 @@ export default function DashboardPage() {
       {/* Wizard Modal */}
       <WizardModal
         isOpen={isWizardOpen}
-        onClose={() => setIsWizardOpen(false)}
+        onClose={handleWizardClose}
         onComplete={handleWizardComplete}
+        editingCalculation={editingCalculation}
       />
     </ProtectedRoute>
   );
