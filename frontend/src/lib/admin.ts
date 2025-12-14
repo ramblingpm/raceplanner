@@ -129,3 +129,31 @@ export interface BetaInvite {
   created_at: string;
   updated_at: string;
 }
+
+export interface User {
+  id: string;
+  email: string;
+  created_at: string;
+  last_sign_in_at: string | null;
+  is_admin: boolean;
+  email_confirmed_at: string | null;
+}
+
+/**
+ * Get all users (admin only)
+ */
+export async function getUsers() {
+  try {
+    const { data, error } = await supabase.rpc('get_users_overview');
+
+    if (error) {
+      console.error('Error fetching users:', error);
+      throw error;
+    }
+
+    return data as User[];
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    throw error;
+  }
+}
