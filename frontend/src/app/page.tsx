@@ -10,30 +10,30 @@ export default function HomePage() {
   const t = useTranslations('home');
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-surface-background">
       <PageViewTracker pageName="Home Page" />
       <Header />
 
       {/* Hero Section */}
       <section className="container mx-auto px-4 pt-8 pb-6 sm:pt-12 sm:pb-8 md:pt-16 md:pb-12">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-gray-900 mb-3 md:mb-6 leading-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-text-primary mb-3 md:mb-6 leading-tight">
             {t('title')}
           </h1>
-          <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-sm sm:text-base md:text-lg lg:text-xl text-text-secondary max-w-2xl mx-auto leading-relaxed">
             {t('subtitle')}
           </p>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="bg-white py-6 sm:py-8 md:py-12">
+      <section className="bg-surface-background py-6 sm:py-8 md:py-12">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="grid md:grid-cols-3 gap-4 sm:gap-6 md:gap-8 lg:gap-12">
               {/* Feature 1 */}
-              <div className="group bg-white rounded-2xl p-3 sm:p-4 md:p-6 shadow-md hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 cursor-pointer">
-                <div className="mb-3 md:mb-4 relative h-32 sm:h-40 md:h-48 lg:h-52 w-full bg-gray-100 rounded-xl overflow-hidden">
+              <div className="group bg-surface-background rounded-2xl p-3 sm:p-4 md:p-6 shadow-md hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 cursor-pointer border border-border">
+                <div className="mb-3 md:mb-4 relative h-32 sm:h-40 md:h-48 lg:h-52 w-full bg-surface-1 rounded-xl overflow-hidden">
                   <Image
                     src="/images/feature-plan-race.png"
                     alt="Plan your race"
@@ -43,17 +43,17 @@ export default function HomePage() {
                     className="object-contain p-4 opacity-90 group-hover:opacity-100 transition-opacity"
                   />
                 </div>
-                <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-2 md:mb-3 text-gray-900">
+                <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-2 md:mb-3 text-text-primary">
                   {t('features.planRace.title')}
                 </h3>
-                <p className="text-xs sm:text-sm md:text-base text-gray-600 leading-relaxed">
+                <p className="text-xs sm:text-sm md:text-base text-text-secondary leading-relaxed">
                   {t('features.planRace.description')}
                 </p>
               </div>
 
               {/* Feature 2 */}
-              <div className="group bg-white rounded-2xl p-3 sm:p-4 md:p-6 shadow-md hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 cursor-pointer">
-                <div className="mb-3 md:mb-4 relative h-32 sm:h-40 md:h-48 lg:h-52 w-full bg-gray-100 rounded-xl overflow-hidden">
+              <div className="group bg-surface-background rounded-2xl p-3 sm:p-4 md:p-6 shadow-md hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 cursor-pointer border border-border">
+                <div className="mb-3 md:mb-4 relative h-32 sm:h-40 md:h-48 lg:h-52 w-full bg-surface-1 rounded-xl overflow-hidden">
                   <Image
                     src="/images/feature-calculate.png"
                     alt="Calculate results"
@@ -62,17 +62,17 @@ export default function HomePage() {
                     className="object-contain p-4 opacity-90 group-hover:opacity-100 transition-opacity"
                   />
                 </div>
-                <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-2 md:mb-3 text-gray-900">
+                <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-2 md:mb-3 text-text-primary">
                   {t('features.calculateResults.title')}
                 </h3>
-                <p className="text-xs sm:text-sm md:text-base text-gray-600 leading-relaxed">
+                <p className="text-xs sm:text-sm md:text-base text-text-secondary leading-relaxed">
                   {t('features.calculateResults.description')}
                 </p>
               </div>
 
               {/* Feature 3 */}
-              <div className="group bg-white rounded-2xl p-3 sm:p-4 md:p-6 shadow-md hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 cursor-pointer">
-                <div className="mb-3 md:mb-4 relative h-32 sm:h-40 md:h-48 lg:h-52 w-full bg-gray-100 rounded-xl overflow-hidden">
+              <div className="group bg-surface-background rounded-2xl p-3 sm:p-4 md:p-6 shadow-md hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 cursor-pointer border border-border">
+                <div className="mb-3 md:mb-4 relative h-32 sm:h-40 md:h-48 lg:h-52 w-full bg-surface-1 rounded-xl overflow-hidden">
                   <Image
                     src="/images/feature-map.png"
                     alt="View map"
@@ -81,10 +81,10 @@ export default function HomePage() {
                     className="object-contain p-4 opacity-90 group-hover:opacity-100 transition-opacity"
                   />
                 </div>
-                <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-2 md:mb-3 text-gray-900">
+                <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-2 md:mb-3 text-text-primary">
                   {t('features.viewMap.title')}
                 </h3>
-                <p className="text-xs sm:text-sm md:text-base text-gray-600 leading-relaxed">
+                <p className="text-xs sm:text-sm md:text-base text-text-secondary leading-relaxed">
                   {t('features.viewMap.description')}
                 </p>
               </div>
@@ -99,13 +99,13 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
             <Link
               href="/beta-signup"
-              className="w-full sm:w-auto bg-gray-900 text-white px-8 py-3 md:py-4 rounded-lg hover:bg-gray-800 transition-colors text-base font-semibold focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+              className="w-full sm:w-auto bg-surface-inverse text-text-inverse px-8 py-3 md:py-4 rounded-lg hover:opacity-90 transition-colors text-base font-semibold focus:outline-none focus:ring-2 focus:ring-border-focus focus:ring-offset-2"
             >
               {t('getStarted')}
             </Link>
             <Link
               href="/login"
-              className="w-full sm:w-auto bg-white text-gray-900 px-8 py-3 md:py-4 rounded-lg hover:bg-gray-50 transition-colors text-base font-semibold border-2 border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+              className="w-full sm:w-auto bg-surface-background text-text-primary px-8 py-3 md:py-4 rounded-lg hover:bg-surface-1 transition-colors text-base font-semibold border-2 border-border focus:outline-none focus:ring-2 focus:ring-border-focus focus:ring-offset-2"
             >
               {t('signIn')}
             </Link>

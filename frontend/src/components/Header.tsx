@@ -5,23 +5,27 @@ import Link from 'next/link';
 import UserMenu from './UserMenu';
 import LanguageSelector from './LanguageSelector';
 import { useAuth } from './AuthProvider';
+import { ThemeToggle } from '@/design-system';
 
 export default function Header() {
   const t = useTranslations('common');
   const { user } = useAuth();
 
   return (
-    <header className="bg-white shadow-sm">
+    <header className="bg-surface-background border-b border-border shadow-sm">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-        <Link href="/" className="text-2xl font-bold text-gray-900 hover:text-gray-700 transition-colors">
+        <Link href="/" className="text-2xl font-bold text-text-primary hover:text-text-secondary transition-colors">
           {t('appName')}
         </Link>
 
-        {user ? (
-          <UserMenu />
-        ) : (
-          <LanguageSelector />
-        )}
+        <div className="flex items-center gap-2">
+          <ThemeToggle size="md" />
+          {user ? (
+            <UserMenu />
+          ) : (
+            <LanguageSelector />
+          )}
+        </div>
       </div>
     </header>
   );

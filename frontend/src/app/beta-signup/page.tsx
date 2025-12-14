@@ -85,25 +85,25 @@ export default function BetaSignupPage() {
   // Show success message if request was successful
   if (success) {
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-surface-background">
         <Header />
         <div className="flex items-center justify-center px-4 py-16">
-          <div className="max-w-md w-full bg-white rounded-lg shadow-xl p-8">
+          <div className="max-w-md w-full bg-surface-background rounded-lg shadow-xl p-8 border border-border">
             <div className="text-center mb-6">
-              <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
-                <svg className="h-8 w-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-success-subtle mb-4">
+                <svg className="h-8 w-8 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-3">{t('successTitle')}</h1>
-              <p className="text-gray-600 leading-relaxed">
+              <h1 className="text-3xl font-bold text-text-primary mb-3">{t('successTitle')}</h1>
+              <p className="text-text-secondary leading-relaxed">
                 {t('successMessage')} <strong>{email}</strong> {t('successMessageEnd')}
               </p>
             </div>
 
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-              <h3 className="text-sm font-semibold text-blue-900 mb-2">{t('whatHappensNext')}</h3>
-              <ul className="text-sm text-blue-800 space-y-1">
+            <div className="bg-info-subtle border border-info rounded-lg p-4 mb-6">
+              <h3 className="text-sm font-semibold text-info-foreground mb-2">{t('whatHappensNext')}</h3>
+              <ul className="text-sm text-info-foreground space-y-1">
                 <li>• {t('step1')}</li>
                 <li>• {t('step2')}</li>
                 <li>• {t('step3')}</li>
@@ -112,7 +112,7 @@ export default function BetaSignupPage() {
 
             <Link
               href="/"
-              className="block w-full text-center bg-gray-900 text-white py-3 px-4 rounded-lg hover:bg-gray-800 transition-colors font-semibold"
+              className="block w-full text-center bg-surface-inverse text-text-inverse py-3 px-4 rounded-lg hover:opacity-90 transition-colors font-semibold"
             >
               {t('backToHome')}
             </Link>
@@ -123,25 +123,25 @@ export default function BetaSignupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-surface-background">
       <PageViewTracker pageName="Beta Signup Page" />
       <Header />
       <div className="flex items-center justify-center px-4 py-16">
-        <div className="max-w-md w-full bg-white rounded-lg shadow-xl p-8">
+        <div className="max-w-md w-full bg-surface-background rounded-lg shadow-xl p-8 border border-border">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-gray-900 text-white rounded-full text-xs font-semibold mb-4">
-              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-surface-inverse text-text-inverse rounded-full text-xs font-semibold mb-4">
+              <span className="w-2 h-2 bg-success rounded-full animate-pulse"></span>
               {t('badge')}
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-3">{t('title')}</h1>
-            <p className="text-gray-600 leading-relaxed">
+            <h1 className="text-3xl font-bold text-text-primary mb-3">{t('title')}</h1>
+            <p className="text-text-secondary leading-relaxed">
               {tCommon('appName')} {t('subtitle1')} {t('subtitle2')}
             </p>
           </div>
 
-          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
-            <h3 className="text-sm font-semibold text-gray-900 mb-2">{t('featuresTitle')}</h3>
-            <ul className="text-sm text-gray-700 space-y-1">
+          <div className="bg-surface-1 border border-border rounded-lg p-4 mb-6">
+            <h3 className="text-sm font-semibold text-text-primary mb-2">{t('featuresTitle')}</h3>
+            <ul className="text-sm text-text-secondary space-y-1">
               <li>✓ {t('feature1')}</li>
               <li>✓ {t('feature2')}</li>
               <li>✓ {t('feature3')}</li>
@@ -151,7 +151,7 @@ export default function BetaSignupPage() {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
-              <div className="bg-red-50 text-red-600 p-3 rounded-md text-sm">
+              <div className="bg-error-subtle text-error-foreground p-3 rounded-md text-sm">
                 {error}
               </div>
             )}
@@ -159,7 +159,7 @@ export default function BetaSignupPage() {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-text-secondary mb-2"
               >
                 {t('emailLabel')}
               </label>
@@ -170,16 +170,16 @@ export default function BetaSignupPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 onFocus={handleFormStart}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent text-gray-900"
+                className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-border-focus focus:border-transparent text-text-primary bg-surface-background"
                 placeholder={t('emailPlaceholder')}
               />
-              <p className="mt-2 text-xs text-gray-500">
+              <p className="mt-2 text-xs text-text-muted">
                 {t('emailHelper')}
               </p>
             </div>
 
             {/* Terms and Privacy Checkboxes */}
-            <div className="space-y-3 border-t pt-4">
+            <div className="space-y-3 border-t border-border pt-4">
               <div className="flex items-start">
                 <div className="flex items-center h-5">
                   <input
@@ -187,16 +187,16 @@ export default function BetaSignupPage() {
                     type="checkbox"
                     checked={acceptedTerms}
                     onChange={(e) => setAcceptedTerms(e.target.checked)}
-                    className="w-4 h-4 border-gray-300 rounded text-gray-900 focus:ring-gray-900"
+                    className="w-4 h-4 border-border rounded text-primary focus:ring-border-focus"
                     required
                   />
                 </div>
-                <label htmlFor="accept-terms" className="ml-2 text-sm text-gray-700">
+                <label htmlFor="accept-terms" className="ml-2 text-sm text-text-secondary">
                   {t('acceptTerms')}{' '}
                   <Link
                     href="/terms"
                     target="_blank"
-                    className="text-gray-900 hover:text-gray-700 underline font-medium"
+                    className="text-text-link hover:text-text-link-hover underline font-medium"
                   >
                     {t('termsOfService')}
                   </Link>
@@ -210,16 +210,16 @@ export default function BetaSignupPage() {
                     type="checkbox"
                     checked={acceptedPrivacy}
                     onChange={(e) => setAcceptedPrivacy(e.target.checked)}
-                    className="w-4 h-4 border-gray-300 rounded text-gray-900 focus:ring-gray-900"
+                    className="w-4 h-4 border-border rounded text-primary focus:ring-border-focus"
                     required
                   />
                 </div>
-                <label htmlFor="accept-privacy" className="ml-2 text-sm text-gray-700">
+                <label htmlFor="accept-privacy" className="ml-2 text-sm text-text-secondary">
                   {t('acceptPrivacy')}{' '}
                   <Link
                     href="/privacy-policy"
                     target="_blank"
-                    className="text-gray-900 hover:text-gray-700 underline font-medium"
+                    className="text-text-link hover:text-text-link-hover underline font-medium"
                   >
                     {t('privacyPolicy')}
                   </Link>
@@ -249,17 +249,17 @@ export default function BetaSignupPage() {
             <button
               type="submit"
               disabled={loading || !acceptedTerms || !acceptedPrivacy || !turnstileToken}
-              className="w-full bg-gray-900 text-white py-3 px-4 rounded-lg hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold"
+              className="w-full bg-surface-inverse text-text-inverse py-3 px-4 rounded-lg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-border-focus focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold"
             >
               {loading ? t('submitting') : t('requestAccess')}
             </button>
           </form>
 
-          <p className="mt-6 text-center text-sm text-gray-600">
+          <p className="mt-6 text-center text-sm text-text-secondary">
             {t('alreadyHaveAccess')}{' '}
             <Link
               href="/login"
-              className="text-gray-900 hover:text-gray-700 font-medium underline"
+              className="text-text-link hover:text-text-link-hover font-medium underline"
             >
               {t('signInHere')}
             </Link>

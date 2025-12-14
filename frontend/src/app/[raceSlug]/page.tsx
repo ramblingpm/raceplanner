@@ -29,8 +29,8 @@ import {
 const RaceMap = dynamic(() => import('@/components/RaceMap'), {
   ssr: false,
   loading: () => (
-    <div className="h-96 bg-gray-100 rounded-lg flex items-center justify-center">
-      <p className="text-gray-500">Loading map...</p>
+    <div className="h-96 bg-surface-1 rounded-lg flex items-center justify-center">
+      <p className="text-text-muted">Loading map...</p>
     </div>
   ),
 });
@@ -227,11 +227,11 @@ export default function RacePage() {
   if (loading) {
     return (
       <ProtectedRoute>
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-surface-1">
           <Header />
           <main className="container mx-auto px-4 py-8">
             <div className="text-center py-12">
-              <div className="text-lg text-gray-600">{t('loadingRaces')}</div>
+              <div className="text-lg text-text-secondary">{t('loadingRaces')}</div>
             </div>
           </main>
         </div>
@@ -246,7 +246,7 @@ export default function RacePage() {
   return (
     <ProtectedRoute>
       <PageViewTracker pageName={`Race: ${race.name}`} />
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-surface-1">
         <Header />
 
         <main className="container mx-auto px-4 py-8">
@@ -256,17 +256,17 @@ export default function RacePage() {
               trackButtonClick('back_to_dashboard', 'race_page', { race_name: race?.name });
               router.push('/dashboard');
             }}
-            className="mb-6 text-primary-600 hover:text-primary-700 font-medium flex items-center gap-2"
+            className="mb-6 text-text-link hover:text-text-link-hover font-medium flex items-center gap-2"
           >
             ← {t('backToRaces')}
           </button>
 
           {/* Header with Add Plan Button */}
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-3xl font-bold text-gray-900">{t('title')}</h2>
+            <h2 className="text-3xl font-bold text-text-primary">{t('title')}</h2>
             <button
               onClick={handleAddPlan}
-              className="flex items-center gap-2 bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors font-medium"
+              className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary-hover transition-colors font-medium"
             >
               <PlusIcon className="w-5 h-5" />
               {t('addPlan')}
@@ -274,27 +274,27 @@ export default function RacePage() {
           </div>
 
           {/* Race Info */}
-          <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+          <div className="bg-surface-background rounded-lg shadow-md p-6 mb-6 border border-border">
+            <h3 className="text-xl font-semibold text-text-primary mb-2">
               {race.name}
             </h3>
-            <p className="text-gray-600">
+            <p className="text-text-secondary">
               {t('distance')}: {race.distance_km} km
             </p>
           </div>
 
           {/* "My Plans" Section */}
           <div className="mt-8">
-            <h3 className="text-2xl font-bold mb-4 text-gray-900">
+            <h3 className="text-2xl font-bold mb-4 text-text-primary">
               {t('myPlans')}
             </h3>
 
             {savedCalculations.length === 0 ? (
-              <div className="bg-white rounded-lg shadow-md p-8 text-center">
-                <p className="text-gray-600 mb-4">{t('noPlans')}</p>
+              <div className="bg-surface-background rounded-lg shadow-md p-8 text-center border border-border">
+                <p className="text-text-secondary mb-4">{t('noPlans')}</p>
                 <button
                   onClick={handleAddPlan}
-                  className="inline-flex items-center gap-2 bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 transition-colors font-medium"
+                  className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg hover:bg-primary-hover transition-colors font-medium"
                 >
                   <PlusIcon className="w-5 h-5" />
                   {t('createFirstPlan')}
@@ -305,38 +305,38 @@ export default function RacePage() {
                 {/* Mobile Cards */}
                 <div className="md:hidden space-y-3">
                   {savedCalculations.map((calc) => (
-                    <div key={calc.id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
-                      <div className="bg-gradient-to-r from-primary-50 to-blue-50 px-4 py-3 border-b border-gray-200">
-                        <h4 className="font-bold text-gray-900 text-base">
+                    <div key={calc.id} className="bg-surface-background rounded-xl shadow-sm border border-border overflow-hidden hover:shadow-md transition-shadow">
+                      <div className="bg-gradient-to-r from-primary-subtle to-info-subtle px-4 py-3 border-b border-border">
+                        <h4 className="font-bold text-text-primary text-base">
                           {calc.label || t('untitledPlan')}
                         </h4>
-                        <p className="text-xs text-gray-600 mt-0.5">{calc.races?.name}</p>
+                        <p className="text-xs text-text-secondary mt-0.5">{calc.races?.name}</p>
                       </div>
 
                       <div className="px-4 py-3">
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="text-xs text-gray-500 mb-1">{t('startTime')}</p>
-                            <p className="text-xl font-bold text-gray-900">
+                            <p className="text-xs text-text-muted mb-1">{t('startTime')}</p>
+                            <p className="text-xl font-bold text-text-primary">
                               {new Date(calc.planned_start_time).toTimeString().slice(0, 5)}
                             </p>
-                            <p className="text-xs text-gray-500 mt-1">
+                            <p className="text-xs text-text-muted mt-1">
                               {Math.floor(calc.estimated_duration_seconds / 3600)}h {Math.floor((calc.estimated_duration_seconds % 3600) / 60)}m duration
                             </p>
                           </div>
 
                           <div className="text-right">
-                            <p className="text-xs text-gray-500 mb-1">{t('avgSpeed')}</p>
-                            <p className="text-2xl font-bold text-primary-600">{calc.required_speed_kmh}</p>
-                            <p className="text-xs text-gray-500">km/h</p>
+                            <p className="text-xs text-text-muted mb-1">{t('avgSpeed')}</p>
+                            <p className="text-2xl font-bold text-primary">{calc.required_speed_kmh}</p>
+                            <p className="text-xs text-text-muted">km/h</p>
                           </div>
                         </div>
                       </div>
 
-                      <div className="px-3 py-2 bg-gray-50 border-t border-gray-200 flex gap-1.5 justify-end">
+                      <div className="px-3 py-2 bg-surface-1 border-t border-border flex gap-1.5 justify-end">
                         <button
                           onClick={() => handleEdit(calc)}
-                          className="group relative p-2 rounded-lg text-blue-700 bg-blue-50 hover:bg-blue-100 transition-colors"
+                          className="group relative p-2 rounded-lg text-info bg-info-subtle hover:bg-info-subtle-hover transition-colors"
                           title={tCommon('edit')}
                         >
                           <PencilSquareIcon className="w-5 h-5" />
@@ -344,7 +344,7 @@ export default function RacePage() {
 
                         <button
                           onClick={() => handleCopy(calc)}
-                          className="group relative p-2 rounded-lg text-green-700 bg-green-50 hover:bg-green-100 transition-colors"
+                          className="group relative p-2 rounded-lg text-success bg-success-subtle hover:bg-success-subtle-hover transition-colors"
                           title={tCommon('copy')}
                         >
                           <DocumentDuplicateIcon className="w-5 h-5" />
@@ -352,7 +352,7 @@ export default function RacePage() {
 
                         <button
                           onClick={() => handleDelete(calc.id)}
-                          className="group relative p-2 rounded-lg text-red-700 bg-red-50 hover:bg-red-100 transition-colors"
+                          className="group relative p-2 rounded-lg text-error bg-error-subtle hover:bg-error-subtle-hover transition-colors"
                           title={tCommon('delete')}
                         >
                           <TrashIcon className="w-5 h-5" />
@@ -363,46 +363,46 @@ export default function RacePage() {
                 </div>
 
                 {/* Desktop Table */}
-                <div className="hidden md:block bg-white rounded-lg shadow-md overflow-hidden">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+                <div className="hidden md:block bg-surface-background rounded-lg shadow-md overflow-hidden border border-border">
+                  <table className="min-w-full divide-y divide-border">
+                    <thead className="bg-surface-1">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
                           {t('planName')}
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
                           {t('race')}
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
                           {t('startTime')}
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
                           {t('duration')}
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
                           {t('finishTime')}
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
                           {t('avgSpeed')}
                         </th>
-                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-right text-xs font-medium text-text-muted uppercase tracking-wider">
                           {t('actions')}
                         </th>
                       </tr>
                     </thead>
 
-                    <tbody className="bg-white divide-y divide-gray-200">
+                    <tbody className="bg-surface-background divide-y divide-border">
                       {savedCalculations.map((calc) => (
-                        <tr key={calc.id} className="hover:bg-gray-50">
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        <tr key={calc.id} className="hover:bg-surface-1">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-text-primary">
                             {calc.label || t('untitledPlan')}
                           </td>
 
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-text-muted">
                             {calc.races?.name}
                           </td>
 
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-text-muted">
                             {new Date(calc.planned_start_time)
                               .toISOString()
                               .slice(0, 10)}{' '}
@@ -411,7 +411,7 @@ export default function RacePage() {
                               .slice(0, 5)}
                           </td>
 
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-text-muted">
                             {Math.floor(calc.estimated_duration_seconds / 3600)}h{' '}
                             {Math.floor(
                               (calc.estimated_duration_seconds % 3600) / 60
@@ -419,13 +419,13 @@ export default function RacePage() {
                             m
                           </td>
 
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-text-muted">
                             {new Date(calc.calculated_finish_time)
                               .toTimeString()
                               .slice(0, 5)}
                           </td>
 
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-text-muted">
                             {calc.required_speed_kmh} km/h
                           </td>
 
@@ -433,7 +433,7 @@ export default function RacePage() {
                             <div className="flex items-center justify-end gap-1.5">
                               <button
                                 onClick={() => handleEdit(calc)}
-                                className="group relative p-2 rounded-md text-blue-700 bg-blue-50 hover:bg-blue-100 transition-colors"
+                                className="group relative p-2 rounded-md text-info bg-info-subtle hover:bg-info-subtle-hover transition-colors"
                                 title={tCommon('edit')}
                               >
                                 <PencilSquareIcon className="w-4 h-4" />
@@ -441,7 +441,7 @@ export default function RacePage() {
 
                               <button
                                 onClick={() => handleCopy(calc)}
-                                className="group relative p-2 rounded-md text-green-700 bg-green-50 hover:bg-green-100 transition-colors"
+                                className="group relative p-2 rounded-md text-success bg-success-subtle hover:bg-success-subtle-hover transition-colors"
                                 title={tCommon('copy')}
                               >
                                 <DocumentDuplicateIcon className="w-4 h-4" />
@@ -449,7 +449,7 @@ export default function RacePage() {
 
                               <button
                                 onClick={() => handleDelete(calc.id)}
-                                className="group relative p-2 rounded-md text-red-700 bg-red-50 hover:bg-red-100 transition-colors"
+                                className="group relative p-2 rounded-md text-error bg-error-subtle hover:bg-error-subtle-hover transition-colors"
                                 title={tCommon('delete')}
                               >
                                 <TrashIcon className="w-4 h-4" />
@@ -490,8 +490,8 @@ export default function RacePage() {
 
               {/* Right Column - Map and Results */}
               <div className="space-y-6">
-                <div className="bg-white rounded-lg shadow-md p-6">
-                  <h3 className="text-xl font-semibold mb-4 text-gray-900">
+                <div className="bg-surface-background rounded-lg shadow-md p-6 border border-border">
+                  <h3 className="text-xl font-semibold mb-4 text-text-primary">
                     {tMap('title')}
                   </h3>
 
@@ -503,31 +503,31 @@ export default function RacePage() {
                       selectedFeedZones={feedZonesForMap as any}
                     />
                   ) : (
-                    <div className="h-96 bg-gray-100 rounded-lg flex items-center justify-center">
-                      <p className="text-gray-500">{tMap('noRouteData')}</p>
+                    <div className="h-96 bg-surface-1 rounded-lg flex items-center justify-center">
+                      <p className="text-text-muted">{tMap('noRouteData')}</p>
                     </div>
                   )}
                 </div>
 
                 {/* Results Section */}
                 {calculationResult && planDetails && (
-                  <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-                    <div className="text-center mb-4 pb-3 border-b border-gray-300">
-                      <h3 className="text-xl font-bold text-gray-900 mb-1">
+                  <div className="bg-surface-background rounded-lg shadow-sm p-6 border border-border">
+                    <div className="text-center mb-4 pb-3 border-b border-border">
+                      <h3 className="text-xl font-bold text-text-primary mb-1">
                         {planDetails.label}
                       </h3>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-text-secondary">
                         {race.name}
                       </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-text-muted">
                         {race.distance_km} km
                       </p>
                     </div>
 
                     <div className="space-y-0">
-                      <div className="flex justify-between items-center py-1.5 border-b border-gray-100">
-                        <span className="text-sm text-gray-600">{t('startTime')}</span>
-                        <span className="text-sm font-medium text-gray-900">
+                      <div className="flex justify-between items-center py-1.5 border-b border-border">
+                        <span className="text-sm text-text-secondary">{t('startTime')}</span>
+                        <span className="text-sm font-medium text-text-primary">
                           {planDetails.startTime.toLocaleDateString(locale === 'sv' ? 'sv-SE' : 'en-US', {
                             month: 'short',
                             day: 'numeric',
@@ -540,9 +540,9 @@ export default function RacePage() {
                         </span>
                       </div>
 
-                      <div className="flex justify-between items-center py-1.5 border-b border-primary-200 bg-primary-50/30">
-                        <span className="text-sm text-gray-700">{tCalculator('finishTime')}</span>
-                        <span className="text-sm font-bold text-primary-600">
+                      <div className="flex justify-between items-center py-1.5 border-b border-primary bg-primary-subtle/30">
+                        <span className="text-sm text-text-secondary">{tCalculator('finishTime')}</span>
+                        <span className="text-sm font-bold text-primary">
                           {calculationResult.finishTime.toLocaleDateString(locale === 'sv' ? 'sv-SE' : 'en-US', {
                             month: 'short',
                             day: 'numeric',
@@ -555,34 +555,34 @@ export default function RacePage() {
                         </span>
                       </div>
 
-                      <div className="flex justify-between items-center py-1.5 border-b border-gray-100">
-                        <span className="text-sm text-gray-600">{t('duration')}</span>
-                        <span className="text-sm font-medium text-gray-900">
+                      <div className="flex justify-between items-center py-1.5 border-b border-border">
+                        <span className="text-sm text-text-secondary">{t('duration')}</span>
+                        <span className="text-sm font-medium text-text-primary">
                           {Math.floor(planDetails.durationSeconds / 3600)}h{' '}
                           {Math.floor((planDetails.durationSeconds % 3600) / 60)}m
                         </span>
                       </div>
 
                       {planDetails.stopDurationSeconds > 0 && (
-                        <div className="flex justify-between items-center py-1.5 border-b border-gray-100">
-                          <span className="text-sm text-gray-600">{t('stopTime')}</span>
-                          <span className="text-sm font-medium text-gray-900">
+                        <div className="flex justify-between items-center py-1.5 border-b border-border">
+                          <span className="text-sm text-text-secondary">{t('stopTime')}</span>
+                          <span className="text-sm font-medium text-text-primary">
                             {Math.floor(planDetails.stopDurationSeconds / 3600)}h{' '}
                             {Math.floor((planDetails.stopDurationSeconds % 3600) / 60)}m
                           </span>
                         </div>
                       )}
 
-                      <div className="flex justify-between items-center py-1.5 mt-1 border-b border-green-200 bg-green-50/30">
-                        <span className="text-sm text-gray-700">{tCalculator('requiredSpeed')}</span>
-                        <span className="text-sm font-bold text-green-600">
+                      <div className="flex justify-between items-center py-1.5 mt-1 border-b border-success bg-success-subtle/30">
+                        <span className="text-sm text-text-secondary">{tCalculator('requiredSpeed')}</span>
+                        <span className="text-sm font-bold text-success">
                           {calculationResult.requiredSpeedKmh} km/h
                         </span>
                       </div>
                     </div>
 
-                    <div className="mt-4 pt-3 border-t border-gray-200 text-center">
-                      <p className="text-xs text-gray-400">
+                    <div className="mt-4 pt-3 border-t border-border text-center">
+                      <p className="text-xs text-text-muted">
                         Planned with {tCommon('appName')}
                       </p>
                     </div>

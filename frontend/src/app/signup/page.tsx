@@ -95,29 +95,29 @@ export default function SignUpPage() {
   // Show success message if signup was successful
   if (success) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100">
+      <div className="min-h-screen bg-surface-1">
         <Header />
         <div className="flex items-center justify-center px-4 py-16">
-          <div className="max-w-md w-full bg-white rounded-lg shadow-xl p-8">
+          <div className="max-w-md w-full bg-surface-background rounded-lg shadow-xl p-8 border border-border">
             <div className="text-center mb-6">
-              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
-                <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-success-subtle mb-4">
+                <svg className="h-6 w-6 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('checkEmailTitle')}</h1>
-              <p className="text-gray-600">{t('checkEmailMessage')}</p>
+              <h1 className="text-3xl font-bold text-text-primary mb-2">{t('checkEmailTitle')}</h1>
+              <p className="text-text-secondary">{t('checkEmailMessage')}</p>
             </div>
 
-            <div className="bg-blue-50 border border-blue-200 rounded-md p-4 mb-6">
-              <p className="text-sm text-blue-800 font-medium mb-1">{t('checkEmailSentTo')}: {signupEmail}</p>
+            <div className="bg-info-subtle border border-info rounded-md p-4 mb-6">
+              <p className="text-sm text-info-foreground font-medium mb-1">{t('checkEmailSentTo')}: {signupEmail}</p>
 
             </div>
-              
-              <div className="text-center mb-6"><p className="text-gray-600">{t('checkSpamFolder')}</p></div>
+
+              <div className="text-center mb-6"><p className="text-text-secondary">{t('checkSpamFolder')}</p></div>
             <Link
               href="/login"
-              className="block w-full text-center bg-primary-600 text-white py-2 px-4 rounded-md hover:bg-primary-700 transition-colors"
+              className="block w-full text-center bg-primary text-primary-foreground py-2 px-4 rounded-md hover:bg-primary-hover transition-colors"
             >
               {t('backToLogin')}
             </Link>
@@ -128,19 +128,19 @@ export default function SignUpPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100">
+    <div className="min-h-screen bg-surface-1">
       <PageViewTracker pageName="Signup Page" />
       <Header />
       <div className="flex items-center justify-center px-4 py-16">
-        <div className="max-w-md w-full bg-white rounded-lg shadow-xl p-8">
+        <div className="max-w-md w-full bg-surface-background rounded-lg shadow-xl p-8 border border-border">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">{t('signupTitle')}</h1>
-          <p className="text-gray-600 mt-2">{t('signupSubtitle')}</p>
+          <h1 className="text-3xl font-bold text-text-primary">{t('signupTitle')}</h1>
+          <p className="text-text-secondary mt-2">{t('signupSubtitle')}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {error && (
-            <div className="bg-red-50 text-red-600 p-3 rounded-md text-sm">
+            <div className="bg-error-subtle text-error-foreground p-3 rounded-md text-sm">
               {error}
             </div>
           )}
@@ -148,7 +148,7 @@ export default function SignUpPage() {
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-sm font-medium text-text-secondary mb-2"
             >
               {t('email')}
             </label>
@@ -159,7 +159,7 @@ export default function SignUpPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               onFocus={handleFormStart}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900"
+              className="w-full px-4 py-2 border border-border rounded-md focus:ring-2 focus:ring-border-focus focus:border-transparent text-text-primary bg-surface-background"
               placeholder={t('emailPlaceholder')}
             />
           </div>
@@ -167,7 +167,7 @@ export default function SignUpPage() {
           <div>
             <label
               htmlFor="password"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-sm font-medium text-text-secondary mb-2"
             >
               {t('password')}
             </label>
@@ -177,7 +177,7 @@ export default function SignUpPage() {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900"
+              className="w-full px-4 py-2 border border-border rounded-md focus:ring-2 focus:ring-border-focus focus:border-transparent text-text-primary bg-surface-background"
               placeholder={t('passwordPlaceholder')}
             />
           </div>
@@ -185,7 +185,7 @@ export default function SignUpPage() {
           <div>
             <label
               htmlFor="confirmPassword"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-sm font-medium text-text-secondary mb-2"
             >
               {t('confirmNewPassword')}
             </label>
@@ -195,13 +195,13 @@ export default function SignUpPage() {
               required
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900"
+              className="w-full px-4 py-2 border border-border rounded-md focus:ring-2 focus:ring-border-focus focus:border-transparent text-text-primary bg-surface-background"
               placeholder={t('passwordPlaceholder')}
             />
           </div>
 
           {/* Terms and Privacy Checkboxes */}
-          <div className="space-y-3 border-t pt-4">
+          <div className="space-y-3 border-t border-border pt-4">
             <div className="flex items-start">
               <div className="flex items-center h-5">
                 <input
@@ -209,16 +209,16 @@ export default function SignUpPage() {
                   type="checkbox"
                   checked={acceptedTerms}
                   onChange={(e) => setAcceptedTerms(e.target.checked)}
-                  className="w-4 h-4 border-gray-300 rounded text-primary-600 focus:ring-primary-500"
+                  className="w-4 h-4 border-border rounded text-primary focus:ring-border-focus"
                   required
                 />
               </div>
-              <label htmlFor="accept-terms" className="ml-2 text-sm text-gray-700">
+              <label htmlFor="accept-terms" className="ml-2 text-sm text-text-secondary">
                 I accept the{' '}
                 <Link
                   href="/terms"
                   target="_blank"
-                  className="text-primary-600 hover:text-primary-700 underline"
+                  className="text-text-link hover:text-text-link-hover underline"
                 >
                   Terms of Service
                 </Link>
@@ -232,16 +232,16 @@ export default function SignUpPage() {
                   type="checkbox"
                   checked={acceptedPrivacy}
                   onChange={(e) => setAcceptedPrivacy(e.target.checked)}
-                  className="w-4 h-4 border-gray-300 rounded text-primary-600 focus:ring-primary-500"
+                  className="w-4 h-4 border-border rounded text-primary focus:ring-border-focus"
                   required
                 />
               </div>
-              <label htmlFor="accept-privacy" className="ml-2 text-sm text-gray-700">
+              <label htmlFor="accept-privacy" className="ml-2 text-sm text-text-secondary">
                 I accept the{' '}
                 <Link
                   href="/privacy-policy"
                   target="_blank"
-                  className="text-primary-600 hover:text-primary-700 underline"
+                  className="text-text-link hover:text-text-link-hover underline"
                 >
                   Privacy Policy
                 </Link>
@@ -253,17 +253,17 @@ export default function SignUpPage() {
           <button
             type="submit"
             disabled={loading || !acceptedTerms || !acceptedPrivacy}
-            className="w-full bg-primary-600 text-white py-2 px-4 rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="w-full bg-primary text-primary-foreground py-2 px-4 rounded-md hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-border-focus focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {loading ? t('signingUp') : t('signupButton')}
           </button>
         </form>
 
-        <p className="mt-6 text-center text-sm text-gray-600">
+        <p className="mt-6 text-center text-sm text-text-secondary">
           {t('hasAccount')}{' '}
           <Link
             href="/login"
-            className="text-primary-600 hover:text-primary-700 font-medium"
+            className="text-text-link hover:text-text-link-hover font-medium"
           >
             {t('loginLink')}
           </Link>

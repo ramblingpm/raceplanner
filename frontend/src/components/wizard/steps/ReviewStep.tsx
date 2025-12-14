@@ -15,8 +15,8 @@ const RaceMap = dynamic(() => import('@/components/RaceMap'), {
   loading: () => {
     // Note: Translation context not available in loading component
     return (
-      <div className="h-80 bg-gray-100 rounded-lg flex items-center justify-center">
-        <p className="text-gray-500">Loading map...</p>
+      <div className="h-80 bg-surface-1 rounded-lg flex items-center justify-center">
+        <p className="text-text-muted">Loading map...</p>
       </div>
     );
   },
@@ -52,7 +52,7 @@ export default function ReviewStep() {
   if (!race || !calculatedResults) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <p className="text-gray-600">{t('missingPlanData')}</p>
+        <p className="text-text-secondary">{t('missingPlanData')}</p>
       </div>
     );
   }
@@ -86,10 +86,10 @@ export default function ReviewStep() {
     <div className="container mx-auto px-4 py-6 max-w-4xl">
       {/* Header */}
       <div className="mb-6">
-        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+        <h2 className="text-2xl sm:text-3xl font-bold text-text-primary mb-2">
           {t('reviewYourPlan')}
         </h2>
-        <p className="text-sm sm:text-base text-gray-600">
+        <p className="text-sm sm:text-base text-text-secondary">
           {t('checkEverything')}
         </p>
       </div>
@@ -97,19 +97,19 @@ export default function ReviewStep() {
       {/* Summary Cards */}
       <div className="space-y-4 mb-6">
         {/* Race */}
-        <div className="bg-white border border-gray-200 rounded-lg p-4">
+        <div className="bg-surface-background border border-border rounded-lg p-4">
           <div className="flex items-start justify-between">
             <div>
-              <h3 className="text-sm font-medium text-gray-500 mb-1">{t('race')}</h3>
-              <p className="text-lg font-semibold text-gray-900">{race.name}</p>
-              <p className="text-sm text-gray-600">{race.distance_km} km</p>
+              <h3 className="text-sm font-medium text-text-muted mb-1">{t('race')}</h3>
+              <p className="text-lg font-semibold text-text-primary">{race.name}</p>
+              <p className="text-sm text-text-secondary">{race.distance_km} km</p>
             </div>
             <button
               onClick={() => {
                 trackWizardEditClicked('race');
                 goToStep(1);
               }}
-              className="p-2 text-primary-600 hover:bg-primary-50 rounded-lg transition-colors"
+              className="p-2 text-primary hover:bg-primary-subtle rounded-lg transition-colors"
               aria-label={t('editRace')}
             >
               <PencilIcon className="w-5 h-5" />
@@ -118,15 +118,15 @@ export default function ReviewStep() {
         </div>
 
         {/* Plan Details */}
-        <div className="bg-white border border-gray-200 rounded-lg p-4">
+        <div className="bg-surface-background border border-border rounded-lg p-4">
           <div className="flex items-start justify-between mb-3">
-            <h3 className="text-sm font-medium text-gray-500">{t('planDetails')}</h3>
+            <h3 className="text-sm font-medium text-text-muted">{t('planDetails')}</h3>
             <button
               onClick={() => {
                 trackWizardEditClicked('time');
                 goToStep(2);
               }}
-              className="p-2 text-primary-600 hover:bg-primary-50 rounded-lg transition-colors"
+              className="p-2 text-primary hover:bg-primary-subtle rounded-lg transition-colors"
               aria-label={t('editPlanDetails')}
             >
               <PencilIcon className="w-5 h-5" />
@@ -134,14 +134,14 @@ export default function ReviewStep() {
           </div>
           <div className="space-y-2">
             <div>
-              <p className="text-sm text-gray-600">{t('start')}</p>
-              <p className="font-semibold text-gray-900">
+              <p className="text-sm text-text-secondary">{t('start')}</p>
+              <p className="font-semibold text-text-primary">
                 {formatDate(planData.startDate)} at {planData.startTime}
               </p>
             </div>
             <div>
-              <p className="text-sm text-gray-600">{t('estimatedDuration')}</p>
-              <p className="font-semibold text-gray-900">
+              <p className="text-sm text-text-secondary">{t('estimatedDuration')}</p>
+              <p className="font-semibold text-text-primary">
                 {planData.durationHours}h {planData.durationMinutes}m
               </p>
             </div>
@@ -150,27 +150,27 @@ export default function ReviewStep() {
 
         {/* Feed Zones */}
         {planData.selectedFeedZones.length > 0 && (
-          <div className="bg-white border border-gray-200 rounded-lg p-4">
+          <div className="bg-surface-background border border-border rounded-lg p-4">
             <div className="flex items-start justify-between mb-3">
-              <h3 className="text-sm font-medium text-gray-500">{t('feedZones')}</h3>
+              <h3 className="text-sm font-medium text-text-muted">{t('feedZones')}</h3>
               <button
                 onClick={() => {
                   trackWizardEditClicked('feed_zones');
                   goToStep(3);
                 }}
-                className="p-2 text-primary-600 hover:bg-primary-50 rounded-lg transition-colors"
+                className="p-2 text-primary hover:bg-primary-subtle rounded-lg transition-colors"
                 aria-label={t('editFeedZones')}
               >
                 <PencilIcon className="w-5 h-5" />
               </button>
             </div>
             <div>
-              <p className="font-semibold text-gray-900 mb-2">
+              <p className="font-semibold text-text-primary mb-2">
                 {planData.selectedFeedZones.length} {planData.selectedFeedZones.length !== 1 ? t('stops') : t('stop')} • {totalFeedZoneMinutes} {t('minutesTotal')}
               </p>
               <div className="space-y-1">
                 {planData.selectedFeedZones.map((zone) => (
-                  <div key={zone.feed_zone_id} className="text-sm text-gray-600">
+                  <div key={zone.feed_zone_id} className="text-sm text-text-secondary">
                     • {zone.name} ({Math.floor(zone.planned_duration_seconds / 60)} {t('min')})
                   </div>
                 ))}
@@ -180,18 +180,18 @@ export default function ReviewStep() {
         )}
 
         {/* Results */}
-        <div className="bg-primary-50 border border-primary-200 rounded-lg p-4">
-          <h3 className="text-sm font-medium text-primary-900 mb-3">{t('estimatedResults')}</h3>
+        <div className="bg-primary-subtle border border-primary rounded-lg p-4">
+          <h3 className="text-sm font-medium text-text-primary mb-3">{t('estimatedResults')}</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <p className="text-sm text-primary-700">{t('finishTime')}</p>
-              <p className="text-lg font-bold text-primary-900">
+              <p className="text-sm text-text-secondary">{t('finishTime')}</p>
+              <p className="text-lg font-bold text-text-primary">
                 {formatFinishTime()}
               </p>
             </div>
             <div>
-              <p className="text-sm text-primary-700">{t('requiredPaceLabel')}</p>
-              <p className="text-lg font-bold text-primary-900">
+              <p className="text-sm text-text-secondary">{t('requiredPaceLabel')}</p>
+              <p className="text-lg font-bold text-text-primary">
                 {calculatedResults.requiredSpeedKmh.toFixed(1)} km/h
               </p>
             </div>
@@ -202,8 +202,8 @@ export default function ReviewStep() {
       {/* Map */}
       {race.route_geometry?.coordinates && (
         <div className="mb-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('routeMap')}</h3>
-          <div className="rounded-lg overflow-hidden border border-gray-200">
+          <h3 className="text-lg font-semibold text-text-primary mb-3">{t('routeMap')}</h3>
+          <div className="rounded-lg overflow-hidden border border-border">
             <RaceMap
               routeCoordinates={race.route_geometry.coordinates as number[][]}
               selectedFeedZones={feedZones}
@@ -213,10 +213,10 @@ export default function ReviewStep() {
       )}
 
       {/* Action Buttons */}
-      <div className="sticky bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
+      <div className="sticky bottom-0 left-0 right-0 bg-surface-background border-t border-border p-4">
         <button
           onClick={nextStep}
-          className="w-full py-3 px-6 rounded-lg font-semibold text-white transition-colors bg-primary-600 hover:bg-primary-700"
+          className="w-full py-3 px-6 rounded-lg font-semibold text-primary-foreground transition-colors bg-primary hover:bg-primary-hover"
         >
           {t('continueToSave')}
         </button>

@@ -43,10 +43,10 @@ export default function SaveStep({ onClose, onComplete }: SaveStepProps) {
     <div className="container mx-auto px-4 py-6 max-w-2xl">
       {/* Header */}
       <div className="mb-6">
-        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+        <h2 className="text-2xl sm:text-3xl font-bold text-text-primary mb-2">
           {t('saveYourPlan')}
         </h2>
-        <p className="text-sm sm:text-base text-gray-600">
+        <p className="text-sm sm:text-base text-text-secondary">
           {t('givePlanName')}
         </p>
       </div>
@@ -55,8 +55,8 @@ export default function SaveStep({ onClose, onComplete }: SaveStepProps) {
       <div className="space-y-6">
         {/* Plan Label */}
         <div>
-          <label htmlFor="label" className="block text-sm font-medium text-gray-700 mb-2">
-            {t('planName')} <span className="text-red-500">*</span>
+          <label htmlFor="label" className="block text-sm font-medium text-text-secondary mb-2">
+            {t('planName')} <span className="text-error">*</span>
           </label>
           <input
             type="text"
@@ -67,34 +67,34 @@ export default function SaveStep({ onClose, onComplete }: SaveStepProps) {
               setError(null);
             }}
             placeholder={t('planNamePlaceholder')}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base text-gray-900 bg-white"
+            className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-border-focus focus:border-border-focus text-base text-text-primary bg-surface-background"
             required
             autoFocus
             disabled={saving}
           />
           {error && (
-            <p className="mt-2 text-sm text-red-600">{error}</p>
+            <p className="mt-2 text-sm text-error-foreground">{error}</p>
           )}
         </div>
 
         {/* Summary Info */}
         {state.race && state.calculatedResults && (
-          <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-            <h3 className="text-sm font-medium text-gray-700 mb-2">{t('planSummary')}</h3>
-            <div className="space-y-1 text-sm text-gray-600">
-              <p>{t('raceLabel')} <span className="font-medium text-gray-900">{state.race.name}</span></p>
-              <p>{t('startLabel')} <span className="font-medium text-gray-900">
+          <div className="bg-surface-1 rounded-lg p-4 border border-border">
+            <h3 className="text-sm font-medium text-text-secondary mb-2">{t('planSummary')}</h3>
+            <div className="space-y-1 text-sm text-text-secondary">
+              <p>{t('raceLabel')} <span className="font-medium text-text-primary">{state.race.name}</span></p>
+              <p>{t('startLabel')} <span className="font-medium text-text-primary">
                 {new Date(planData.startDate).toLocaleDateString()} at {planData.startTime}
               </span></p>
-              <p>{t('durationLabel')} <span className="font-medium text-gray-900">
+              <p>{t('durationLabel')} <span className="font-medium text-text-primary">
                 {planData.durationHours}h {planData.durationMinutes}m
               </span></p>
               {planData.selectedFeedZones.length > 0 && (
-                <p>{t('plannedBreak')} <span className="font-medium text-gray-900">
+                <p>{t('plannedBreak')} <span className="font-medium text-text-primary">
                   {Math.floor(planData.selectedFeedZones.reduce((sum, z) => sum + z.planned_duration_seconds, 0) / 60)} {t('minutes')}
                 </span></p>
               )}
-              <p>{t('plannedFinish')} <span className="font-medium text-gray-900">
+              <p>{t('plannedFinish')} <span className="font-medium text-text-primary">
                 {state.calculatedResults.finishTime.toLocaleString(undefined, {
                   month: 'short',
                   day: 'numeric',
@@ -102,7 +102,7 @@ export default function SaveStep({ onClose, onComplete }: SaveStepProps) {
                   minute: '2-digit'
                 })}
               </span></p>
-              <p>{t('requiredPaceValue')} <span className="font-medium text-gray-900">
+              <p>{t('requiredPaceValue')} <span className="font-medium text-text-primary">
                 {state.calculatedResults.requiredSpeedKmh.toFixed(1)} km/h
               </span></p>
             </div>
@@ -111,14 +111,14 @@ export default function SaveStep({ onClose, onComplete }: SaveStepProps) {
       </div>
 
       {/* Action Buttons */}
-      <div className="sticky bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 mt-6 space-y-3">
+      <div className="sticky bottom-0 left-0 right-0 bg-surface-background border-t border-border p-4 mt-6 space-y-3">
         <button
           onClick={handleSave}
           disabled={saving || !planData.label.trim()}
-          className={`w-full py-3 px-6 rounded-lg font-semibold text-white transition-colors ${
+          className={`w-full py-3 px-6 rounded-lg font-semibold text-primary-foreground transition-colors ${
             saving || !planData.label.trim()
-              ? 'bg-gray-400 cursor-not-allowed'
-              : 'bg-primary-600 hover:bg-primary-700'
+              ? 'bg-secondary opacity-50 cursor-not-allowed'
+              : 'bg-primary hover:bg-primary-hover'
           }`}
         >
           {saving ? t('saving') : state.isEditing ? t('updatePlan') : t('savePlanButton')}
@@ -126,7 +126,7 @@ export default function SaveStep({ onClose, onComplete }: SaveStepProps) {
         <button
           onClick={onClose}
           disabled={saving}
-          className="w-full py-3 px-6 rounded-lg font-semibold bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors disabled:opacity-50"
+          className="w-full py-3 px-6 rounded-lg font-semibold bg-surface-2 text-text-secondary hover:bg-surface-3 transition-colors disabled:opacity-50"
         >
           {t('cancel')}
         </button>

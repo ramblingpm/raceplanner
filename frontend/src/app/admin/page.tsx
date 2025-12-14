@@ -36,8 +36,8 @@ export default function AdminDashboard() {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-lg shadow-sm p-6">
-        <div className="text-center text-gray-500">Loading...</div>
+      <div className="bg-surface-background rounded-lg shadow-sm p-6 border border-border">
+        <div className="text-center text-text-muted">Loading...</div>
       </div>
     );
   }
@@ -45,25 +45,25 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-4 sm:space-y-6">
       <div>
-        <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Admin Overview</h2>
-        <p className="mt-1 text-sm text-gray-500">
+        <h2 className="text-xl sm:text-2xl font-bold text-text-primary">Admin Overview</h2>
+        <p className="mt-1 text-sm text-text-muted">
           Manage your application settings and users
         </p>
       </div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
+        <div className="bg-surface-background rounded-lg shadow-sm p-4 sm:p-6 border border-border">
           <div className="flex items-center">
             <div className="flex-1">
-              <p className="text-sm font-medium text-gray-600">Total Invites</p>
-              <p className="mt-2 text-2xl sm:text-3xl font-semibold text-gray-900">
+              <p className="text-sm font-medium text-text-secondary">Total Invites</p>
+              <p className="mt-2 text-2xl sm:text-3xl font-semibold text-text-primary">
                 {stats.totalInvites}
               </p>
             </div>
             <div className="flex-shrink-0">
               <svg
-                className="w-10 h-10 sm:w-12 sm:h-12 text-blue-500"
+                className="w-10 h-10 sm:w-12 sm:h-12 text-info"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -79,17 +79,17 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
+        <div className="bg-surface-background rounded-lg shadow-sm p-4 sm:p-6 border border-border">
           <div className="flex items-center">
             <div className="flex-1">
-              <p className="text-sm font-medium text-gray-600">Used Invites</p>
-              <p className="mt-2 text-2xl sm:text-3xl font-semibold text-green-600">
+              <p className="text-sm font-medium text-text-secondary">Used Invites</p>
+              <p className="mt-2 text-2xl sm:text-3xl font-semibold text-success">
                 {stats.usedInvites}
               </p>
             </div>
             <div className="flex-shrink-0">
               <svg
-                className="w-10 h-10 sm:w-12 sm:h-12 text-green-500"
+                className="w-10 h-10 sm:w-12 sm:h-12 text-success"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -105,19 +105,19 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
+        <div className="bg-surface-background rounded-lg shadow-sm p-4 sm:p-6 border border-border">
           <div className="flex items-center">
             <div className="flex-1">
-              <p className="text-sm font-medium text-gray-600">
+              <p className="text-sm font-medium text-text-secondary">
                 Pending Invites
               </p>
-              <p className="mt-2 text-2xl sm:text-3xl font-semibold text-yellow-600">
+              <p className="mt-2 text-2xl sm:text-3xl font-semibold text-warning">
                 {stats.pendingInvites}
               </p>
             </div>
             <div className="flex-shrink-0">
               <svg
-                className="w-10 h-10 sm:w-12 sm:h-12 text-yellow-500"
+                className="w-10 h-10 sm:w-12 sm:h-12 text-warning"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -135,23 +135,23 @@ export default function AdminDashboard() {
       </div>
 
       {/* Quick Actions */}
-      <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
-        <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">
+      <div className="bg-surface-background rounded-lg shadow-sm p-4 sm:p-6 border border-border">
+        <h3 className="text-base sm:text-lg font-semibold text-text-primary mb-4">
           Quick Actions
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <a
             href="/admin/beta-invites"
-            className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+            className="flex items-center p-4 border border-border rounded-lg hover:bg-surface-1 transition-colors"
           >
             <div className="flex-1">
-              <p className="font-medium text-gray-900">Manage Beta Invites</p>
-              <p className="text-sm text-gray-500">
+              <p className="font-medium text-text-primary">Manage Beta Invites</p>
+              <p className="text-sm text-text-muted">
                 Add, view, and manage beta invitations
               </p>
             </div>
             <svg
-              className="w-6 h-6 text-gray-400"
+              className="w-6 h-6 text-text-muted"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -165,13 +165,13 @@ export default function AdminDashboard() {
             </svg>
           </a>
 
-          <div className="flex items-center p-4 border border-gray-200 rounded-lg opacity-50 cursor-not-allowed">
+          <div className="flex items-center p-4 border border-border rounded-lg opacity-50 cursor-not-allowed">
             <div className="flex-1">
-              <p className="font-medium text-gray-900">View Users</p>
-              <p className="text-sm text-gray-500">Coming soon</p>
+              <p className="font-medium text-text-primary">View Users</p>
+              <p className="text-sm text-text-muted">Coming soon</p>
             </div>
             <svg
-              className="w-6 h-6 text-gray-400"
+              className="w-6 h-6 text-text-muted"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
