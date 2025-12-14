@@ -64,8 +64,8 @@
     "resendEmail": "Skicka bekräftelsemail igen"
   },
   "home": {
-    "title": "Race Planner",
-    "subtitle": "Beräkna dina cykeltävlingstider och nödvändiga hastigheter för optimal prestation",
+    "title": "Träna smart, cykla starkt och klara ditt lopp",
+    "subtitle": "Planera tempo, tider och strategi för loppet, så att du går i mål med energi kvar.",
     "getStarted": "Kom igång",
     "signIn": "Logga in",
     "hero": {
@@ -78,16 +78,16 @@
     "features": {
       "title": "Allt du behöver för att planera ditt perfekta lopp",
       "planRace": {
-        "title": "Planera ditt lopp",
-        "description": "Ange dina tävlingsdetaljer och planerad starttid"
+        "title": "Planera Vätternrundan (eller annat lopp)",
+        "description": "Ange starttid, distans, mål och få en tydlig plan för hela loppet"
       },
       "calculateResults": {
         "title": "Beräkna resultat",
-        "description": "Få din sluttid och nödvändig medelhastighet"
+        "description": "Se vilken medelhastighet du behöver hålla för att nå ditt mål, utan att spränga dig."
       },
       "viewMap": {
         "title": "Visa tävlingskarta",
-        "description": "Se din tävlingsrutt på en interaktiv karta"
+        "description": "Följ rutten och få en mental bild av loppet redan innan start."
       },
       "raceCalculation": {
         "title": "Tidskalkylator",
