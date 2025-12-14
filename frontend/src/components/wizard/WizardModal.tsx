@@ -72,34 +72,34 @@ function WizardContent({ onClose, onComplete }: { onClose: () => void; onComplet
     <>
       <div className="flex flex-col h-full">
         {/* Header */}
-        <div className="flex-shrink-0 border-b border-gray-200 bg-white">
+        <div className="flex-shrink-0 border-b border-border bg-surface-background">
           <div className="px-4 py-4 sm:px-6">
             <div className="flex items-center justify-between">
               {/* Back/Close button */}
               <button
                 onClick={currentStep > 1 ? prevStep : handleClose}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2 hover:bg-surface-1 rounded-lg transition-colors"
                 aria-label={currentStep > 1 ? 'Go back' : 'Close wizard'}
               >
                 {currentStep > 1 ? (
-                  <ArrowLeftIcon className="w-6 h-6 text-gray-600" />
+                  <ArrowLeftIcon className="w-6 h-6 text-text-secondary" />
                 ) : (
-                  <XMarkIcon className="w-6 h-6 text-gray-600" />
+                  <XMarkIcon className="w-6 h-6 text-text-secondary" />
                 )}
               </button>
 
               {/* Title - Desktop */}
-              <h2 className="hidden md:block text-xl font-semibold text-gray-900">
+              <h2 className="hidden md:block text-xl font-semibold text-text-primary">
                 {state.isEditing ? 'Edit Plan' : 'Create Plan'}
               </h2>
 
               {/* Close button - Desktop only */}
               <button
                 onClick={handleClose}
-                className="hidden md:block p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="hidden md:block p-2 hover:bg-surface-1 rounded-lg transition-colors"
                 aria-label="Close wizard"
               >
-                <XMarkIcon className="w-6 h-6 text-gray-600" />
+                <XMarkIcon className="w-6 h-6 text-text-secondary" />
               </button>
 
               {/* Spacer for mobile */}
@@ -114,7 +114,7 @@ function WizardContent({ onClose, onComplete }: { onClose: () => void; onComplet
         </div>
 
         {/* Step Content */}
-        <div className="flex-1 overflow-y-auto bg-gray-50">
+        <div className="flex-1 overflow-y-auto bg-surface-1">
           {renderStep()}
         </div>
       </div>
@@ -122,23 +122,23 @@ function WizardContent({ onClose, onComplete }: { onClose: () => void; onComplet
       {/* Confirmation Modal */}
       {showConfirmClose && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg shadow-xl max-w-sm w-full p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          <div className="bg-surface-background rounded-lg shadow-xl max-w-sm w-full p-6 border border-border">
+            <h3 className="text-lg font-semibold text-text-primary mb-2">
               Discard changes?
             </h3>
-            <p className="text-sm text-gray-600 mb-6">
+            <p className="text-sm text-text-secondary mb-6">
               You have unsaved changes. Are you sure you want to close the wizard?
             </p>
             <div className="flex gap-3">
               <button
                 onClick={handleCancelDiscard}
-                className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+                className="flex-1 px-4 py-2 bg-surface-2 text-text-secondary rounded-lg hover:bg-surface-3 transition-colors font-medium"
               >
                 Cancel
               </button>
               <button
                 onClick={handleConfirmDiscard}
-                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
+                className="flex-1 px-4 py-2 bg-error text-error-foreground rounded-lg hover:opacity-90 transition-colors font-medium"
               >
                 Discard
               </button>
@@ -172,7 +172,7 @@ export default function WizardModal({ isOpen, onClose, onComplete, initialRace, 
   return (
     <WizardProvider initialRace={initialRace} editingCalculation={editingCalculation}>
       {/* Mobile: Full-screen */}
-      <div className="md:hidden fixed inset-0 z-40 bg-white">
+      <div className="md:hidden fixed inset-0 z-40 bg-surface-background">
         <WizardContent onClose={onClose} onComplete={onComplete} />
       </div>
 
@@ -187,7 +187,7 @@ export default function WizardModal({ isOpen, onClose, onComplete, initialRace, 
         {/* Modal */}
         <div className="fixed inset-0 z-50 overflow-y-auto">
           <div className="flex min-h-full items-center justify-center p-4">
-            <div className="relative w-full max-w-4xl bg-white rounded-lg shadow-2xl h-[80vh] flex flex-col">
+            <div className="relative w-full max-w-4xl bg-surface-background rounded-lg shadow-2xl h-[80vh] flex flex-col border border-border">
               <WizardContent onClose={onClose} onComplete={onComplete} />
             </div>
           </div>

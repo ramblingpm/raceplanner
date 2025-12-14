@@ -34,22 +34,22 @@ export default function WizardStepIndicator() {
                 disabled={!canNavigate}
                 className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${
                   isActive
-                    ? 'bg-primary-600 text-white shadow-md'
+                    ? 'bg-primary text-primary-foreground shadow-md'
                     : isComplete
-                    ? 'bg-green-100 text-green-700 hover:bg-green-200 cursor-pointer'
+                    ? 'bg-success-subtle text-success hover:opacity-80 cursor-pointer'
                     : canNavigate
-                    ? 'bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer'
-                    : 'bg-gray-50 text-gray-400 cursor-not-allowed'
+                    ? 'bg-surface-2 text-text-secondary hover:bg-surface-3 cursor-pointer'
+                    : 'bg-surface-1 text-text-muted cursor-not-allowed'
                 }`}
               >
                 {/* Step Number/Check */}
                 <div
                   className={`flex items-center justify-center w-6 h-6 rounded-full text-sm font-semibold ${
                     isActive
-                      ? 'bg-white text-primary-600'
+                      ? 'bg-surface-background text-primary'
                       : isComplete
-                      ? 'bg-green-600 text-white'
-                      : 'bg-white text-gray-500'
+                      ? 'bg-success text-success-foreground'
+                      : 'bg-surface-background text-text-muted'
                   }`}
                 >
                   {isComplete && !isActive ? (
@@ -69,7 +69,7 @@ export default function WizardStepIndicator() {
 
               {/* Arrow */}
               {index < steps.length - 1 && (
-                <div className="mx-1 lg:mx-2 text-gray-400">→</div>
+                <div className="mx-1 lg:mx-2 text-text-muted">→</div>
               )}
             </div>
           );
@@ -80,15 +80,15 @@ export default function WizardStepIndicator() {
       <div className="md:hidden">
         {/* Text indicator */}
         <div className="text-center mb-3">
-          <p className="text-sm text-gray-600">
-            Step {currentStep} of {steps.length}: <span className="font-semibold text-gray-900">{steps[currentStep - 1].label}</span>
+          <p className="text-sm text-text-secondary">
+            Step {currentStep} of {steps.length}: <span className="font-semibold text-text-primary">{steps[currentStep - 1].label}</span>
           </p>
         </div>
 
         {/* Progress bar */}
-        <div className="w-full bg-gray-200 rounded-full h-2">
+        <div className="w-full bg-surface-2 rounded-full h-2">
           <div
-            className="bg-primary-600 h-2 rounded-full transition-all duration-300"
+            className="bg-primary h-2 rounded-full transition-all duration-300"
             style={{ width: `${(currentStep / steps.length) * 100}%` }}
           />
         </div>
@@ -106,10 +106,10 @@ export default function WizardStepIndicator() {
                 disabled={!canGoToStep(step.number)}
                 className={`w-2 h-2 rounded-full transition-all ${
                   isActive
-                    ? 'bg-primary-600 w-6'
+                    ? 'bg-primary w-6'
                     : isComplete
-                    ? 'bg-green-600'
-                    : 'bg-gray-300'
+                    ? 'bg-success'
+                    : 'bg-surface-3'
                 }`}
                 aria-label={`Go to step ${step.number}: ${step.label}`}
               />

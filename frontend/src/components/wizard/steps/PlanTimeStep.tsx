@@ -52,7 +52,7 @@ export default function PlanTimeStep() {
   if (!race) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <p className="text-gray-600">{t('selectRaceFirst')}</p>
+        <p className="text-text-secondary">{t('selectRaceFirst')}</p>
       </div>
     );
   }
@@ -61,17 +61,17 @@ export default function PlanTimeStep() {
     <div className="container mx-auto px-4 py-6 max-w-2xl">
       {/* Header */}
       <div className="mb-6">
-        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+        <h2 className="text-2xl sm:text-3xl font-bold text-text-primary mb-2">
           {t('planYourTime')}
         </h2>
-        <p className="text-sm sm:text-base text-gray-600 mb-1">
-          {t('for')} <span className="font-semibold text-gray-900">{race.name}</span>
+        <p className="text-sm sm:text-base text-text-secondary mb-1">
+          {t('for')} <span className="font-semibold text-text-primary">{race.name}</span>
         </p>
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-text-muted">
           {race.distance_km} km
         </p>
                   {allowedDates && (
-            <p className="mt-2 text-xs text-gray-500">
+            <p className="mt-2 text-xs text-text-muted">
               {t('raceDates')} {new Date(allowedDates.min).toLocaleDateString(locale, { month: 'short', day: 'numeric', year: 'numeric' })} - {new Date(allowedDates.max).toLocaleDateString(locale, { month: 'short', day: 'numeric', year: 'numeric' })}
             </p>
           )}
@@ -84,7 +84,7 @@ export default function PlanTimeStep() {
           <div className="grid grid-cols-2 gap-3">
             {/* Start Date */}
             <div>
-              <label htmlFor="startDate" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="startDate" className="block text-sm font-medium text-text-secondary mb-2">
                 {t('startDate')}
               </label>
               <input
@@ -94,13 +94,13 @@ export default function PlanTimeStep() {
                 onChange={(e) => updatePlanData({ startDate: e.target.value })}
                 min={allowedDates?.min}
                 max={allowedDates?.max}
-                className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm text-gray-900 bg-white"
+                className="w-full px-3 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-border-focus focus:border-border-focus text-sm text-text-primary bg-surface-background"
               />
             </div>
 
             {/* Start Time */}
             <div>
-              <label htmlFor="startTime" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="startTime" className="block text-sm font-medium text-text-secondary mb-2">
                 {t('startTime')}
               </label>
               <input
@@ -108,7 +108,7 @@ export default function PlanTimeStep() {
                 id="startTime"
                 value={planData.startTime}
                 onChange={(e) => updatePlanData({ startTime: e.target.value })}
-                className="w-full px-3 py-2.7 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm text-gray-900 bg-white"
+                className="w-full px-3 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-border-focus focus:border-border-focus text-sm text-text-primary bg-surface-background"
               />
             </div>
           </div>
@@ -117,13 +117,13 @@ export default function PlanTimeStep() {
 
         {/* Estimated Duration */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-text-secondary mb-2">
             {t('duration')}
           </label>
           <div className="grid grid-cols-2 gap-4">
             {/* Hours */}
             <div>
-              <label htmlFor="durationHours" className="block text-xs text-gray-600 mb-1">
+              <label htmlFor="durationHours" className="block text-xs text-text-muted mb-1">
                 {t('hours')}
               </label>
               <input
@@ -133,13 +133,13 @@ export default function PlanTimeStep() {
                 onChange={(e) => updatePlanData({ durationHours: parseInt(e.target.value) || 0 })}
                 min="0"
                 max="24"
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base text-gray-900 bg-white"
+                className="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-border-focus focus:border-border-focus text-base text-text-primary bg-surface-background"
               />
             </div>
 
             {/* Minutes */}
             <div>
-              <label htmlFor="durationMinutes" className="block text-xs text-gray-600 mb-1">
+              <label htmlFor="durationMinutes" className="block text-xs text-text-muted mb-1">
                 {t('minutes')}
               </label>
               <input
@@ -150,7 +150,7 @@ export default function PlanTimeStep() {
                 min="0"
                 max="59"
                 step="5"
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base text-gray-900 bg-white"
+                className="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-border-focus focus:border-border-focus text-base text-text-primary bg-surface-background"
               />
             </div>
           </div>
@@ -158,14 +158,14 @@ export default function PlanTimeStep() {
 
         {/* Finish Time Preview */}
         {state.calculatedResults && (
-          <div className="bg-primary-50 border border-primary-200 rounded-lg p-4">
-            <h3 className="text-sm font-medium text-primary-900 mb-1">
+          <div className="bg-primary-subtle border border-primary rounded-lg p-4">
+            <h3 className="text-sm font-medium text-text-primary mb-1">
               {t('estimatedFinishTime')}
             </h3>
-            <p className="text-lg font-semibold text-primary-700">
+            <p className="text-lg font-semibold text-primary">
               {formatFinishTime()}
             </p>
-            <p className="text-sm text-primary-600 mt-1">
+            <p className="text-sm text-text-secondary mt-1">
               {t('requiredPace')} {state.calculatedResults.requiredSpeedKmh.toFixed(1)} km/h
             </p>
           </div>
@@ -173,10 +173,10 @@ export default function PlanTimeStep() {
       </div>
 
       {/* Action Buttons */}
-      <div className="sticky bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
+      <div className="sticky bottom-0 left-0 right-0 bg-surface-background border-t border-border p-4">
         <button
           onClick={handleNext}
-          className="w-full py-3 px-6 rounded-lg font-semibold text-white transition-colors bg-primary-600 hover:bg-primary-700"
+          className="w-full py-3 px-6 rounded-lg font-semibold text-primary-foreground transition-colors bg-primary hover:bg-primary-hover"
         >
           {t('nextFeedZones')}
         </button>

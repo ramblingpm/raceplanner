@@ -214,6 +214,7 @@
     "loadingFeedZones": "Laddar depåer...",
     "optional": "Valfritt",
     "feedZonesPitStopsDescription": "Planera dina depåstopp för mat och dryck",
+    "addFeedZones": "Lägg till depå(er)",
     "feedZoneCount": "Depå",
     "feedZoneCountPlural": "Depåer",
     "totalStopTime": "Total stopptid:",

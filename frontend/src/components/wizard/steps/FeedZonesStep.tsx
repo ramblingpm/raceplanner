@@ -83,8 +83,8 @@ export default function FeedZonesStep() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">{t('loadingFeedZones')}</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-text-secondary">{t('loadingFeedZones')}</p>
         </div>
       </div>
     );
@@ -94,24 +94,24 @@ export default function FeedZonesStep() {
     <div className="container mx-auto px-4 py-6 max-w-2xl">
       {/* Header */}
       <div className="mb-6">
-        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
-          {t('addFeedZones')} <span className="text-gray-500 text-xl font-normal">({t('optional')})</span>
+        <h2 className="text-2xl sm:text-3xl font-bold text-text-primary mb-2">
+          {t('addFeedZones')} <span className="text-text-muted text-xl font-normal">({t('optional')})</span>
         </h2>
-        <p className="text-sm sm:text-base text-gray-600">
+        <p className="text-sm sm:text-base text-text-secondary">
           {t('feedZonesPitStopsDescription')}
         </p>
       </div>
 
       {/* Summary */}
       {planData.selectedFeedZones.length > 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
+        <div className="bg-warning-subtle border border-warning rounded-lg p-4 mb-6">
           <div className="flex items-center gap-2 mb-1">
             <span className="text-2xl">🍔</span>
-            <h3 className="text-sm font-semibold text-amber-900">
+            <h3 className="text-sm font-semibold text-warning-foreground">
               {planData.selectedFeedZones.length} {planData.selectedFeedZones.length !== 1 ? t('feedZoneCountPlural') : t('feedZoneCount')}
             </h3>
           </div>
-          <p className="text-sm text-amber-700">
+          <p className="text-sm text-warning-foreground">
             {t('totalStopTime')} <span className="font-semibold">{totalMinutes} {t('minutes')}</span>
           </p>
         </div>
@@ -121,15 +121,15 @@ export default function FeedZonesStep() {
       {planData.selectedFeedZones.length > 0 && (
         <div className="space-y-3 mb-6">
           {planData.selectedFeedZones.map((zone) => (
-            <div key={zone.feed_zone_id} className="bg-white border border-gray-200 rounded-lg p-4">
+            <div key={zone.feed_zone_id} className="bg-surface-background border border-border rounded-lg p-4">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1">
-                  <h4 className="font-semibold text-gray-900">{zone.name}</h4>
-                  <p className="text-sm text-gray-600">
+                  <h4 className="font-semibold text-text-primary">{zone.name}</h4>
+                  <p className="text-sm text-text-secondary">
                     {zone.distance_from_start_km} {t('kmFromStart')}
                   </p>
                   <div className="mt-3">
-                    <label className="block text-xs font-medium text-gray-700 mb-1">
+                    <label className="block text-xs font-medium text-text-secondary mb-1">
                       {t('stopDurationMinutes')}
                     </label>
                     <input
@@ -138,13 +138,13 @@ export default function FeedZonesStep() {
                       onChange={(e) => handleUpdateDuration(zone.feed_zone_id, parseInt(e.target.value) || 10)}
                       min="1"
                       max="60"
-                      className="w-full sm:w-32 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-900 bg-white"
+                      className="w-full sm:w-32 px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-border-focus focus:border-border-focus text-text-primary bg-surface-background"
                     />
                   </div>
                 </div>
                 <button
                   onClick={() => handleRemoveFeedZone(zone.feed_zone_id)}
-                  className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                  className="p-2 text-error hover:bg-error-subtle rounded-lg transition-colors"
                   aria-label={t('removeFeedZone')}
                 >
                   <TrashIcon className="w-5 h-5" />
@@ -158,7 +158,7 @@ export default function FeedZonesStep() {
       {/* Add Feed Zone */}
       {unselectedZones.length > 0 && (
         <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-text-secondary mb-2">
             {planData.selectedFeedZones.length > 0 ? t('addMoreFeedZones') : t('addFeedZone')}
           </label>
           <select
@@ -169,14 +169,14 @@ export default function FeedZonesStep() {
                 e.target.value = '';
               }
             }}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base text-gray-900 bg-white"
+            className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-border-focus focus:border-border-focus text-base text-text-primary bg-surface-background dark:[color-scheme:dark]"
             defaultValue=""
           >
-            <option value="" disabled>
+            <option value="" disabled className="bg-surface-background text-text-primary">
               {t('selectFeedZone')}
             </option>
             {unselectedZones.map((zone) => (
-              <option key={zone.id} value={zone.id}>
+              <option key={zone.id} value={zone.id} className="bg-surface-background text-text-primary">
                 {zone.name} - {zone.distance_from_start_km} km
               </option>
             ))}
@@ -187,23 +187,23 @@ export default function FeedZonesStep() {
       {/* Empty State */}
       {availableFeedZones.length === 0 && (
         <div className="text-center py-12 mb-6">
-          <p className="text-gray-500">{t('noFeedZones')}</p>
+          <p className="text-text-muted">{t('noFeedZones')}</p>
         </div>
       )}
 
       {/* Action Buttons */}
-      <div className="sticky bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 space-y-3">
+      <div className="sticky bottom-0 left-0 right-0 bg-surface-background border-t border-border p-4 space-y-3">
         {planData.selectedFeedZones.length === 0 ? (
           <button
             onClick={handleSkip}
-            className="w-full py-3 px-6 rounded-lg font-semibold bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
+            className="w-full py-3 px-6 rounded-lg font-semibold bg-surface-2 text-text-secondary hover:bg-surface-3 transition-colors"
           >
             {t('skipNoFeedZones')}
           </button>
         ) : (
           <button
             onClick={handleNext}
-            className="w-full py-3 px-6 rounded-lg font-semibold text-white bg-primary-600 hover:bg-primary-700 transition-colors"
+            className="w-full py-3 px-6 rounded-lg font-semibold text-primary-foreground bg-primary hover:bg-primary-hover transition-colors"
           >
             {t('nextReviewPlan')}
           </button>

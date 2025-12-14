@@ -99,13 +99,13 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
             <Link
               href="/beta-signup"
-              className="w-full sm:w-auto bg-surface-inverse text-text-inverse px-8 py-3 md:py-4 rounded-lg hover:opacity-90 transition-colors text-base font-semibold focus:outline-none focus:ring-2 focus:ring-border-focus focus:ring-offset-2"
+              className="w-full sm:w-auto bg-primary text-primary-foreground px-8 py-3 md:py-4 rounded-lg hover:bg-primary-hover transition-colors text-base font-semibold focus:outline-none focus:ring-2 focus:ring-border-focus focus:ring-offset-2"
             >
               {t('getStarted')}
             </Link>
             <Link
               href="/login"
-              className="w-full sm:w-auto bg-surface-background text-text-primary px-8 py-3 md:py-4 rounded-lg hover:bg-surface-1 transition-colors text-base font-semibold border-2 border-border focus:outline-none focus:ring-2 focus:ring-border-focus focus:ring-offset-2"
+              className="w-full sm:w-auto bg-surface-2 text-text-primary px-8 py-3 md:py-4 rounded-lg hover:bg-surface-3 transition-colors text-base font-semibold border border-border focus:outline-none focus:ring-2 focus:ring-border-focus focus:ring-offset-2"
             >
               {t('signIn')}
             </Link>
