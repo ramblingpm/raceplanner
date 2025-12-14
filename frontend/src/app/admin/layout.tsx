@@ -15,8 +15,8 @@ export default function AdminLayout({
   const navigationItems = [
     { href: '/admin', label: 'Overview', enabled: true },
     { href: '/admin/beta-invites', label: 'Beta Invites', enabled: true },
-    { href: '/admin/users', label: 'Users', enabled: false },
-    { href: '/admin/races', label: 'Races', enabled: false },
+    { href: '/admin/users', label: 'Users', enabled: true },
+    { href: '/admin/races', label: 'Races', enabled: true },
   ];
 
   return (

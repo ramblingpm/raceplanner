@@ -10,6 +10,7 @@ import {
   type BetaInvite,
 } from '@/lib/admin';
 import { useAuth } from '@/components/AuthProvider';
+import { formatDateTime } from '@/lib/dateFormat';
 
 export default function BetaInvitesPage() {
   const { user } = useAuth();
@@ -101,16 +102,6 @@ export default function BetaInvitesPage() {
     }
   }
 
-  function formatDate(dateString: string) {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  }
-
   return (
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -139,6 +130,34 @@ export default function BetaInvitesPage() {
           {error}
         </div>
       )}
+
+      {/* Stats */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div className="bg-surface-background rounded-lg shadow-sm p-4 border border-border">
+          <div className="text-xs sm:text-sm text-text-muted">{t('totalInvites')}</div>
+          <div className="text-xl sm:text-2xl font-semibold text-text-primary mt-1">
+            {invites.length}
+          </div>
+        </div>
+        <div className="bg-surface-background rounded-lg shadow-sm p-4 border border-border">
+          <div className="text-xs sm:text-sm text-text-muted">{t('pendingApproval')}</div>
+          <div className="text-xl sm:text-2xl font-semibold text-warning mt-1">
+            {invites.filter((i) => !i.approved && !i.used).length}
+          </div>
+        </div>
+        <div className="bg-surface-background rounded-lg shadow-sm p-4 border border-border">
+          <div className="text-xs sm:text-sm text-text-muted">{t('approved')}</div>
+          <div className="text-xl sm:text-2xl font-semibold text-info mt-1">
+            {invites.filter((i) => i.approved && !i.used).length}
+          </div>
+        </div>
+        <div className="bg-surface-background rounded-lg shadow-sm p-4 border border-border">
+          <div className="text-xs sm:text-sm text-text-muted">{t('used')}</div>
+          <div className="text-xl sm:text-2xl font-semibold text-success mt-1">
+            {invites.filter((i) => i.used).length}
+          </div>
+        </div>
+      </div>
 
       {/* Add Form */}
       {showAddForm && (
@@ -234,27 +253,27 @@ export default function BetaInvitesPage() {
           </div>
         ) : (
           <>
-            {/* Desktop Table View */}
+            {/* Desktop Table View - Always scrollable if needed */}
             <div className="hidden md:block overflow-x-auto">
-              <table className="w-full">
+              <table className="min-w-full">
                 <thead className="bg-surface-1 border-b border-border">
                   <tr>
-                    <th className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider whitespace-nowrap">
                       {t('email')}
                     </th>
-                    <th className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider whitespace-nowrap">
                       {t('status')}
                     </th>
-                    <th className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider whitespace-nowrap">
                       {t('invitedBy')}
                     </th>
-                    <th className="hidden lg:table-cell px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+                    <th className="hidden xl:table-cell px-4 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider whitespace-nowrap">
                       {t('notes')}
                     </th>
-                    <th className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider whitespace-nowrap">
                       {t('created')}
                     </th>
-                    <th className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider whitespace-nowrap">
                       {t('actions')}
                     </th>
                   </tr>
@@ -262,12 +281,12 @@ export default function BetaInvitesPage() {
                 <tbody className="bg-surface-background divide-y divide-border">
                   {invites.map((invite) => (
                     <tr key={invite.id} className="hover:bg-surface-1">
-                      <td className="px-4 lg:px-6 py-4">
-                        <div className="text-sm font-medium text-text-primary break-all">
+                      <td className="px-4 py-4 whitespace-nowrap">
+                        <div className="text-sm font-medium text-text-primary max-w-[200px] overflow-hidden text-ellipsis" title={invite.email}>
                           {invite.email}
                         </div>
                       </td>
-                      <td className="px-4 lg:px-6 py-4 whitespace-nowrap">
+                      <td className="px-4 py-4 whitespace-nowrap">
                         {invite.used ? (
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success-subtle text-success-foreground">
                             {t('statusUsed')}
@@ -282,18 +301,17 @@ export default function BetaInvitesPage() {
                           </span>
                         )}
                       </td>
-                      <td className="px-4 lg:px-6 py-4 whitespace-nowrap text-sm text-text-muted">
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-text-muted">
                         {invite.invited_by || '-'}
                       </td>
-                      <td className="hidden lg:table-cell px-6 py-4 text-sm text-text-muted max-w-xs truncate">
+                      <td className="hidden xl:table-cell px-4 py-4 text-sm text-text-muted max-w-[150px] truncate">
                         {invite.notes || '-'}
                       </td>
-                      <td className="px-4 lg:px-6 py-4 whitespace-nowrap text-sm text-text-muted">
-                        <span className="hidden lg:inline">{formatDate(invite.created_at)}</span>
-                        <span className="lg:hidden">{new Date(invite.created_at).toLocaleDateString()}</span>
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-text-muted">
+                        {formatDateTime(invite.created_at)}
                       </td>
-                      <td className="px-4 lg:px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <div className="flex gap-3">
+                      <td className="px-4 py-4 whitespace-nowrap text-sm font-medium">
+                        <div className="flex gap-2">
                           {!invite.approved && !invite.used && (
                             <button
                               onClick={() => handleApprove(invite.id)}
@@ -326,7 +344,7 @@ export default function BetaInvitesPage() {
                         {invite.email}
                       </div>
                       <div className="text-xs text-text-muted mt-1">
-                        {formatDate(invite.created_at)}
+                        {formatDateTime(invite.created_at)}
                       </div>
                     </div>
                     <div className="ml-2">
@@ -376,34 +394,6 @@ export default function BetaInvitesPage() {
             </div>
           </>
         )}
-      </div>
-
-      {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-surface-background rounded-lg shadow-sm p-4 border border-border">
-          <div className="text-sm text-text-muted">{t('totalInvites')}</div>
-          <div className="text-2xl font-semibold text-text-primary mt-1">
-            {invites.length}
-          </div>
-        </div>
-        <div className="bg-surface-background rounded-lg shadow-sm p-4 border border-border">
-          <div className="text-sm text-text-muted">{t('pendingApproval')}</div>
-          <div className="text-2xl font-semibold text-warning mt-1">
-            {invites.filter((i) => !i.approved && !i.used).length}
-          </div>
-        </div>
-        <div className="bg-surface-background rounded-lg shadow-sm p-4 border border-border">
-          <div className="text-sm text-text-muted">{t('approved')}</div>
-          <div className="text-2xl font-semibold text-info mt-1">
-            {invites.filter((i) => i.approved && !i.used).length}
-          </div>
-        </div>
-        <div className="bg-surface-background rounded-lg shadow-sm p-4 border border-border">
-          <div className="text-sm text-text-muted">{t('used')}</div>
-          <div className="text-2xl font-semibold text-success mt-1">
-            {invites.filter((i) => i.used).length}
-          </div>
-        </div>
       </div>
     </div>
   );

@@ -157,3 +157,69 @@ export async function getUsers() {
     throw error;
   }
 }
+
+export interface RacePlanStats {
+  total_plans: number;
+  total_users_with_plans: number;
+  plans_per_race: Array<{
+    race_id: string;
+    race_name: string;
+    plan_count: number;
+    unique_users: number;
+  }>;
+}
+
+export interface UserRacePlan {
+  plan_id: string;
+  race_name: string;
+  race_id: string;
+  planned_start_time: string;
+  required_speed_kmh: number;
+  created_at: string;
+}
+
+export interface UserRacePlans {
+  user_id: string;
+  user_email: string;
+  plan_count: number;
+  last_plan_created_at: string;
+  plans: UserRacePlan[];
+}
+
+/**
+ * Get race plans statistics (admin only)
+ */
+export async function getRacePlansStats() {
+  try {
+    const { data, error } = await supabase.rpc('get_race_plans_stats');
+
+    if (error) {
+      console.error('Error fetching race plans stats:', error);
+      throw error;
+    }
+
+    return data[0] as RacePlanStats;
+  } catch (error) {
+    console.error('Error fetching race plans stats:', error);
+    throw error;
+  }
+}
+
+/**
+ * Get user race plans (admin only)
+ */
+export async function getUserRacePlans() {
+  try {
+    const { data, error } = await supabase.rpc('get_user_race_plans');
+
+    if (error) {
+      console.error('Error fetching user race plans:', error);
+      throw error;
+    }
+
+    return data as UserRacePlans[];
+  } catch (error) {
+    console.error('Error fetching user race plans:', error);
+    throw error;
+  }
+}
