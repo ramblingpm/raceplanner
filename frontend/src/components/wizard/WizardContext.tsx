@@ -13,6 +13,8 @@ export interface WizardFeedZone {
   name: string;
   distance_from_start_km: number;
   planned_duration_seconds: number;
+  planned_arrival_time?: string; // HH:MM format
+  planned_departure_time?: string; // HH:MM format
 }
 
 export interface PlanData {
@@ -117,12 +119,23 @@ export function WizardProvider({ children, initialRace, editingCalculation }: Wi
     if (editingCalculation?.id) {
       getPlanFeedZones(editingCalculation.id)
         .then((planFeedZones) => {
-          const wizardFeedZones: WizardFeedZone[] = planFeedZones.map((pfz) => ({
-            feed_zone_id: pfz.feed_zone_id,
-            name: pfz.feed_zone?.name || '',
-            distance_from_start_km: pfz.feed_zone?.distance_from_start_km || 0,
-            planned_duration_seconds: pfz.planned_duration_seconds,
-          }));
+          const wizardFeedZones: WizardFeedZone[] = planFeedZones.map((pfz) => {
+            // Extract time from ISO datetime string
+            const extractTime = (isoDateTime?: string) => {
+              if (!isoDateTime) return undefined;
+              const date = new Date(isoDateTime);
+              return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+            };
+
+            return {
+              feed_zone_id: pfz.feed_zone_id,
+              name: pfz.feed_zone?.name || '',
+              distance_from_start_km: pfz.feed_zone?.distance_from_start_km || 0,
+              planned_duration_seconds: pfz.planned_duration_seconds,
+              planned_arrival_time: extractTime(pfz.planned_arrival_time),
+              planned_departure_time: extractTime(pfz.planned_departure_time),
+            };
+          });
 
           setState(prev => ({
             ...prev,
@@ -300,6 +313,8 @@ export function WizardProvider({ children, initialRace, editingCalculation }: Wi
             state.planData.selectedFeedZones.map(zone => ({
               feed_zone_id: zone.feed_zone_id,
               planned_duration_seconds: zone.planned_duration_seconds,
+              planned_arrival_time: zone.planned_arrival_time,
+              planned_departure_time: zone.planned_departure_time,
             }))
           );
         } catch (error) {

@@ -62,6 +62,48 @@ export default function FeedZonesStep() {
     });
   };
 
+  const handleUpdateArrivalTime = (feedZoneId: string, time: string) => {
+    updatePlanData({
+      selectedFeedZones: planData.selectedFeedZones.map(z => {
+        if (z.feed_zone_id !== feedZoneId) return z;
+
+        const updatedZone = { ...z, planned_arrival_time: time };
+
+        // If both arrival and departure are set, calculate duration
+        if (time && z.planned_departure_time) {
+          const [arrHours, arrMinutes] = time.split(':').map(Number);
+          const [depHours, depMinutes] = z.planned_departure_time.split(':').map(Number);
+          const arrivalSeconds = arrHours * 3600 + arrMinutes * 60;
+          const departureSeconds = depHours * 3600 + depMinutes * 60;
+          updatedZone.planned_duration_seconds = departureSeconds - arrivalSeconds;
+        }
+
+        return updatedZone;
+      }),
+    });
+  };
+
+  const handleUpdateDepartureTime = (feedZoneId: string, time: string) => {
+    updatePlanData({
+      selectedFeedZones: planData.selectedFeedZones.map(z => {
+        if (z.feed_zone_id !== feedZoneId) return z;
+
+        const updatedZone = { ...z, planned_departure_time: time };
+
+        // If both arrival and departure are set, calculate duration
+        if (z.planned_arrival_time && time) {
+          const [arrHours, arrMinutes] = z.planned_arrival_time.split(':').map(Number);
+          const [depHours, depMinutes] = time.split(':').map(Number);
+          const arrivalSeconds = arrHours * 3600 + arrMinutes * 60;
+          const departureSeconds = depHours * 3600 + depMinutes * 60;
+          updatedZone.planned_duration_seconds = departureSeconds - arrivalSeconds;
+        }
+
+        return updatedZone;
+      }),
+    });
+  };
+
   const handleSkip = () => {
     updatePlanData({ selectedFeedZones: [] });
     nextStep();
@@ -110,18 +152,47 @@ export default function FeedZonesStep() {
                   <p className="text-sm text-text-secondary">
                     {zone.distance_from_start_km} {t('kmFromStart')}
                   </p>
-                  <div className="mt-3">
-                    <label className="block text-xs font-medium text-text-secondary mb-1">
-                      {t('stopDurationMinutes')}
-                    </label>
-                    <input
-                      type="number"
-                      value={Math.floor(zone.planned_duration_seconds / 60)}
-                      onChange={(e) => handleUpdateDuration(zone.feed_zone_id, parseInt(e.target.value) || 10)}
-                      min="1"
-                      max="60"
-                      className="w-full sm:w-32 px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-border-focus focus:border-border-focus text-text-primary bg-surface-background"
-                    />
+                  <div className="mt-3 space-y-3">
+                    {/* Duration input */}
+                    <div>
+                      <label className="block text-xs font-medium text-text-secondary mb-1">
+                        {t('stopDurationMinutes')}
+                      </label>
+                      <input
+                        type="number"
+                        value={Math.floor(zone.planned_duration_seconds / 60)}
+                        onChange={(e) => handleUpdateDuration(zone.feed_zone_id, parseInt(e.target.value) || 10)}
+                        min="1"
+                        max="60"
+                        className="w-full sm:w-32 px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-border-focus focus:border-border-focus text-text-primary bg-surface-background"
+                      />
+                    </div>
+
+                    {/* Arrival and Departure times */}
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-medium text-text-secondary mb-1">
+                          {t('arrivalTime')} ({t('optional')})
+                        </label>
+                        <input
+                          type="time"
+                          value={zone.planned_arrival_time || ''}
+                          onChange={(e) => handleUpdateArrivalTime(zone.feed_zone_id, e.target.value)}
+                          className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-border-focus focus:border-border-focus text-text-primary bg-surface-background dark:[color-scheme:dark]"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-text-secondary mb-1">
+                          {t('departureTime')} ({t('optional')})
+                        </label>
+                        <input
+                          type="time"
+                          value={zone.planned_departure_time || ''}
+                          onChange={(e) => handleUpdateDepartureTime(zone.feed_zone_id, e.target.value)}
+                          className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-border-focus focus:border-border-focus text-text-primary bg-surface-background dark:[color-scheme:dark]"
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <button

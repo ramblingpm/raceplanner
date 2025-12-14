@@ -197,6 +197,103 @@ export default function ReviewStep() {
             </div>
           </div>
         </div>
+
+        {/* Segment Speeds - only show if there are feed zones with arrival/departure times */}
+        {(() => {
+          // Check if any feed zones have both arrival and departure times
+          const hasTimedFeedZones = planData.selectedFeedZones.some(
+            z => z.planned_arrival_time && z.planned_departure_time
+          );
+
+          if (!hasTimedFeedZones || !race) return null;
+
+          // Sort feed zones by distance
+          const sortedZones = [...planData.selectedFeedZones].sort(
+            (a, b) => a.distance_from_start_km - b.distance_from_start_km
+          );
+
+          // Parse start time
+          const [startHours, startMinutes] = planData.startTime.split(':').map(Number);
+          const startDate = new Date(planData.startDate);
+          startDate.setHours(startHours, startMinutes, 0, 0);
+
+          // Calculate segments
+          const segments = [];
+          let previousDistance = 0;
+          let previousTime = startDate;
+
+          sortedZones.forEach((zone, index) => {
+            if (zone.planned_arrival_time) {
+              const [arrHours, arrMinutes] = zone.planned_arrival_time.split(':').map(Number);
+              const arrivalTime = new Date(planData.startDate);
+              arrivalTime.setHours(arrHours, arrMinutes, 0, 0);
+
+              // If arrival time is before previous time, it means next day
+              if (arrivalTime < previousTime) {
+                arrivalTime.setDate(arrivalTime.getDate() + 1);
+              }
+
+              const distanceCovered = zone.distance_from_start_km - previousDistance;
+              const timeSpent = (arrivalTime.getTime() - previousTime.getTime()) / 1000; // seconds
+              const averageSpeed = (distanceCovered / (timeSpent / 3600)).toFixed(1);
+
+              segments.push({
+                from: index === 0 ? t('start') : sortedZones[index - 1].name,
+                to: zone.name,
+                distance: distanceCovered,
+                speed: averageSpeed,
+              });
+
+              // Update for next segment (departure time)
+              if (zone.planned_departure_time) {
+                const [depHours, depMinutes] = zone.planned_departure_time.split(':').map(Number);
+                previousTime = new Date(planData.startDate);
+                previousTime.setHours(depHours, depMinutes, 0, 0);
+
+                // Check if departure is next day
+                if (previousTime < arrivalTime) {
+                  previousTime.setDate(previousTime.getDate() + 1);
+                }
+              }
+              previousDistance = zone.distance_from_start_km;
+            }
+          });
+
+          // Add final segment to finish
+          const lastZone = sortedZones[sortedZones.length - 1];
+          const remainingDistance = race.distance_km - previousDistance;
+          const finishTime = calculatedResults.finishTime;
+          const finalTimeSpent = (finishTime.getTime() - previousTime.getTime()) / 1000;
+          const finalSpeed = (remainingDistance / (finalTimeSpent / 3600)).toFixed(1);
+
+          segments.push({
+            from: lastZone.name,
+            to: t('finish'),
+            distance: remainingDistance,
+            speed: finalSpeed,
+          });
+
+          return (
+            <div className="bg-surface-background border border-border rounded-lg p-4">
+              <h3 className="text-sm font-medium text-text-muted mb-3">{t('segmentSpeeds')}</h3>
+              <div className="space-y-2">
+                {segments.map((segment, index) => (
+                  <div key={index} className="flex items-center justify-between text-sm">
+                    <div className="flex-1">
+                      <span className="text-text-secondary">{segment.from}</span>
+                      <span className="text-text-muted mx-2">→</span>
+                      <span className="text-text-secondary">{segment.to}</span>
+                      <span className="text-text-muted ml-2">({segment.distance.toFixed(1)} km)</span>
+                    </div>
+                    <div className="font-semibold text-text-primary">
+                      {segment.speed} km/h
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
       </div>
 
       {/* Map */}
