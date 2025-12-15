@@ -144,67 +144,135 @@ export default function FeedZonesStep() {
       {/* Selected Feed Zones */}
       {planData.selectedFeedZones.length > 0 && (
         <div className="space-y-3 mb-6">
-          {planData.selectedFeedZones.map((zone) => (
-            <div key={zone.feed_zone_id} className="bg-surface-background border border-border rounded-lg p-4">
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex-1">
-                  <h4 className="font-semibold text-text-primary">{zone.name}</h4>
-                  <p className="text-sm text-text-secondary">
-                    {zone.distance_from_start_km} {t('kmFromStart')}
-                  </p>
-                  <div className="mt-3 space-y-3">
-                    {/* Duration input */}
-                    <div>
-                      <label className="block text-xs font-medium text-text-secondary mb-1">
-                        {t('stopDurationMinutes')}
-                      </label>
-                      <input
-                        type="number"
-                        value={Math.floor(zone.planned_duration_seconds / 60)}
-                        onChange={(e) => handleUpdateDuration(zone.feed_zone_id, parseInt(e.target.value) || 10)}
-                        min="1"
-                        max="60"
-                        className="w-full sm:w-32 px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-border-focus focus:border-border-focus text-text-primary bg-surface-background"
-                      />
-                    </div>
+          {(() => {
+            // Sort zones by distance for calculation
+            const sortedZones = [...planData.selectedFeedZones].sort(
+              (a, b) => a.distance_from_start_km - b.distance_from_start_km
+            );
 
-                    {/* Arrival and Departure times */}
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-xs font-medium text-text-secondary mb-1">
-                          {t('arrivalTime')} ({t('optional')})
-                        </label>
-                        <input
-                          type="time"
-                          value={zone.planned_arrival_time || ''}
-                          onChange={(e) => handleUpdateArrivalTime(zone.feed_zone_id, e.target.value)}
-                          className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-border-focus focus:border-border-focus text-text-primary bg-surface-background dark:[color-scheme:dark]"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-medium text-text-secondary mb-1">
-                          {t('departureTime')} ({t('optional')})
-                        </label>
-                        <input
-                          type="time"
-                          value={zone.planned_departure_time || ''}
-                          onChange={(e) => handleUpdateDepartureTime(zone.feed_zone_id, e.target.value)}
-                          className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-border-focus focus:border-border-focus text-text-primary bg-surface-background dark:[color-scheme:dark]"
-                        />
+            // Helper to calculate required speed
+            const calculateRequiredSpeed = (zoneIndex: number) => {
+              const zone = sortedZones[zoneIndex];
+              if (!zone.planned_arrival_time || !race) return null;
+
+              // Parse start time
+              const [startHours, startMinutes] = planData.startTime.split(':').map(Number);
+              const startDate = new Date(planData.startDate);
+              startDate.setHours(startHours, startMinutes, 0, 0);
+
+              let previousTime = startDate;
+              let previousDistance = 0;
+
+              // If not the first zone, use the previous zone's departure time
+              if (zoneIndex > 0) {
+                const prevZone = sortedZones[zoneIndex - 1];
+                if (prevZone.planned_departure_time) {
+                  const [depHours, depMinutes] = prevZone.planned_departure_time.split(':').map(Number);
+                  previousTime = new Date(planData.startDate);
+                  previousTime.setHours(depHours, depMinutes, 0, 0);
+                  previousDistance = prevZone.distance_from_start_km;
+                } else {
+                  // If previous zone doesn't have departure time, can't calculate
+                  return null;
+                }
+              }
+
+              // Parse arrival time for current zone
+              const [arrHours, arrMinutes] = zone.planned_arrival_time.split(':').map(Number);
+              const arrivalTime = new Date(planData.startDate);
+              arrivalTime.setHours(arrHours, arrMinutes, 0, 0);
+
+              // Handle next day scenario
+              if (arrivalTime < previousTime) {
+                arrivalTime.setDate(arrivalTime.getDate() + 1);
+              }
+
+              const distanceCovered = zone.distance_from_start_km - previousDistance;
+              const timeSpent = (arrivalTime.getTime() - previousTime.getTime()) / 1000; // seconds
+
+              if (timeSpent <= 0) return null;
+
+              const averageSpeed = (distanceCovered / (timeSpent / 3600)).toFixed(1);
+              return averageSpeed;
+            };
+
+            return sortedZones.map((zone, index) => {
+              const requiredSpeed = calculateRequiredSpeed(index);
+
+              return (
+                <div key={zone.feed_zone_id} className="bg-surface-background border border-border rounded-lg p-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-text-primary">{zone.name}</h4>
+                      <p className="text-sm text-text-secondary">
+                        {zone.distance_from_start_km} {t('kmFromStart')}
+                      </p>
+
+                      {/* Required Speed Indicator */}
+                      {requiredSpeed && (
+                        <div className="mt-2 inline-flex items-center gap-2 px-3 py-1.5 bg-primary-subtle border border-primary rounded-lg">
+                          <span className="text-lg">⚡</span>
+                          <span className="text-sm font-semibold text-primary">
+                            {requiredSpeed} km/h {t('requiredPaceLabel')}
+                          </span>
+                        </div>
+                      )}
+
+                      <div className="mt-3 space-y-3">
+                        {/* Duration input */}
+                        <div>
+                          <label className="block text-xs font-medium text-text-secondary mb-1">
+                            {t('stopDurationMinutes')}
+                          </label>
+                          <input
+                            type="number"
+                            value={Math.floor(zone.planned_duration_seconds / 60)}
+                            onChange={(e) => handleUpdateDuration(zone.feed_zone_id, parseInt(e.target.value) || 10)}
+                            min="1"
+                            max="60"
+                            className="w-full sm:w-32 px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-border-focus focus:border-border-focus text-text-primary bg-surface-background"
+                          />
+                        </div>
+
+                        {/* Arrival and Departure times */}
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <label className="block text-xs font-medium text-text-secondary mb-1">
+                              {t('arrivalTime')} ({t('optional')})
+                            </label>
+                            <input
+                              type="time"
+                              value={zone.planned_arrival_time || ''}
+                              onChange={(e) => handleUpdateArrivalTime(zone.feed_zone_id, e.target.value)}
+                              className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-border-focus focus:border-border-focus text-text-primary bg-surface-background dark:[color-scheme:dark]"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-medium text-text-secondary mb-1">
+                              {t('departureTime')} ({t('optional')})
+                            </label>
+                            <input
+                              type="time"
+                              value={zone.planned_departure_time || ''}
+                              onChange={(e) => handleUpdateDepartureTime(zone.feed_zone_id, e.target.value)}
+                              className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-border-focus focus:border-border-focus text-text-primary bg-surface-background dark:[color-scheme:dark]"
+                            />
+                          </div>
+                        </div>
                       </div>
                     </div>
+                    <button
+                      onClick={() => handleRemoveFeedZone(zone.feed_zone_id)}
+                      className="p-2 text-error hover:bg-error-subtle rounded-lg transition-colors"
+                      aria-label={t('removeFeedZone')}
+                    >
+                      <TrashIcon className="w-5 h-5" />
+                    </button>
                   </div>
                 </div>
-                <button
-                  onClick={() => handleRemoveFeedZone(zone.feed_zone_id)}
-                  className="p-2 text-error hover:bg-error-subtle rounded-lg transition-colors"
-                  aria-label={t('removeFeedZone')}
-                >
-                  <TrashIcon className="w-5 h-5" />
-                </button>
-              </div>
-            </div>
-          ))}
+              );
+            });
+          })()}
         </div>
       )}
 
