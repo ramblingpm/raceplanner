@@ -52,11 +52,19 @@ export default function RacesPage() {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      <div>
-        <h2 className="text-xl sm:text-2xl font-bold text-text-primary">Race Plans</h2>
-        <p className="mt-1 text-sm text-text-muted">
-          Overview of all race plans and user activity
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-xl sm:text-2xl font-bold text-text-primary">Race Plans</h2>
+          <p className="mt-1 text-sm text-text-muted">
+            Overview of all race plans and user activity
+          </p>
+        </div>
+        <a
+          href="/admin/races/create"
+          className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors text-sm font-medium"
+        >
+          + Create Race
+        </a>
       </div>
 
       {/* Race Plans Per Race */}

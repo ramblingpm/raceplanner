@@ -7,6 +7,7 @@ export interface Race {
     type: string;
     coordinates: number[][];
   };
+  is_public: boolean;
   created_at: string;
 }
 
