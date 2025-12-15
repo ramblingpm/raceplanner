@@ -6,10 +6,11 @@ import { TrashIcon } from '@heroicons/react/24/outline';
 import { useWizard, WizardFeedZone } from '../WizardContext';
 import { getFeedZonesByRace } from '@/lib/feedZones';
 import { FeedZone } from '@/types';
+import SegmentOverview from '../SegmentOverview';
 
 export default function FeedZonesStep() {
   const t = useTranslations('wizard');
-  const { state, updatePlanData, nextStep } = useWizard();
+  const { state, updatePlanData, nextStep, calculateResults } = useWizard();
   const { race, planData } = state;
   const [availableFeedZones, setAvailableFeedZones] = useState<FeedZone[]>([]);
   const [loading, setLoading] = useState(true);
@@ -19,6 +20,11 @@ export default function FeedZonesStep() {
       loadFeedZones();
     }
   }, [race]);
+
+  // Recalculate results when feed zones change
+  useEffect(() => {
+    calculateResults();
+  }, [planData.selectedFeedZones]);
 
   const loadFeedZones = async () => {
     if (!race) return;
@@ -54,11 +60,23 @@ export default function FeedZonesStep() {
 
   const handleUpdateDuration = (feedZoneId: string, minutes: number) => {
     updatePlanData({
-      selectedFeedZones: planData.selectedFeedZones.map(z =>
-        z.feed_zone_id === feedZoneId
-          ? { ...z, planned_duration_seconds: minutes * 60 }
-          : z
-      ),
+      selectedFeedZones: planData.selectedFeedZones.map(z => {
+        if (z.feed_zone_id !== feedZoneId) return z;
+
+        const updatedZone = { ...z, planned_duration_seconds: minutes * 60 };
+
+        // If arrival time is set, calculate departure time
+        if (z.planned_arrival_time) {
+          const [arrHours, arrMinutes] = z.planned_arrival_time.split(':').map(Number);
+          const arrivalSeconds = arrHours * 3600 + arrMinutes * 60;
+          const departureSeconds = arrivalSeconds + (minutes * 60);
+          const depHours = Math.floor(departureSeconds / 3600) % 24;
+          const depMinutes = Math.floor((departureSeconds % 3600) / 60);
+          updatedZone.planned_departure_time = `${String(depHours).padStart(2, '0')}:${String(depMinutes).padStart(2, '0')}`;
+        }
+
+        return updatedZone;
+      }),
     });
   };
 
@@ -69,34 +87,17 @@ export default function FeedZonesStep() {
 
         const updatedZone = { ...z, planned_arrival_time: time };
 
-        // If both arrival and departure are set, calculate duration
-        if (time && z.planned_departure_time) {
+        // Calculate departure time from arrival time + duration
+        if (time) {
           const [arrHours, arrMinutes] = time.split(':').map(Number);
-          const [depHours, depMinutes] = z.planned_departure_time.split(':').map(Number);
           const arrivalSeconds = arrHours * 3600 + arrMinutes * 60;
-          const departureSeconds = depHours * 3600 + depMinutes * 60;
-          updatedZone.planned_duration_seconds = departureSeconds - arrivalSeconds;
-        }
-
-        return updatedZone;
-      }),
-    });
-  };
-
-  const handleUpdateDepartureTime = (feedZoneId: string, time: string) => {
-    updatePlanData({
-      selectedFeedZones: planData.selectedFeedZones.map(z => {
-        if (z.feed_zone_id !== feedZoneId) return z;
-
-        const updatedZone = { ...z, planned_departure_time: time };
-
-        // If both arrival and departure are set, calculate duration
-        if (z.planned_arrival_time && time) {
-          const [arrHours, arrMinutes] = z.planned_arrival_time.split(':').map(Number);
-          const [depHours, depMinutes] = time.split(':').map(Number);
-          const arrivalSeconds = arrHours * 3600 + arrMinutes * 60;
-          const departureSeconds = depHours * 3600 + depMinutes * 60;
-          updatedZone.planned_duration_seconds = departureSeconds - arrivalSeconds;
+          const departureSeconds = arrivalSeconds + z.planned_duration_seconds;
+          const depHours = Math.floor(departureSeconds / 3600) % 24;
+          const depMinutes = Math.floor((departureSeconds % 3600) / 60);
+          updatedZone.planned_departure_time = `${String(depHours).padStart(2, '0')}:${String(depMinutes).padStart(2, '0')}`;
+        } else {
+          // Clear departure time if arrival time is cleared
+          updatedZone.planned_departure_time = undefined;
         }
 
         return updatedZone;
@@ -145,97 +146,47 @@ export default function FeedZonesStep() {
       {planData.selectedFeedZones.length > 0 && (
         <div className="space-y-3 mb-6">
           {(() => {
-            // Sort zones by distance for calculation
-            const sortedZones = [...planData.selectedFeedZones].sort(
-              (a, b) => a.distance_from_start_km - b.distance_from_start_km
-            );
-
-            // Helper to calculate required speed
-            const calculateRequiredSpeed = (zoneIndex: number) => {
-              const zone = sortedZones[zoneIndex];
-              if (!zone.planned_arrival_time || !race) return null;
-
-              // Parse start time
-              const [startHours, startMinutes] = planData.startTime.split(':').map(Number);
-              const startDate = new Date(planData.startDate);
-              startDate.setHours(startHours, startMinutes, 0, 0);
-
-              let previousTime = startDate;
-              let previousDistance = 0;
-
-              // If not the first zone, use the previous zone's departure time
-              if (zoneIndex > 0) {
-                const prevZone = sortedZones[zoneIndex - 1];
-                if (prevZone.planned_departure_time) {
-                  const [depHours, depMinutes] = prevZone.planned_departure_time.split(':').map(Number);
-                  previousTime = new Date(planData.startDate);
-                  previousTime.setHours(depHours, depMinutes, 0, 0);
-                  previousDistance = prevZone.distance_from_start_km;
-                } else {
-                  // If previous zone doesn't have departure time, can't calculate
-                  return null;
-                }
-              }
-
-              // Parse arrival time for current zone
-              const [arrHours, arrMinutes] = zone.planned_arrival_time.split(':').map(Number);
-              const arrivalTime = new Date(planData.startDate);
-              arrivalTime.setHours(arrHours, arrMinutes, 0, 0);
-
-              // Handle next day scenario
-              if (arrivalTime < previousTime) {
-                arrivalTime.setDate(arrivalTime.getDate() + 1);
-              }
-
-              const distanceCovered = zone.distance_from_start_km - previousDistance;
-              const timeSpent = (arrivalTime.getTime() - previousTime.getTime()) / 1000; // seconds
-
-              if (timeSpent <= 0) return null;
-
-              const averageSpeed = (distanceCovered / (timeSpent / 3600)).toFixed(1);
-              return averageSpeed;
-            };
-
+            const sortedZones = planData.selectedFeedZones.sort((a, b) => a.distance_from_start_km - b.distance_from_start_km);
             return sortedZones.map((zone, index) => {
-              const requiredSpeed = calculateRequiredSpeed(index);
+              const previousDistance = index > 0 ? sortedZones[index - 1].distance_from_start_km : 0;
+              const distanceFromLast = zone.distance_from_start_km - previousDistance;
 
               return (
                 <div key={zone.feed_zone_id} className="bg-surface-background border border-border rounded-lg p-4">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
                       <h4 className="font-semibold text-text-primary">{zone.name}</h4>
-                      <p className="text-sm text-text-secondary">
-                        {zone.distance_from_start_km} {t('kmFromStart')}
-                      </p>
+                      <div className="flex items-center gap-3 text-sm text-text-secondary">
+                        <span>{zone.distance_from_start_km} {t('kmFromStart')}</span>
+                        {index > 0 && (
+                          <>
+                            <span className="text-text-muted">•</span>
+                            <span>{distanceFromLast.toFixed(1)} {t('kmFromLastStop')}</span>
+                          </>
+                        )}
+                      </div>
 
-                      {/* Required Speed Indicator */}
-                      {requiredSpeed && (
-                        <div className="mt-2 inline-flex items-center gap-2 px-3 py-1.5 bg-primary-subtle border border-primary rounded-lg">
-                          <span className="text-lg">⚡</span>
-                          <span className="text-sm font-semibold text-primary">
-                            {requiredSpeed} km/h {t('requiredPaceLabel')}
-                          </span>
-                        </div>
-                      )}
 
-                      <div className="mt-3 space-y-3">
-                        {/* Duration input */}
-                        <div>
-                          <label className="block text-xs font-medium text-text-secondary mb-1">
-                            {t('stopDurationMinutes')}
-                          </label>
-                          <input
-                            type="number"
-                            value={Math.floor(zone.planned_duration_seconds / 60)}
-                            onChange={(e) => handleUpdateDuration(zone.feed_zone_id, parseInt(e.target.value) || 10)}
-                            min="1"
-                            max="60"
-                            className="w-full sm:w-32 px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-border-focus focus:border-border-focus text-text-primary bg-surface-background"
-                          />
-                        </div>
 
-                        {/* Arrival and Departure times */}
-                        <div className="grid grid-cols-2 gap-3">
+                      <div className="mt-3">
+                        {/* Duration and Arrival time on same row */}
+                        <div className="grid grid-cols-2 gap-3 mb-2">
+                          {/* Duration input */}
+                          <div>
+                            <label className="block text-xs font-medium text-text-secondary mb-1">
+                              {t('stopDurationMinutes')}
+                            </label>
+                            <input
+                              type="number"
+                              value={Math.floor(zone.planned_duration_seconds / 60)}
+                              onChange={(e) => handleUpdateDuration(zone.feed_zone_id, parseInt(e.target.value) || 10)}
+                              min="1"
+                              max="60"
+                              className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-border-focus focus:border-border-focus text-text-primary bg-surface-background"
+                            />
+                          </div>
+
+                          {/* Arrival time */}
                           <div>
                             <label className="block text-xs font-medium text-text-secondary mb-1">
                               {t('arrivalTime')} ({t('optional')})
@@ -247,18 +198,14 @@ export default function FeedZonesStep() {
                               className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-border-focus focus:border-border-focus text-text-primary bg-surface-background dark:[color-scheme:dark]"
                             />
                           </div>
-                          <div>
-                            <label className="block text-xs font-medium text-text-secondary mb-1">
-                              {t('departureTime')} ({t('optional')})
-                            </label>
-                            <input
-                              type="time"
-                              value={zone.planned_departure_time || ''}
-                              onChange={(e) => handleUpdateDepartureTime(zone.feed_zone_id, e.target.value)}
-                              className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-border-focus focus:border-border-focus text-text-primary bg-surface-background dark:[color-scheme:dark]"
-                            />
-                          </div>
                         </div>
+
+                        {/* Departure time display */}
+                        {zone.planned_departure_time && (
+                          <p className="text-xs text-text-secondary">
+                            {t('departure')}: {zone.planned_departure_time}
+                          </p>
+                        )}
                       </div>
                     </div>
                     <button
@@ -274,6 +221,18 @@ export default function FeedZonesStep() {
             });
           })()}
         </div>
+      )}
+
+      {/* Segment Overview */}
+      {race && planData.selectedFeedZones.length > 0 && planData.selectedFeedZones.some(z => z.planned_arrival_time) && (
+        <SegmentOverview
+          race={race}
+          startDate={planData.startDate}
+          startTime={planData.startTime}
+          durationHours={planData.durationHours}
+          durationMinutes={planData.durationMinutes}
+          selectedFeedZones={planData.selectedFeedZones}
+        />
       )}
 
       {/* Add Feed Zone */}
@@ -315,17 +274,17 @@ export default function FeedZonesStep() {
       {/* Summary - Estimated Finish */}
       {planData.selectedFeedZones.length > 0 && (() => {
         // Calculate finish times
+        // totalDurationSeconds is the TOTAL time from start to finish (including stops)
         const totalDurationSeconds = (planData.durationHours * 3600) + (planData.durationMinutes * 60);
         const totalFeedZoneSeconds = planData.selectedFeedZones.reduce((sum, z) => sum + z.planned_duration_seconds, 0);
-        const newDurationSeconds = totalDurationSeconds + totalFeedZoneSeconds;
 
         // Parse start time
         const [hours, minutes] = planData.startTime.split(':').map(Number);
         const startDateTime = new Date(planData.startDate);
         startDateTime.setHours(hours, minutes, 0, 0);
 
-        // Calculate finish time
-        const newFinish = new Date(startDateTime.getTime() + (newDurationSeconds * 1000));
+        // Calculate finish time (duration already includes feed zone stops)
+        const newFinish = new Date(startDateTime.getTime() + (totalDurationSeconds * 1000));
 
         const formatTime = (date: Date) => {
           const h = String(date.getHours()).padStart(2, '0');

@@ -17,6 +17,9 @@ export interface RaceCalculationResult {
 
 /**
  * Calculate when the race will finish and the required average speed
+ *
+ * @param estimatedDurationSeconds - Total duration from start to finish (including stops)
+ * @param plannedStopDurationSeconds - Total time spent at feed zones (stops)
  */
 export function calculateRace({
   distanceKm,
@@ -24,16 +27,16 @@ export function calculateRace({
   estimatedDurationSeconds,
   plannedStopDurationSeconds = 0,
 }: CalculateRaceParams): RaceCalculationResult {
-  // Calculate finish time by adding total duration (riding time + stop time) to start time
-  const totalDurationSeconds = estimatedDurationSeconds + plannedStopDurationSeconds;
+  // Calculate finish time by adding estimated duration to start time
+  // estimatedDurationSeconds is the TOTAL time (riding + stops)
   const finishTime = new Date(
-    startTime.getTime() + totalDurationSeconds * 1000
+    startTime.getTime() + estimatedDurationSeconds * 1000
   );
 
   // Calculate required speed in km/h
   // Speed = Distance / Moving Time (riding time only, excluding stops)
-  // Time needs to be converted from seconds to hours
-  const movingTimeSeconds = estimatedDurationSeconds;
+  // Moving time = Total duration - Stop time
+  const movingTimeSeconds = estimatedDurationSeconds - plannedStopDurationSeconds;
   const movingTimeHours = movingTimeSeconds / 3600;
   const requiredSpeedKmh = distanceKm / movingTimeHours;
 

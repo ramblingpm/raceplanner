@@ -15,7 +15,7 @@ export default function PlanTimeStep() {
     if (planData.startDate && planData.startTime) {
       calculateResults();
     }
-  }, [planData.startDate, planData.startTime, planData.durationHours, planData.durationMinutes]);
+  }, [planData.startDate, planData.startTime, planData.durationHours, planData.durationMinutes, planData.selectedFeedZones]);
 
   const handleNext = () => {
     calculateResults();

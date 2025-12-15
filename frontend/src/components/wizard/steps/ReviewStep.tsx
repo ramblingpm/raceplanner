@@ -25,9 +25,14 @@ const RaceMap = dynamic(() => import('@/components/RaceMap'), {
 export default function ReviewStep() {
   const t = useTranslations('wizard');
   const locale = useLocale();
-  const { state, goToStep, nextStep } = useWizard();
+  const { state, goToStep, nextStep, calculateResults } = useWizard();
   const { race, planData, calculatedResults } = state;
   const [feedZones, setFeedZones] = useState<FeedZone[]>([]);
+
+  // Ensure calculations are up-to-date when entering review step
+  useEffect(() => {
+    calculateResults();
+  }, []);
 
   useEffect(() => {
     if (race && planData.selectedFeedZones.length > 0) {

@@ -160,7 +160,7 @@ export default function DashboardPage() {
                   className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary-hover transition-colors shadow-md hover:shadow-lg"
                 >
                   <PlusIcon className="w-5 h-5" />
-                  Create New Plan
+                  {t('addPlan')}
                 </button>
               </div>
 
@@ -190,7 +190,7 @@ export default function DashboardPage() {
                           {race.name}
                         </h3>
                         <p className="text-text-secondary mb-4">
-                          Distance: {race.distance_km} km
+                          {t('distance')}: {race.distance_km} km
                         </p>
                         <button
                           className="w-full bg-primary text-primary-foreground py-2 px-4 rounded-md hover:bg-primary-hover transition-colors"

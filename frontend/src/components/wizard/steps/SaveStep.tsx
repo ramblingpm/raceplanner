@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { useWizard } from '../WizardContext';
 
@@ -11,10 +11,15 @@ interface SaveStepProps {
 
 export default function SaveStep({ onClose, onComplete }: SaveStepProps) {
   const t = useTranslations('wizard');
-  const { state, updatePlanData, savePlan } = useWizard();
+  const { state, updatePlanData, savePlan, calculateResults } = useWizard();
   const { planData } = state;
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Ensure calculations are up-to-date when entering save step
+  useEffect(() => {
+    calculateResults();
+  }, []);
 
   const handleSave = async () => {
     if (!planData.label.trim()) {
