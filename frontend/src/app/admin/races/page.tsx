@@ -91,6 +91,9 @@ export default function RacesPage() {
                   <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
                     Unique Users
                   </th>
+                  <th className="px-4 sm:px-6 py-3 text-right text-xs font-medium text-text-secondary uppercase tracking-wider">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-surface-background divide-y divide-border">
@@ -104,6 +107,14 @@ export default function RacesPage() {
                     </td>
                     <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
                       {race.unique_users}
+                    </td>
+                    <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-right text-sm">
+                      <a
+                        href={`/admin/races/${race.race_id}/edit`}
+                        className="inline-flex items-center gap-1 text-primary hover:text-primary-hover font-medium"
+                      >
+                        Edit
+                      </a>
                     </td>
                   </tr>
                 ))}

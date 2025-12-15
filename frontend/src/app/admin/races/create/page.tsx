@@ -22,6 +22,8 @@ export default function CreateRacePage() {
   const [raceName, setRaceName] = useState('');
   const [distanceKm, setDistanceKm] = useState<number>(0);
   const [isPublic, setIsPublic] = useState(false);
+  const [startDate, setStartDate] = useState<string>('');
+  const [endDate, setEndDate] = useState<string>('');
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [parsedRoute, setParsedRoute] = useState<ParsedRoute | null>(null);
 
@@ -173,6 +175,8 @@ export default function CreateRacePage() {
           slug,
           distance_km: distanceKm,
           is_public: isPublic,
+          start_date: startDate || null,
+          end_date: endDate || null,
           route_geometry: {
             type: 'LineString',
             coordinates: parsedRoute.coordinates,
@@ -297,6 +301,41 @@ export default function CreateRacePage() {
           <p className="mt-1 text-xs text-text-muted">
             Auto-calculated from GPX file, but you can adjust it
           </p>
+        </div>
+
+        {/* Race Dates */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="startDate" className="block text-sm font-medium text-text-secondary mb-2">
+              Start Date (Optional)
+            </label>
+            <input
+              type="date"
+              id="startDate"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-text-primary bg-surface-background"
+            />
+            <p className="mt-1 text-xs text-text-muted">
+              First date the race can start
+            </p>
+          </div>
+          <div>
+            <label htmlFor="endDate" className="block text-sm font-medium text-text-secondary mb-2">
+              End Date (Optional)
+            </label>
+            <input
+              type="date"
+              id="endDate"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              min={startDate || undefined}
+              className="w-full px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-text-primary bg-surface-background"
+            />
+            <p className="mt-1 text-xs text-text-muted">
+              Last date the race can start
+            </p>
+          </div>
         </div>
 
         {/* Is Public Toggle */}

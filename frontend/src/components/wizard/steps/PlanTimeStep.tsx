@@ -22,18 +22,13 @@ export default function PlanTimeStep() {
     nextStep();
   };
 
-  // Get allowed dates for the race, this should probably be put in the race databse in the future
-  const getAllowedDates = () => {
-    if (race?.name.toLowerCase().includes('vätternrundan')) {
-      return {
-        min: '2026-06-11',
-        max: '2026-06-12'
-      };
-    }
-    return null;
-  };
-
-  const allowedDates = getAllowedDates();
+  // Get allowed dates from the race's database fields
+  const allowedDates = race?.start_date && race?.end_date
+    ? {
+        min: race.start_date,
+        max: race.end_date
+      }
+    : null;
 
   // Format finish time for preview
   const formatFinishTime = () => {

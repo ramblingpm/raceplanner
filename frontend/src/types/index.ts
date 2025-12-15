@@ -8,6 +8,8 @@ export interface Race {
     coordinates: number[][];
   };
   is_public: boolean;
+  start_date?: string | null;
+  end_date?: string | null;
   created_at: string;
 }
 
