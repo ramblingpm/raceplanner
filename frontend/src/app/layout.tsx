@@ -7,6 +7,7 @@ import { getMessages } from 'next-intl/server';
 import CookieConsent from '@/components/CookieConsent';
 import ConsentManager from '@/components/ConsentManager';
 import { ThemeProvider, themeScript } from '@/design-system';
+import { FeatureFlagProvider } from '@/contexts/FeatureFlagContext';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -39,9 +40,11 @@ export default async function RootLayout({
         <ThemeProvider>
           <NextIntlClientProvider messages={messages}>
             <AuthProvider>
-              {children}
-              <ConsentManager />
-              <CookieConsent />
+              <FeatureFlagProvider>
+                {children}
+                <ConsentManager />
+                <CookieConsent />
+              </FeatureFlagProvider>
             </AuthProvider>
           </NextIntlClientProvider>
         </ThemeProvider>
