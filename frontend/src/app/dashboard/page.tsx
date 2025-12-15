@@ -3,13 +3,24 @@
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import Header from '@/components/Header';
 import PageViewTracker from '@/components/PageViewTracker';
 import WizardModal from '@/components/wizard/WizardModal';
 import { supabase } from '@/lib/supabase';
 import { Race } from '@/types';
-import { DocumentDuplicateIcon, TrashIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { DocumentDuplicateIcon, TrashIcon, PlusIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+
+// Dynamically import RaceMap with no SSR
+const RaceMap = dynamic(() => import('@/components/RaceMap'), {
+  ssr: false,
+  loading: () => (
+    <div className="h-full bg-surface-1 flex items-center justify-center">
+      <p className="text-text-muted">Loading map...</p>
+    </div>
+  ),
+});
 import {
   trackPlanCopied,
   trackPlanDeleted,
@@ -26,6 +37,7 @@ export default function DashboardPage() {
   const [savedCalculations, setSavedCalculations] = useState<any[]>([]);
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [editingCalculation, setEditingCalculation] = useState<any>(null);
+  const [currentRaceIndex, setCurrentRaceIndex] = useState(0);
 
   useEffect(() => {
     fetchRaces();
@@ -130,6 +142,28 @@ export default function DashboardPage() {
     setEditingCalculation(null);
   };
 
+  const handlePreviousRace = () => {
+    setCurrentRaceIndex((prev) => (prev === 0 ? races.length - 1 : prev - 1));
+  };
+
+  const handleNextRace = () => {
+    setCurrentRaceIndex((prev) => (prev === races.length - 1 ? 0 : prev + 1));
+  };
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') {
+        setCurrentRaceIndex((prev) => (prev === 0 ? races.length - 1 : prev - 1));
+      } else if (e.key === 'ArrowRight') {
+        setCurrentRaceIndex((prev) => (prev === races.length - 1 ? 0 : prev + 1));
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [races.length]);
+
   return (
     <ProtectedRoute>
       <PageViewTracker pageName="Dashboard" />
@@ -164,46 +198,117 @@ export default function DashboardPage() {
                 </button>
               </div>
 
-              {/* Race Cards */}
+              {/* Race Carousel */}
               <div className="mb-12">
                 <h2 className="text-2xl font-bold mb-6 text-text-primary">
                   {t('availableRaces')}
                 </h2>
 
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {races.map((race) => (
-                    <div
-                      key={race.id}
-                      className="bg-surface-background rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer border border-border"
-                      onClick={() => handleSelectRace(race)}
+                <div className="relative max-w-2xl mx-auto">
+                  {/* Left Arrow */}
+                  {races.length > 1 && (
+                    <button
+                      onClick={handlePreviousRace}
+                      className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 sm:-translate-x-12 z-20 p-2 sm:p-3 bg-surface-background border border-border rounded-full shadow-lg hover:bg-surface-1 transition-colors"
+                      aria-label="Previous race"
                     >
-                      <div className="h-48 bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
-                        <div className="text-center text-white">
-                          <div className="text-6xl mb-2">🚴</div>
-                          <div className="text-xl font-semibold">
-                            {race.distance_km} km
+                      <ChevronLeftIcon className="w-6 h-6 sm:w-8 sm:h-8 text-text-primary" />
+                    </button>
+                  )}
+
+                  {/* Race Card */}
+                  <div className="overflow-hidden">
+                    <div
+                      className="transition-transform duration-300 ease-in-out"
+                      style={{ transform: `translateX(-${currentRaceIndex * 100}%)` }}
+                    >
+                      <div className="flex">
+                        {races.map((race) => (
+                          <div
+                            key={race.id}
+                            className="w-full flex-shrink-0 px-2"
+                          >
+                            <div
+                              className="bg-surface-background rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer border border-border"
+                              onClick={() => handleSelectRace(race)}
+                            >
+                              {/* Map Header */}
+                              <div className="relative h-64 overflow-hidden">
+                                {race.route_geometry?.coordinates ? (
+                                  <>
+                                    <div className="absolute inset-0">
+                                      <RaceMap
+                                        routeCoordinates={race.route_geometry.coordinates as number[][]}
+                                        interactive={false}
+                                      />
+                                    </div>
+                                    {/* Overlay with bike icon and distance */}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent flex items-center justify-center pointer-events-none">
+                                      <div className="text-center text-white">
+                                        <div className="text-5xl mb-2">🚴</div>
+                                        <div className="text-lg font-semibold drop-shadow-lg">
+                                          {race.distance_km} km
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </>
+                                ) : (
+                                  <div className="h-full bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
+                                    <div className="text-center text-white">
+                                      <div className="text-5xl mb-2">🚴</div>
+                                      <div className="text-lg font-semibold">
+                                        {race.distance_km} km
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+
+                              {/* Card Content */}
+                              <div className="p-6 bg-surface-background">
+                                <h3 className="text-xl font-bold text-text-primary mb-2">
+                                  {race.name}
+                                </h3>
+                                <p className="text-text-secondary mb-4">
+                                  {t('distance')}: {race.distance_km} km
+                                </p>
+
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                      <div className="p-6">
-                        <h3 className="text-xl font-bold text-text-primary mb-2">
-                          {race.name}
-                        </h3>
-                        <p className="text-text-secondary mb-4">
-                          {t('distance')}: {race.distance_km} km
-                        </p>
-                        <button
-                          className="w-full bg-primary text-primary-foreground py-2 px-4 rounded-md hover:bg-primary-hover transition-colors"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleSelectRace(race);
-                          }}
-                        >
-                          {t('selectRace')}
-                        </button>
+                        ))}
                       </div>
                     </div>
-                  ))}
+                  </div>
+
+                  {/* Right Arrow */}
+                  {races.length > 1 && (
+                    <button
+                      onClick={handleNextRace}
+                      className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 sm:translate-x-12 z-20 p-2 sm:p-3 bg-surface-background border border-border rounded-full shadow-lg hover:bg-surface-1 transition-colors"
+                      aria-label="Next race"
+                    >
+                      <ChevronRightIcon className="w-6 h-6 sm:w-8 sm:h-8 text-text-primary" />
+                    </button>
+                  )}
+
+                  {/* Dots Indicator */}
+                  {races.length > 1 && (
+                    <div className="relative z-10 flex justify-center gap-2 mt-6">
+                      {races.map((_, index) => (
+                        <button
+                          key={index}
+                          onClick={() => setCurrentRaceIndex(index)}
+                          className={`w-2 h-2 rounded-full transition-all ${
+                            index === currentRaceIndex
+                              ? 'bg-primary w-8'
+                              : 'bg-border hover:bg-border-focus'
+                          }`}
+                          aria-label={`Go to race ${index + 1}`}
+                        />
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 <div className="text-center mt-8">

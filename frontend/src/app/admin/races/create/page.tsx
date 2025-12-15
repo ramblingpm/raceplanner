@@ -152,6 +152,19 @@ export default function CreateRacePage() {
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-+|-+$/g, '');
 
+      // Check if slug already exists
+      const { data: existingRace } = await supabase
+        .from('races')
+        .select('id, name')
+        .eq('slug', slug)
+        .single();
+
+      if (existingRace) {
+        setError(`A race with a similar name already exists: "${existingRace.name}". Please choose a different name.`);
+        setSaving(false);
+        return;
+      }
+
       // Insert race
       const { data: race, error: raceError } = await supabase
         .from('races')

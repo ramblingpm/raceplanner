@@ -18,12 +18,14 @@ interface RaceMapProps {
   routeCoordinates?: number[][];
   selectedFeedZones?: FeedZoneMarker[];
   className?: string;
+  interactive?: boolean;
 }
 
 export default function RaceMap({
   routeCoordinates,
   selectedFeedZones = [],
   className = '',
+  interactive = true,
 }: RaceMapProps) {
   const mapRef = useRef<L.Map | null>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
@@ -34,10 +36,15 @@ export default function RaceMap({
 
     // Initialize map only once
     if (!mapRef.current) {
-      mapRef.current = L.map(mapContainerRef.current).setView(
-        [52.3676, 4.9041],
-        13
-      );
+      mapRef.current = L.map(mapContainerRef.current, {
+        dragging: interactive,
+        touchZoom: interactive,
+        doubleClickZoom: interactive,
+        scrollWheelZoom: interactive,
+        boxZoom: interactive,
+        keyboard: interactive,
+        zoomControl: interactive,
+      }).setView([52.3676, 4.9041], 13);
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution:
@@ -121,7 +128,7 @@ export default function RaceMap({
       }
 
       // Fit map to route bounds
-      mapRef.current.fitBounds(polyline.getBounds(), { padding: [5, 5] });
+      mapRef.current.fitBounds(polyline.getBounds(), { padding: [20, 20] });
     }
 
     return () => {
@@ -131,13 +138,17 @@ export default function RaceMap({
         mapRef.current = null;
       }
     };
-  }, [routeCoordinates, selectedFeedZones]);
+  }, [routeCoordinates, selectedFeedZones, interactive]);
 
   return (
     <div
       ref={mapContainerRef}
-      className={`rounded-lg overflow-hidden ${className}`}
-      style={{ height: '600px', maxWidth: '800px', width: '100%', margin: '0 auto' }}
+      className={className || 'rounded-lg overflow-hidden'}
+      style={{
+        height: '100%',
+        width: '100%',
+        cursor: interactive ? 'grab' : 'default'
+      }}
     />
   );
 }
