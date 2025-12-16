@@ -83,8 +83,10 @@ export default function ReviewStep() {
     });
   };
 
+  // Filter to only include feed zones with actual stops (duration > 0)
+  const feedZonesWithStops = planData.selectedFeedZones.filter(z => z.planned_duration_seconds > 0);
   const totalFeedZoneMinutes = Math.floor(
-    planData.selectedFeedZones.reduce((sum, z) => sum + z.planned_duration_seconds, 0) / 60
+    feedZonesWithStops.reduce((sum, z) => sum + z.planned_duration_seconds, 0) / 60
   );
 
   return (
@@ -153,8 +155,8 @@ export default function ReviewStep() {
           </div>
         </div>
 
-        {/* Feed Zones */}
-        {planData.selectedFeedZones.length > 0 && (
+        {/* Feed Zones - Only show if there are actual stops (duration > 0) */}
+        {feedZonesWithStops.length > 0 && (
           <div className="bg-surface-background border border-border rounded-lg p-4">
             <div className="flex items-start justify-between mb-3">
               <h3 className="text-sm font-medium text-text-muted">{t('feedZones')}</h3>
@@ -171,10 +173,10 @@ export default function ReviewStep() {
             </div>
             <div>
               <p className="font-semibold text-text-primary mb-2">
-                {planData.selectedFeedZones.length} {planData.selectedFeedZones.length !== 1 ? t('stops') : t('stop')} • {totalFeedZoneMinutes} {t('minutesTotal')}
+                {feedZonesWithStops.length} {feedZonesWithStops.length !== 1 ? t('stops') : t('stop')} • {totalFeedZoneMinutes} {t('minutesTotal')}
               </p>
               <div className="space-y-1">
-                {planData.selectedFeedZones.map((zone) => (
+                {feedZonesWithStops.map((zone) => (
                   <div key={zone.feed_zone_id} className="text-sm text-text-secondary">
                     • {zone.name} ({Math.floor(zone.planned_duration_seconds / 60)} {t('min')})
                   </div>

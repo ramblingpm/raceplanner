@@ -86,9 +86,10 @@ export default function DashboardPage() {
   };
 
   const handleEdit = (calculation: any) => {
-    trackAddPlanModalOpened('edit_existing_plan');
-    setEditingCalculation(calculation);
-    setIsWizardOpen(true);
+    // Navigate to the race page with the plan ID
+    if (calculation.races?.slug) {
+      router.push(`/${calculation.races.slug}?plan=${calculation.id}`);
+    }
   };
 
   const handleCopy = async (calculation: any) => {

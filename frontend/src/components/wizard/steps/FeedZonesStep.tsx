@@ -282,6 +282,9 @@ export default function FeedZonesStep() {
         const totalDurationSeconds = (planData.durationHours * 3600) + (planData.durationMinutes * 60);
         const totalFeedZoneSeconds = planData.selectedFeedZones.reduce((sum, z) => sum + z.planned_duration_seconds, 0);
 
+        // Count only feed zones with actual stops (duration > 0)
+        const actualStopsCount = planData.selectedFeedZones.filter(z => z.planned_duration_seconds > 0).length;
+
         // Parse start time
         const [hours, minutes] = planData.startTime.split(':').map(Number);
         const startDateTime = new Date(planData.startDate);
@@ -308,12 +311,17 @@ export default function FeedZonesStep() {
         const needsSpeed = race ? (race.distance_km / (ridingTimeSeconds / 3600)).toFixed(1) : null;
         const totalMinutes = Math.floor(totalFeedZoneSeconds / 60);
 
+        // Only show summary if there are actual stops (duration > 0)
+        if (actualStopsCount === 0 && totalMinutes === 0) {
+          return null;
+        }
+
         return (
           <div className="bg-info-subtle border border-info rounded-lg p-4 mb-6">
             <div className="flex items-center gap-2 mb-3">
               <span className="text-2xl">🍔</span>
               <h3 className="text-sm font-semibold text-info-foreground">
-                {planData.selectedFeedZones.length} {planData.selectedFeedZones.length !== 1 ? t('feedZoneCountPlural') : t('feedZoneCount')}
+                {actualStopsCount} {actualStopsCount !== 1 ? t('feedZoneCountPlural') : t('feedZoneCount')}
               </h3>
             </div>
             <p className="text-sm text-info-foreground mb-2">

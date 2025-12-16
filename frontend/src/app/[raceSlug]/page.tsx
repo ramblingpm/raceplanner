@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 import dynamic from 'next/dynamic';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
@@ -38,7 +38,9 @@ const RaceMap = dynamic(() => import('@/components/RaceMap'), {
 export default function RacePage() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const raceSlug = params.raceSlug as string;
+  const planId = searchParams.get('plan');
   const t = useTranslations('dashboard');
   const tMap = useTranslations('raceMap');
   const tCommon = useTranslations('common');
@@ -77,6 +79,18 @@ export default function RacePage() {
       trackRaceSelected(race.name, race.id);
     }
   }, [race]);
+
+  // Auto-load plan from URL parameter
+  useEffect(() => {
+    if (planId && savedCalculations.length > 0) {
+      const calculation = savedCalculations.find(calc => calc.id === planId);
+      if (calculation) {
+        handleEdit(calculation);
+        // Clean up the URL
+        router.replace(`/${raceSlug}`, { scroll: false });
+      }
+    }
+  }, [planId, savedCalculations, raceSlug]);
 
   // Track when modal opens with map
   useEffect(() => {
