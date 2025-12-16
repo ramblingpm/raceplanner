@@ -41,102 +41,96 @@ export default function SegmentOverview({
       (a, b) => a.distance_from_start_km - b.distance_from_start_km
     );
 
+    // Filter to only zones with arrival times (these are waypoints for segment calculation)
+    const zonesWithTimes = sortedZones.filter(z => z.planned_arrival_time);
+
     // Parse start time
     const [startHours, startMinutes] = startTime.split(':').map(Number);
     const startDateTime = new Date(startDate);
     startDateTime.setHours(startHours, startMinutes, 0, 0);
 
-    let previousTime = startDateTime;
-    let previousDistance = 0;
-    let previousName = t('startPoint');
+    // Calculate estimated finish time
+    const totalDurationSeconds = (durationHours * 3600) + (durationMinutes * 60);
+    const finishTime = new Date(startDateTime.getTime() + (totalDurationSeconds * 1000));
 
-    // Create segments for each feed zone
-    sortedZones.forEach((zone, index) => {
-      let requiredSpeed: number | null = null;
+    // Build waypoints: Start -> Zones with times -> Finish
+    interface Waypoint {
+      name: string;
+      distance: number;
+      time: Date;
+    }
 
-      // Calculate required speed if arrival time is set
-      if (zone.planned_arrival_time) {
-        const [arrHours, arrMinutes] = zone.planned_arrival_time.split(':').map(Number);
-        const arrivalTime = new Date(startDate);
-        arrivalTime.setHours(arrHours, arrMinutes, 0, 0);
+    const waypoints: Waypoint[] = [
+      {
+        name: t('start'),
+        distance: 0,
+        time: startDateTime,
+      }
+    ];
+
+    // Add zones with times as waypoints
+    zonesWithTimes.forEach(zone => {
+      const [arrHours, arrMinutes] = zone.planned_arrival_time!.split(':').map(Number);
+      const arrivalTime = new Date(startDate);
+      arrivalTime.setHours(arrHours, arrMinutes, 0, 0);
+
+      // Handle next day scenario
+      const prevTime = waypoints[waypoints.length - 1].time;
+      if (arrivalTime < prevTime) {
+        arrivalTime.setDate(arrivalTime.getDate() + 1);
+      }
+
+      waypoints.push({
+        name: zone.name,
+        distance: zone.distance_from_start_km,
+        time: arrivalTime,
+      });
+
+      // If zone has departure time (stopped there), update time for next segment
+      if (zone.planned_departure_time && zone.planned_duration_seconds > 0) {
+        const [depHours, depMinutes] = zone.planned_departure_time.split(':').map(Number);
+        const departureTime = new Date(startDate);
+        departureTime.setHours(depHours, depMinutes, 0, 0);
 
         // Handle next day scenario
-        if (arrivalTime < previousTime) {
-          arrivalTime.setDate(arrivalTime.getDate() + 1);
+        if (departureTime < arrivalTime) {
+          departureTime.setDate(departureTime.getDate() + 1);
         }
 
-        const distanceCovered = zone.distance_from_start_km - previousDistance;
-        const timeSpent = (arrivalTime.getTime() - previousTime.getTime()) / 1000; // seconds
+        // Update the time for this waypoint to departure time
+        waypoints[waypoints.length - 1].time = departureTime;
+      }
+    });
 
-        if (timeSpent > 0) {
-          requiredSpeed = distanceCovered / (timeSpent / 3600);
-        }
+    // Add finish as final waypoint
+    waypoints.push({
+      name: t('finish'),
+      distance: race.distance_km,
+      time: finishTime,
+    });
+
+    // Create segments between consecutive waypoints
+    for (let i = 0; i < waypoints.length - 1; i++) {
+      const from = waypoints[i];
+      const to = waypoints[i + 1];
+
+      const distanceCovered = to.distance - from.distance;
+      const timeSpent = (to.time.getTime() - from.time.getTime()) / 1000; // seconds
+
+      let requiredSpeed: number | null = null;
+      if (timeSpent > 0) {
+        requiredSpeed = distanceCovered / (timeSpent / 3600);
       }
 
       segments.push({
-        fromName: previousName,
-        toName: zone.name,
-        fromDistance: previousDistance,
-        toDistance: zone.distance_from_start_km,
-        distance: zone.distance_from_start_km - previousDistance,
+        fromName: from.name,
+        toName: to.name,
+        fromDistance: from.distance,
+        toDistance: to.distance,
+        distance: distanceCovered,
         requiredSpeed,
       });
-
-      // Update previous values for next iteration
-      if (zone.planned_departure_time) {
-        const [depHours, depMinutes] = zone.planned_departure_time.split(':').map(Number);
-        previousTime = new Date(startDate);
-        previousTime.setHours(depHours, depMinutes, 0, 0);
-      } else {
-        // If no departure time, use arrival time
-        if (zone.planned_arrival_time) {
-          const [arrHours, arrMinutes] = zone.planned_arrival_time.split(':').map(Number);
-          previousTime = new Date(startDate);
-          previousTime.setHours(arrHours, arrMinutes, 0, 0);
-        }
-      }
-      previousDistance = zone.distance_from_start_km;
-      previousName = zone.name;
-    });
-
-    // Add final segment to goal
-    const lastFeedZone = sortedZones[sortedZones.length - 1];
-
-    // Calculate required speed for final segment using estimated finish time
-    let finalSegmentSpeed: number | null = null;
-
-    if (lastFeedZone && lastFeedZone.planned_departure_time) {
-      // Calculate estimated finish time based on duration
-      // totalDurationSeconds is the TOTAL time (including all stops)
-      const totalDurationSeconds = (durationHours * 3600) + (durationMinutes * 60);
-      const finishTime = new Date(startDateTime.getTime() + (totalDurationSeconds * 1000));
-
-      // Get last departure time
-      const [depHours, depMinutes] = lastFeedZone.planned_departure_time.split(':').map(Number);
-      const departureTime = new Date(startDate);
-      departureTime.setHours(depHours, depMinutes, 0, 0);
-
-      // Handle next day scenario
-      if (departureTime < previousTime) {
-        departureTime.setDate(departureTime.getDate() + 1);
-      }
-
-      const distanceCovered = race.distance_km - previousDistance;
-      const timeSpent = (finishTime.getTime() - departureTime.getTime()) / 1000; // seconds
-
-      if (timeSpent > 0) {
-        finalSegmentSpeed = distanceCovered / (timeSpent / 3600);
-      }
     }
-
-    segments.push({
-      fromName: previousName,
-      toName: t('goalPoint'),
-      fromDistance: previousDistance,
-      toDistance: race.distance_km,
-      distance: race.distance_km - previousDistance,
-      requiredSpeed: finalSegmentSpeed,
-    });
 
     return segments;
   };
@@ -212,42 +206,8 @@ export default function SegmentOverview({
         ))}
       </div>
 
-      {/* Overall Stats */}
-      {(() => {
-        const segmentsWithSpeed = segments.filter(s => s.requiredSpeed !== null);
-
-        // Calculate overall required pace (same calculation as in FeedZonesStep)
-        // Speed = distance / riding time (excluding feed zone stops)
-        const totalDurationSeconds = (durationHours * 3600) + (durationMinutes * 60);
-        const totalFeedZoneSeconds = selectedFeedZones.reduce((sum, z) => sum + z.planned_duration_seconds, 0);
-        const ridingTimeSeconds = totalDurationSeconds - totalFeedZoneSeconds;
-        const requiredPace = race.distance_km / (ridingTimeSeconds / 3600);
-
-        if (segmentsWithSpeed.length > 0) {
-          const maxSpeed = Math.max(...segmentsWithSpeed.map(s => s.requiredSpeed || 0));
-          const minSpeed = Math.min(...segmentsWithSpeed.map(s => s.requiredSpeed || 0));
-
-          return (
-            <div className="mt-4 pt-4 border-t border-border">
-              <div className="grid grid-cols-3 gap-3 text-center">
-                <div>
-                  <div className="text-xs text-text-secondary mb-1">{t('minSpeed')}</div>
-                  <div className="text-sm font-semibold text-text-primary">{minSpeed.toFixed(1)} km/h</div>
-                </div>
-                <div>
-                  <div className="text-xs text-text-secondary mb-1">{t('requiredPaceLabel')}</div>
-                  <div className="text-sm font-semibold text-text-primary">{requiredPace.toFixed(1)} km/h</div>
-                </div>
-                <div>
-                  <div className="text-xs text-text-secondary mb-1">{t('maxSpeed')}</div>
-                  <div className="text-sm font-semibold text-text-primary">{maxSpeed.toFixed(1)} km/h</div>
-                </div>
-              </div>
-            </div>
-          );
-        }
-        return null;
-      })()}
+      
+      
     </div>
   );
 }

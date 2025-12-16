@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { XMarkIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { WizardProvider, useWizard } from './WizardContext';
 import WizardStepIndicator from './WizardStepIndicator';
@@ -21,6 +22,7 @@ interface WizardModalProps {
 }
 
 function WizardContent({ onClose, onComplete }: { onClose: () => void; onComplete?: (calculationId: string) => void }) {
+  const t = useTranslations('wizard');
   const { state, prevStep, resetWizard } = useWizard();
   const { currentStep } = state;
   const [showConfirmClose, setShowConfirmClose] = useState(false);
@@ -90,7 +92,7 @@ function WizardContent({ onClose, onComplete }: { onClose: () => void; onComplet
 
               {/* Title - Desktop */}
               <h2 className="hidden md:block text-xl font-semibold text-text-primary">
-                {state.isEditing ? 'Edit Plan' : 'Create Plan'}
+                {state.isEditing ? t('editPlan') : t('createPlan')}
               </h2>
 
               {/* Close button - Desktop only */}
@@ -124,23 +126,23 @@ function WizardContent({ onClose, onComplete }: { onClose: () => void; onComplet
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
           <div className="bg-surface-background rounded-lg shadow-xl max-w-sm w-full p-6 border border-border">
             <h3 className="text-lg font-semibold text-text-primary mb-2">
-              Discard changes?
+              {t('discardChangesTitle')}
             </h3>
             <p className="text-sm text-text-secondary mb-6">
-              You have unsaved changes. Are you sure you want to close the wizard?
+              {t('discardChangesMessage')}
             </p>
             <div className="flex gap-3">
               <button
                 onClick={handleCancelDiscard}
                 className="flex-1 px-4 py-2 bg-surface-2 text-text-secondary rounded-lg hover:bg-surface-3 transition-colors font-medium"
               >
-                Cancel
+                {t('cancel')}
               </button>
               <button
                 onClick={handleConfirmDiscard}
                 className="flex-1 px-4 py-2 bg-error text-error-foreground rounded-lg hover:opacity-90 transition-colors font-medium"
               >
-                Discard
+                {t('discard')}
               </button>
             </div>
           </div>

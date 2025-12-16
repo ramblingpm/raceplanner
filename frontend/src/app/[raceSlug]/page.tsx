@@ -133,7 +133,9 @@ export default function RacePage() {
             id,
             name,
             slug,
-            distance_km
+            distance_km,
+            start_date,
+            end_date
           )
         `)
         .eq('race_id', race.id)

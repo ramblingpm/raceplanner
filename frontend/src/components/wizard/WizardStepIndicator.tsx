@@ -81,7 +81,7 @@ export default function WizardStepIndicator() {
         {/* Text indicator */}
         <div className="text-center mb-3">
           <p className="text-sm text-text-secondary">
-            Step {currentStep} of {steps.length}: <span className="font-semibold text-text-primary">{steps[currentStep - 1].label}</span>
+            {t('stepXOfY', { current: currentStep, total: steps.length })}: <span className="font-semibold text-text-primary">{steps[currentStep - 1].label}</span>
           </p>
         </div>
 

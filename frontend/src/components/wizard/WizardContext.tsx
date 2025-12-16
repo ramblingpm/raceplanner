@@ -60,13 +60,13 @@ const WizardContext = createContext<WizardContextType | undefined>(undefined);
 // Helper function to get default plan data based on race
 function getDefaultPlanData(race: Race | null): PlanData {
   const isVatternrundan = race?.name.toLowerCase().includes('vätternrundan');
-  const today = new Date();
+
+  // Use race's start_date if available, otherwise leave empty
+  const defaultDate = race?.start_date || '';
 
   return {
     label: '',
-    startDate: isVatternrundan
-      ? '2026-06-12'
-      : today.toISOString().split('T')[0],
+    startDate: defaultDate,
     startTime: isVatternrundan ? '06:00' : '09:00',
     durationHours: isVatternrundan ? 10 : 2,
     durationMinutes: isVatternrundan ? 0 : 30,

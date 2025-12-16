@@ -70,7 +70,9 @@ export default function DashboardPage() {
             id,
             name,
             slug,
-            distance_km
+            distance_km,
+            start_date,
+            end_date
           )
         `)
         .order('created_at', { ascending: false })

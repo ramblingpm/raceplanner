@@ -189,6 +189,12 @@
     "loadingMap": "Loading map..."
   },
   "wizard": {
+    "stepXOfY": "Step {current} of {total}",
+    "createPlan": "Create Plan",
+    "editPlan": "Edit Plan",
+    "discardChangesTitle": "Discard changes?",
+    "discardChangesMessage": "You have unsaved changes. Are you sure you want to close the wizard?",
+    "discard": "Discard",
     "selectRace": "Select Race",
     "selectRaceShort": "Race",
     "planTime": "Plan Time",
@@ -278,6 +284,7 @@
     "cancel": "Cancel",
     "arrivalTime": "Arrival Time",
     "departure": "Departure Time",
+    "passingBy": "Passing by (no stop)",
     "segmentOverview": "Segment Overview",
     "segmentOverviewDescription": "Average speeds needed between each point"
   },

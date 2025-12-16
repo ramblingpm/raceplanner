@@ -179,8 +179,8 @@ export default function FeedZonesStep() {
                             <input
                               type="number"
                               value={Math.floor(zone.planned_duration_seconds / 60)}
-                              onChange={(e) => handleUpdateDuration(zone.feed_zone_id, parseInt(e.target.value) || 10)}
-                              min="1"
+                              onChange={(e) => handleUpdateDuration(zone.feed_zone_id, parseInt(e.target.value) || 0)}
+                              min="0"
                               max="60"
                               className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-border-focus focus:border-border-focus text-text-primary bg-surface-background"
                             />
@@ -203,7 +203,11 @@ export default function FeedZonesStep() {
                         {/* Departure time display */}
                         {zone.planned_departure_time && (
                           <p className="text-xs text-text-secondary">
-                            {t('departure')}: {zone.planned_departure_time}
+                            {zone.planned_duration_seconds === 0 ? (
+                              <span className="text-text-muted italic">{t('passingBy')}</span>
+                            ) : (
+                              <>{t('departure')}: {zone.planned_departure_time}</>
+                            )}
                           </p>
                         )}
                       </div>
