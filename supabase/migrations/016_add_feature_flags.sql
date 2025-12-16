@@ -47,7 +47,9 @@ CREATE POLICY "Admins can manage user feature flags"
 CREATE OR REPLACE FUNCTION is_feature_enabled(
   check_flag_key TEXT,
   check_user_id UUID DEFAULT auth.uid()
-) RETURNS BOOLEAN AS $$
+) RETURNS BOOLEAN
+SET search_path = ''
+AS $$
 DECLARE
   user_override BOOLEAN;
   global_flag BOOLEAN;

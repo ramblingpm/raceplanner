@@ -4,7 +4,9 @@ CREATE OR REPLACE FUNCTION request_beta_access(
   signup_email TEXT,
   signup_notes TEXT DEFAULT 'Beta signup request from landing page'
 )
-RETURNS JSON AS $$
+RETURNS JSON
+SET search_path = ''
+AS $$
 DECLARE
   existing_invite RECORD;
 BEGIN

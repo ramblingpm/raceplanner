@@ -9,7 +9,9 @@ UPDATE beta_invites SET approved = TRUE, approved_at = created_at WHERE used = T
 
 -- Create function to approve beta invite
 CREATE OR REPLACE FUNCTION approve_beta_invite(invite_id UUID, admin_user_id UUID)
-RETURNS VOID AS $$
+RETURNS VOID
+SET search_path = ''
+AS $$
 BEGIN
   UPDATE beta_invites
   SET approved = TRUE,
@@ -21,7 +23,9 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Update the is_email_invited function to also check if approved
 CREATE OR REPLACE FUNCTION is_email_invited(check_email TEXT)
-RETURNS BOOLEAN AS $$
+RETURNS BOOLEAN
+SET search_path = ''
+AS $$
 BEGIN
   RETURN EXISTS (
     SELECT 1 FROM beta_invites

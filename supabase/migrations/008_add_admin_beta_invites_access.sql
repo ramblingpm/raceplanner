@@ -24,7 +24,9 @@ CREATE POLICY "Users can view their own admin status"
 
 -- Ensure the is_admin function exists
 CREATE OR REPLACE FUNCTION is_admin(check_user_id UUID)
-RETURNS BOOLEAN AS $$
+RETURNS BOOLEAN
+SET search_path = ''
+AS $$
 BEGIN
   RETURN EXISTS (
     SELECT 1 FROM admin_users
@@ -87,6 +89,7 @@ RETURNS TABLE (
 )
 LANGUAGE plpgsql
 SECURITY DEFINER
+SET search_path = ''
 AS $$
 BEGIN
   -- Check if user is admin
@@ -118,6 +121,7 @@ CREATE OR REPLACE FUNCTION create_beta_invite(
 RETURNS UUID
 LANGUAGE plpgsql
 SECURITY DEFINER
+SET search_path = ''
 AS $$
 DECLARE
   new_invite_id UUID;
@@ -141,6 +145,7 @@ CREATE OR REPLACE FUNCTION delete_beta_invite(invite_id UUID)
 RETURNS BOOLEAN
 LANGUAGE plpgsql
 SECURITY DEFINER
+SET search_path = ''
 AS $$
 BEGIN
   -- Check if user is admin

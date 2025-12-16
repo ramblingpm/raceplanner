@@ -20,7 +20,9 @@ CREATE POLICY "Anyone can check if invited" ON beta_invites
 
 -- Create function to check if email is invited
 CREATE OR REPLACE FUNCTION is_email_invited(check_email TEXT)
-RETURNS BOOLEAN AS $$
+RETURNS BOOLEAN
+SET search_path = ''
+AS $$
 BEGIN
   RETURN EXISTS (
     SELECT 1 FROM beta_invites
@@ -31,7 +33,9 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Create function to mark invite as used
 CREATE OR REPLACE FUNCTION mark_invite_used(user_email TEXT)
-RETURNS VOID AS $$
+RETURNS VOID
+SET search_path = ''
+AS $$
 BEGIN
   UPDATE beta_invites
   SET used = TRUE, used_at = NOW()

@@ -33,7 +33,9 @@ CREATE POLICY "Only admins can delete races"
 
 -- Helper function to check if a user is an admin
 CREATE OR REPLACE FUNCTION is_admin(check_user_id UUID)
-RETURNS BOOLEAN AS $$
+RETURNS BOOLEAN
+SET search_path = ''
+AS $$
 BEGIN
   RETURN EXISTS (
     SELECT 1 FROM admin_users

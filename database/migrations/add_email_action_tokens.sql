@@ -32,7 +32,9 @@ CREATE OR REPLACE FUNCTION create_email_action_token(
   p_email TEXT,
   p_action TEXT,
   p_beta_invite_id UUID
-) RETURNS TEXT AS $$
+) RETURNS TEXT
+SET search_path = ''
+AS $$
 DECLARE
   v_token TEXT;
   v_expires_at TIMESTAMPTZ;
@@ -54,7 +56,9 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 -- Function to process email action (approve or deny)
 CREATE OR REPLACE FUNCTION process_email_action(
   p_token TEXT
-) RETURNS JSONB AS $$
+) RETURNS JSONB
+SET search_path = ''
+AS $$
 DECLARE
   v_action_record RECORD;
   v_invite_record RECORD;
@@ -169,7 +173,9 @@ GRANT EXECUTE ON FUNCTION process_email_action(TEXT) TO authenticated, anon;
 
 -- Cleanup function to remove expired tokens (run this periodically)
 CREATE OR REPLACE FUNCTION cleanup_expired_email_tokens()
-RETURNS INTEGER AS $$
+RETURNS INTEGER
+SET search_path = ''
+AS $$
 DECLARE
   v_deleted_count INTEGER;
 BEGIN
