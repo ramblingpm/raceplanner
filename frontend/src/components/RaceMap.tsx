@@ -63,9 +63,20 @@ export default function RaceMap({
         ([lng, lat]) => [lat, lng]
       );
 
+      // Get colors from CSS variables
+      const getColor = (varName: string) => {
+        const value = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+        return value ? `rgb(${value})` : '#0ea5e9'; // fallback
+      };
+
+      const primaryColor = getColor('--color-primary');
+      const successColor = getColor('--color-success');
+      const errorColor = getColor('--color-error');
+      const warningColor = getColor('--color-warning');
+
       // Add route polyline
       const polyline = L.polyline(latLngs, {
-        color: '#0ea5e9',
+        color: primaryColor,
         weight: 4,
         opacity: 0.7,
       }).addTo(mapRef.current);
@@ -74,7 +85,7 @@ export default function RaceMap({
       const startMarker = L.marker(latLngs[0] as L.LatLngExpression, {
         icon: L.divIcon({
           className: 'custom-marker',
-          html: '<div style="background-color: #10b981; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white;"></div>',
+          html: `<div style="background-color: ${successColor}; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white;"></div>`,
         }),
       })
         .addTo(mapRef.current)
@@ -85,7 +96,7 @@ export default function RaceMap({
       const finishMarker = L.marker(latLngs[latLngs.length - 1] as L.LatLngExpression, {
         icon: L.divIcon({
           className: 'custom-marker',
-          html: '<div style="background-color: #ef4444; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white;"></div>',
+          html: `<div style="background-color: ${errorColor}; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white;"></div>`,
         }),
       })
         .addTo(mapRef.current)
@@ -106,7 +117,7 @@ export default function RaceMap({
                     width: 30px;
                     height: 30px;
                     border-radius: 50%;
-                    border: 2px solid #f59e0b;
+                    border: 2px solid ${warningColor};
                     display: flex;
                     align-items: center;
                     justify-content: center;

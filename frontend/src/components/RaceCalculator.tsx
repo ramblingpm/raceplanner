@@ -283,9 +283,9 @@ export default function RaceCalculator({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-2xl font-bold mb-4 text-gray-900">{race.name}</h2>
-      <p className="text-gray-600 mb-6">
+    <div className="bg-surface-background rounded-lg shadow-md p-6">
+      <h2 className="text-2xl font-bold mb-4 text-text-primary">{race.name}</h2>
+      <p className="text-text-secondary mb-6">
         {t('distance')}: <span className="font-semibold">{race.distance_km} km</span>
       </p>
 
@@ -293,9 +293,9 @@ export default function RaceCalculator({
         <div>
           <label
             htmlFor="label"
-            className="block text-sm font-medium text-gray-700 mb-2"
+            className="block text-sm font-medium text-text-secondary mb-2"
           >
-            {t('planLabel')} <span className="text-red-600">*</span>
+            {t('planLabel')} <span className="text-error">*</span>
           </label>
           <input
             id="label"
@@ -304,14 +304,14 @@ export default function RaceCalculator({
             placeholder={t('planLabelPlaceholder')}
             value={label}
             onChange={(e) => setLabel(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900"
+            className="w-full px-4 py-2 border border-border rounded-md focus:ring-2 focus:ring-border-focus focus:border-transparent text-text-primary"
           />
         </div>
 
         <div>
           <label
             htmlFor="startDate"
-            className="block text-sm font-medium text-gray-700 mb-2"
+            className="block text-sm font-medium text-text-secondary mb-2"
           >
             {t('startDate')}
           </label>
@@ -321,14 +321,14 @@ export default function RaceCalculator({
             required
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900"
+            className="w-full px-4 py-2 border border-border rounded-md focus:ring-2 focus:ring-border-focus focus:border-transparent text-text-primary"
           />
         </div>
 
         <div>
           <label
             htmlFor="startTime"
-            className="block text-sm font-medium text-gray-700 mb-2"
+            className="block text-sm font-medium text-text-secondary mb-2"
           >
             {t('startTime')}
           </label>
@@ -338,17 +338,17 @@ export default function RaceCalculator({
             required
             value={startTime}
             onChange={(e) => setStartTime(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900"
+            className="w-full px-4 py-2 border border-border rounded-md focus:ring-2 focus:ring-border-focus focus:border-transparent text-text-primary"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-text-secondary mb-2">
             {t('duration')}
           </label>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label htmlFor="hours" className="block text-xs text-gray-500">
+              <label htmlFor="hours" className="block text-xs text-text-muted">
                 {t('hours')}
               </label>
               <input
@@ -359,11 +359,11 @@ export default function RaceCalculator({
                 required
                 value={estimatedHours}
                 onChange={(e) => setEstimatedHours(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900"
+                className="w-full px-4 py-2 border border-border rounded-md focus:ring-2 focus:ring-border-focus focus:border-transparent text-text-primary"
               />
             </div>
             <div>
-              <label htmlFor="minutes" className="block text-xs text-gray-500">
+              <label htmlFor="minutes" className="block text-xs text-text-muted">
                 {t('minutes')}
               </label>
               <input
@@ -374,19 +374,19 @@ export default function RaceCalculator({
                 required
                 value={estimatedMinutes}
                 onChange={(e) => setEstimatedMinutes(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900"
+                className="w-full px-4 py-2 border border-border rounded-md focus:ring-2 focus:ring-border-focus focus:border-transparent text-text-primary"
               />
             </div>
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-text-secondary mb-2">
             {t('plannedStopTime')}
           </label>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label htmlFor="stopHours" className="block text-xs text-gray-500">
+              <label htmlFor="stopHours" className="block text-xs text-text-muted">
                 {t('hours')}
               </label>
               <input
@@ -396,11 +396,11 @@ export default function RaceCalculator({
                 max="24"
                 value={stopHours}
                 onChange={(e) => setStopHours(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900"
+                className="w-full px-4 py-2 border border-border rounded-md focus:ring-2 focus:ring-border-focus focus:border-transparent text-text-primary"
               />
             </div>
             <div>
-              <label htmlFor="stopMinutes" className="block text-xs text-gray-500">
+              <label htmlFor="stopMinutes" className="block text-xs text-text-muted">
                 {t('minutes')}
               </label>
               <input
@@ -410,7 +410,7 @@ export default function RaceCalculator({
                 max="59"
                 value={stopMinutes}
                 onChange={(e) => setStopMinutes(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900"
+                className="w-full px-4 py-2 border border-border rounded-md focus:ring-2 focus:ring-border-focus focus:border-transparent text-text-primary"
               />
             </div>
           </div>
@@ -418,7 +418,7 @@ export default function RaceCalculator({
 
         {/* Feed Zones Section */}
         {availableFeedZones.length > 0 && (
-          <div className="pt-4 border-t border-gray-200">
+          <div className="pt-4 border-t border-border">
             <FeedZoneSelector
               raceId={race.id}
               raceName={race.name}
@@ -436,7 +436,7 @@ export default function RaceCalculator({
           <button
             type="button"
             onClick={handleCalculate}
-            className="flex-1 bg-gray-600 text-white py-2 px-4 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
+            className="flex-1 bg-secondary text-white py-2 px-4 rounded-md hover:bg-secondary-hover focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2 transition-colors"
           >
             {t('calculate')}
           </button>
@@ -444,7 +444,7 @@ export default function RaceCalculator({
             type="button"
             onClick={handleSave}
             disabled={!result}
-            className="flex-1 bg-primary-600 text-white py-2 px-4 rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+            className="flex-1 bg-primary text-white py-2 px-4 rounded-md hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-border-focus focus:ring-offset-2 transition-colors disabled:bg-surface-2 disabled:cursor-not-allowed"
           >
             {editingCalculation ? t('updatePlan') : tCommon('save')}
           </button>
@@ -452,7 +452,7 @@ export default function RaceCalculator({
             <button
               type="button"
               onClick={onCancel}
-              className="flex-1 bg-white text-gray-700 py-2 px-4 rounded-md border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
+              className="flex-1 bg-surface-background text-text-secondary py-2 px-4 rounded-md border border-border hover:bg-surface-1 focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2 transition-colors"
             >
               {tCommon('cancel')}
             </button>

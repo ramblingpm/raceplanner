@@ -54,14 +54,14 @@ export default function Modal({ isOpen, onClose, title, children, size = 'lg' }:
         {/* Modal */}
         <div
           ref={modalRef}
-          className={`relative bg-white rounded-lg shadow-xl w-full ${sizeClasses[size]} max-h-[90vh] flex flex-col`}
+          className={`relative bg-surface-background rounded-lg shadow-xl w-full ${sizeClasses[size]} max-h-[90vh] flex flex-col border border-border`}
         >
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-gray-200">
-            <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
+          <div className="flex items-center justify-between p-6 border-b border-border">
+            <h2 className="text-2xl font-bold text-text-primary">{title}</h2>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
+              className="text-text-muted hover:text-text-secondary transition-colors"
               aria-label="Close modal"
             >
               <XMarkIcon className="h-6 w-6" />

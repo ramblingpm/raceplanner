@@ -65,7 +65,7 @@ export default function UserMenu() {
     <div className="relative" ref={menuRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-10 h-10 rounded-full bg-primary-600 hover:bg-primary-700 text-white font-semibold flex items-center justify-center transition-colors"
+        className="w-10 h-10 rounded-full bg-primary hover:bg-primary-hover text-primary-foreground font-semibold flex items-center justify-center transition-colors"
         aria-label="User menu"
       >
         {user ? (
@@ -76,18 +76,18 @@ export default function UserMenu() {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+        <div className="absolute right-0 mt-2 w-64 bg-surface-background rounded-lg shadow-lg border border-border py-2 z-50">
           {/* User email section - only show if logged in */}
           {user && (
-            <div className="px-4 py-3 border-b border-gray-200">
-              <p className="text-sm text-gray-500">Signed in as</p>
-              <p className="text-sm font-medium text-gray-900 truncate">{user.email}</p>
+            <div className="px-4 py-3 border-b border-border">
+              <p className="text-sm text-text-secondary">Signed in as</p>
+              <p className="text-sm font-medium text-text-primary truncate">{user.email}</p>
             </div>
           )}
 
           {/* Language selection */}
-          <div className="px-4 py-3 border-b border-gray-200">
-            <p className="text-sm text-gray-500 mb-2">Language</p>
+          <div className="px-4 py-3 border-b border-border">
+            <p className="text-sm text-text-secondary mb-2">Language</p>
             <div className="flex gap-2">
               {locales.map((locale) => (
                 <button
@@ -95,7 +95,7 @@ export default function UserMenu() {
                   onClick={() => handleLocaleChange(locale)}
                   className={`px-3 py-2 rounded-md text-2xl transition-all ${
                     currentLocale === locale
-                      ? 'ring-2 ring-primary-600 ring-offset-2 scale-110'
+                      ? 'ring-2 ring-primary ring-offset-2 scale-110'
                       : 'opacity-60 hover:opacity-100 hover:scale-105'
                   }`}
                   title={locale === 'sv' ? 'Svenska' : 'English'}
@@ -108,11 +108,11 @@ export default function UserMenu() {
 
           {/* Admin link - only show if user is admin */}
           {user && isAdminUser && (
-            <div className="px-2 py-2 border-b border-gray-200">
+            <div className="px-2 py-2 border-b border-border">
               <Link
                 href="/admin"
                 onClick={() => setIsOpen(false)}
-                className="w-full flex items-center gap-3 px-4 py-2 text-sm text-blue-700 hover:bg-blue-50 rounded-md transition-colors"
+                className="w-full flex items-center gap-3 px-4 py-2 text-sm text-primary hover:bg-primary-subtle rounded-md transition-colors"
               >
                 <ShieldCheckIcon className="w-5 h-5" />
                 Admin Panel
@@ -125,7 +125,7 @@ export default function UserMenu() {
             <div className="px-2 py-2">
               <button
                 onClick={handleSignOut}
-                className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                className="w-full flex items-center gap-3 px-4 py-2 text-sm text-text-secondary hover:bg-surface-1 rounded-md transition-colors"
               >
                 <ArrowRightStartOnRectangleIcon className="w-5 h-5" />
                 {tNav('logout')}

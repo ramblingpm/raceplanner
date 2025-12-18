@@ -18,20 +18,21 @@ export default function AdminLayout({
     { href: '/admin/users', label: 'Users', enabled: true },
     { href: '/admin/races', label: 'Races', enabled: true },
     { href: '/admin/features', label: 'Feature Flags', enabled: true },
+    { href: '/admin/design-system', label: 'Design System', enabled: true },
   ];
 
   return (
     <AdminRoute>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-surface-1">
         {/* Admin Header */}
-        <header className="bg-white shadow-sm border-b border-gray-200">
+        <header className="bg-surface-background shadow-sm border-b border-border">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
               <div className="flex items-center gap-3">
                 {/* Mobile Menu Button */}
                 <button
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                  className="lg:hidden p-2 rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                  className="lg:hidden p-2 rounded-md text-text-secondary hover:bg-surface-1 hover:text-text-primary"
                   aria-label="Toggle menu"
                 >
                   {mobileMenuOpen ? (
@@ -40,13 +41,13 @@ export default function AdminLayout({
                     <Bars3Icon className="h-6 w-6" />
                   )}
                 </button>
-                <h1 className="text-lg sm:text-xl font-semibold text-gray-900">
+                <h1 className="text-lg sm:text-xl font-semibold text-text-primary">
                   Admin Panel
                 </h1>
               </div>
               <Link
                 href="/dashboard"
-                className="text-xs sm:text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                className="text-xs sm:text-sm text-text-secondary hover:text-text-primary transition-colors"
               >
                 <span className="hidden sm:inline">← Back to Dashboard</span>
                 <span className="sm:hidden">← Dashboard</span>
@@ -57,7 +58,7 @@ export default function AdminLayout({
 
         {/* Mobile Navigation Menu */}
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-white border-b border-gray-200">
+          <div className="lg:hidden bg-surface-background border-b border-border">
             <nav className="max-w-7xl mx-auto px-4 py-3">
               <ul className="space-y-1">
                 {navigationItems.map((item) => (
@@ -67,8 +68,8 @@ export default function AdminLayout({
                       onClick={() => setMobileMenuOpen(false)}
                       className={`block px-4 py-2 text-sm font-medium rounded-md ${
                         item.enabled
-                          ? 'text-gray-700 hover:bg-gray-100'
-                          : 'text-gray-400 cursor-not-allowed'
+                          ? 'text-text-secondary hover:bg-surface-1'
+                          : 'text-text-muted cursor-not-allowed'
                       }`}
                     >
                       {item.label}
@@ -87,7 +88,7 @@ export default function AdminLayout({
           <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8">
             {/* Desktop Sidebar Navigation */}
             <aside className="hidden lg:block w-64 flex-shrink-0">
-              <nav className="bg-white rounded-lg shadow-sm p-4 sticky top-4">
+              <nav className="bg-surface-background rounded-lg shadow-sm p-4 sticky top-4 border border-border">
                 <ul className="space-y-2">
                   {navigationItems.map((item) => (
                     <li key={item.href}>
@@ -95,8 +96,8 @@ export default function AdminLayout({
                         href={item.href}
                         className={`block px-4 py-2 text-sm font-medium rounded-md ${
                           item.enabled
-                            ? 'text-gray-700 hover:bg-gray-100'
-                            : 'text-gray-400 cursor-not-allowed'
+                            ? 'text-text-secondary hover:bg-surface-1'
+                            : 'text-text-muted cursor-not-allowed'
                         }`}
                       >
                         {item.label}

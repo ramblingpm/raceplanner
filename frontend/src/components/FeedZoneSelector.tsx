@@ -101,8 +101,8 @@ export default function FeedZoneSelector({
 
   if (availableFeedZones.length === 0) {
     return (
-      <div className="bg-gray-50 rounded-lg p-4 text-center">
-        <p className="text-sm text-gray-600">{t('noFeedZones')}</p>
+      <div className="bg-surface-1 rounded-lg p-4 text-center">
+        <p className="text-sm text-text-secondary">{t('noFeedZones')}</p>
       </div>
     );
   }
@@ -113,8 +113,8 @@ export default function FeedZoneSelector({
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-gray-900">{t('feedZones')}</h3>
-          <p className="text-sm text-gray-600">{t('feedZonesDescription')}</p>
+          <h3 className="text-lg font-semibold text-text-primary">{t('feedZones')}</h3>
+          <p className="text-sm text-text-secondary">{t('feedZonesDescription')}</p>
         </div>
       </div>
 
@@ -128,10 +128,10 @@ export default function FeedZoneSelector({
             <div className="flex items-center gap-2">
               <span className="text-2xl">🍔</span>
               <div>
-                <h4 className="font-semibold text-gray-900">
+                <h4 className="font-semibold text-text-primary">
                   {localFeedZones.length} {localFeedZones.length === 1 ? t('feedZone') : t('feedZones')}
                 </h4>
-                <p className="text-sm text-gray-600">{t('totalFeedZoneTime')}</p>
+                <p className="text-sm text-text-secondary">{t('totalFeedZoneTime')}</p>
               </div>
             </div>
             <div className="text-right">
@@ -156,7 +156,7 @@ export default function FeedZoneSelector({
               return (
                 <span
                   key={feedZone.id}
-                  className="inline-block px-2 py-1 bg-white border border-amber-300 rounded text-xs text-gray-700"
+                  className="inline-block px-2 py-1 bg-surface-background border border-amber-300 rounded text-xs text-text-secondary"
                 >
                   {feedZone.name}
                 </span>
@@ -177,7 +177,7 @@ export default function FeedZoneSelector({
           <div className="flex items-center justify-between bg-amber-50 border border-amber-200 rounded-lg p-3">
             <div className="flex items-center gap-2">
               <span className="text-xl">🍔</span>
-              <span className="font-semibold text-gray-900">
+              <span className="font-semibold text-text-primary">
                 {localFeedZones.length} {localFeedZones.length === 1 ? t('feedZone') : t('feedZones')} - {totalTime.hours}h {totalTime.minutes}m
               </span>
             </div>
@@ -201,20 +201,20 @@ export default function FeedZoneSelector({
               return (
                 <div
                   key={`${feedZone.id}-${index}`}
-                  className="bg-white border border-gray-200 rounded-lg p-4 space-y-3"
+                  className="bg-surface-background border border-border rounded-lg p-4 space-y-3"
                 >
                   {/* Feed zone header */}
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <h4 className="font-medium text-gray-900">{feedZone.name}</h4>
-                      <p className="text-sm text-gray-600">
+                      <h4 className="font-medium text-text-primary">{feedZone.name}</h4>
+                      <p className="text-sm text-text-secondary">
                         {feedZone.distance_from_start_km} {t('km')}
                       </p>
                     </div>
                     <button
                       type="button"
                       onClick={() => handleRemoveFeedZone(index)}
-                      className="text-red-600 hover:text-red-700 p-1"
+                      className="text-error hover:text-error-hover p-1"
                       title={t('removeFeedZone')}
                     >
                       <TrashIcon className="w-5 h-5" />
@@ -223,7 +223,7 @@ export default function FeedZoneSelector({
 
                   {/* Duration inputs */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-text-secondary mb-2">
                       {t('stopDuration')}
                     </label>
                     <div className="flex gap-2 items-center">
@@ -236,9 +236,9 @@ export default function FeedZoneSelector({
                           onChange={(e) =>
                             handleDurationChange(index, parseInt(e.target.value) || 0, minutes)
                           }
-                          className="w-16 px-2 py-1 border border-gray-300 rounded-md text-gray-900"
+                          className="w-16 px-2 py-1 border border-border rounded-md text-text-primary"
                         />
-                        <span className="text-sm text-gray-600">{t('hours')}</span>
+                        <span className="text-sm text-text-secondary">{t('hours')}</span>
                       </div>
                       <div className="flex items-center gap-1">
                         <input
@@ -249,9 +249,9 @@ export default function FeedZoneSelector({
                           onChange={(e) =>
                             handleDurationChange(index, hours, parseInt(e.target.value) || 0)
                           }
-                          className="w-16 px-2 py-1 border border-gray-300 rounded-md text-gray-900"
+                          className="w-16 px-2 py-1 border border-border rounded-md text-text-primary"
                         />
-                        <span className="text-sm text-gray-600">{t('minutes')}</span>
+                        <span className="text-sm text-text-secondary">{t('minutes')}</span>
                       </div>
                     </div>
                   </div>
@@ -259,7 +259,7 @@ export default function FeedZoneSelector({
                   {/* Optional arrival/departure times */}
                   <div className="grid grid-cols-2 gap-3 pt-2 border-t border-gray-100">
                     <div>
-                      <label className="block text-xs text-gray-600 mb-1">
+                      <label className="block text-xs text-text-secondary mb-1">
                         {t('arrivalTime')} ({t('optional')})
                       </label>
                       <input
@@ -271,11 +271,11 @@ export default function FeedZoneSelector({
                             : undefined;
                           handleFeedZoneChange(index, 'planned_arrival_time', value);
                         }}
-                        className="w-full px-2 py-1 border border-gray-300 rounded-md text-sm text-gray-900"
+                        className="w-full px-2 py-1 border border-border rounded-md text-sm text-text-primary"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs text-gray-600 mb-1">
+                      <label className="block text-xs text-text-secondary mb-1">
                         {t('departureTime')} ({t('optional')})
                       </label>
                       <input
@@ -287,7 +287,7 @@ export default function FeedZoneSelector({
                             : undefined;
                           handleFeedZoneChange(index, 'planned_departure_time', value);
                         }}
-                        className="w-full px-2 py-1 border border-gray-300 rounded-md text-sm text-gray-900"
+                        className="w-full px-2 py-1 border border-border rounded-md text-sm text-text-primary"
                       />
                     </div>
                   </div>
@@ -305,18 +305,18 @@ export default function FeedZoneSelector({
             <button
               type="button"
               onClick={() => setShowAddDropdown(true)}
-              className="w-full py-2 px-4 border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-primary-500 hover:text-primary-600 transition-colors"
+              className="w-full py-2 px-4 border-2 border-dashed border-border rounded-lg text-text-secondary hover:border-primary-500 hover:text-primary-600 transition-colors"
             >
               + {t('addFeedZone')}
             </button>
           ) : (
             <div className="border-2 border-primary-300 rounded-lg p-3 bg-primary-50">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-text-secondary mb-2">
                 {t('selectFeedZones')}
               </label>
               <div className="flex gap-2">
                 <select
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:ring-2 focus:ring-primary-500"
+                  className="flex-1 px-3 py-2 border border-border rounded-md text-text-primary focus:ring-2 focus:ring-primary-500"
                   onChange={(e) => {
                     if (e.target.value) {
                       handleAddFeedZone(e.target.value);
@@ -336,7 +336,7 @@ export default function FeedZoneSelector({
                 <button
                   type="button"
                   onClick={() => setShowAddDropdown(false)}
-                  className="px-3 py-2 text-gray-600 hover:text-gray-800 border border-gray-300 rounded-md"
+                  className="px-3 py-2 text-text-secondary hover:text-gray-800 border border-border rounded-md"
                 >
                   {tCommon('cancel')}
                 </button>

@@ -19,51 +19,51 @@
   /* -----------------------------------------
      Primary Colors
      ----------------------------------------- */
-  --color-primary: 2 132 199;
-  --color-primary-hover: 3 105 161;
-  --color-primary-active: 7 89 133;
-  --color-primary-subtle: 240 249 255;
-  --color-primary-subtle-hover: 224 242 254;
+  --color-primary: 0 122 255;
+  --color-primary-hover: 0 98 204;
+  --color-primary-active: 0 82 173;
+  --color-primary-subtle: 240 247 255;
+  --color-primary-subtle-hover: 224 240 255;
   --color-primary-foreground: 255 255 255;
 
   /* -----------------------------------------
      Secondary Colors
      ----------------------------------------- */
-  --color-secondary: 71 85 105;
-  --color-secondary-hover: 51 65 85;
-  --color-secondary-active: 30 41 59;
-  --color-secondary-subtle: 241 245 249;
-  --color-secondary-subtle-hover: 226 232 240;
+  --color-secondary: 142 142 147;
+  --color-secondary-hover: 118 118 128;
+  --color-secondary-active: 99 99 102;
+  --color-secondary-subtle: 242 242 247;
+  --color-secondary-subtle-hover: 229 229 234;
   --color-secondary-foreground: 255 255 255;
 
   /* -----------------------------------------
      Success Colors
      ----------------------------------------- */
-  --color-success: 5 150 105;
-  --color-success-hover: 4 120 87;
-  --color-success-subtle: 236 253 245;
-  --color-success-subtle-hover: 209 250 229;
-  --color-success-foreground: 4 120 87;
+  --color-success: 52 199 89;
+  --color-success-hover: 48 176 80;
+  --color-success-subtle: 237 251 241;
+  --color-success-subtle-hover: 220 247 230;
+  --color-success-foreground: 48 176 80;
   --color-success-foreground-on-color: 255 255 255;
 
   /* -----------------------------------------
      Warning Colors
      ----------------------------------------- */
-  --color-warning: 245 158 11;
-  --color-warning-hover: 217 119 6;
-  --color-warning-subtle: 255 251 235;
-  --color-warning-subtle-hover: 254 243 199;
-  --color-warning-foreground: 180 83 9;
-  --color-warning-foreground-on-color: 69 26 3;
+  --color-warning: 255 149 0;
+  --color-warning-hover: 230 134 0;
+  --color-warning-subtle: 255 248 235;
+  --color-warning-subtle-hover: 255 241 209;
+  --color-warning-foreground: 230 134 0;
+  --color-warning-foreground-on-color: 255 255 255;
 
   /* -----------------------------------------
      Error Colors
      ----------------------------------------- */
-  --color-error: 225 29 72;
-  --color-error-hover: 190 18 60;
-  --color-error-subtle: 255 241 242;
-  --color-error-subtle-hover: 255 228 230;
-  --color-error-foreground: 190 18 60;
+  --color-error: 255 59 48;
+  --color-error-hover: 230 53 43;
+  --color-error-subtle: 255 245 244;
+  --color-error-subtle-hover: 255 235 233;
+  --color-error-foreground: 230 53 43;
   --color-error-foreground-on-color: 255 255 255;
 
   /* -----------------------------------------
@@ -233,51 +233,51 @@
   /* -----------------------------------------
      Primary Colors
      ----------------------------------------- */
-  --color-primary: 14 165 233;
-  --color-primary-hover: 56 189 248;
-  --color-primary-active: 125 211 252;
-  --color-primary-subtle: 8 47 73;
-  --color-primary-subtle-hover: 12 74 110;
-  --color-primary-foreground: 15 23 42;
+  --color-primary: 10 132 255;
+  --color-primary-hover: 64 156 255;
+  --color-primary-active: 100 170 255;
+  --color-primary-subtle: 10 25 51;
+  --color-primary-subtle-hover: 15 35 71;
+  --color-primary-foreground: 255 255 255;
 
   /* -----------------------------------------
      Secondary Colors
      ----------------------------------------- */
-  --color-secondary: 148 163 184;
-  --color-secondary-hover: 203 213 225;
-  --color-secondary-active: 226 232 240;
-  --color-secondary-subtle: 30 41 59;
-  --color-secondary-subtle-hover: 51 65 85;
-  --color-secondary-foreground: 15 23 42;
+  --color-secondary: 142 142 147;
+  --color-secondary-hover: 174 174 178;
+  --color-secondary-active: 199 199 204;
+  --color-secondary-subtle: 28 28 30;
+  --color-secondary-subtle-hover: 44 44 46;
+  --color-secondary-foreground: 255 255 255;
 
   /* -----------------------------------------
      Success Colors
      ----------------------------------------- */
-  --color-success: 16 185 129;
-  --color-success-hover: 52 211 153;
-  --color-success-subtle: 2 44 34;
-  --color-success-subtle-hover: 6 78 59;
-  --color-success-foreground: 52 211 153;
-  --color-success-foreground-on-color: 15 23 42;
+  --color-success: 48 209 88;
+  --color-success-hover: 50 215 75;
+  --color-success-subtle: 12 51 22;
+  --color-success-subtle-hover: 18 76 33;
+  --color-success-foreground: 50 215 75;
+  --color-success-foreground-on-color: 255 255 255;
 
   /* -----------------------------------------
      Warning Colors
      ----------------------------------------- */
-  --color-warning: 245 158 11;
-  --color-warning-hover: 251 191 36;
-  --color-warning-subtle: 69 26 3;
-  --color-warning-subtle-hover: 120 53 15;
-  --color-warning-foreground: 251 191 36;
-  --color-warning-foreground-on-color: 15 23 42;
+  --color-warning: 255 159 10;
+  --color-warning-hover: 255 179 64;
+  --color-warning-subtle: 51 30 0;
+  --color-warning-subtle-hover: 76 45 0;
+  --color-warning-foreground: 255 179 64;
+  --color-warning-foreground-on-color: 255 255 255;
 
   /* -----------------------------------------
      Error Colors
      ----------------------------------------- */
-  --color-error: 244 63 94;
-  --color-error-hover: 251 113 133;
-  --color-error-subtle: 76 5 25;
-  --color-error-subtle-hover: 136 19 55;
-  --color-error-foreground: 251 113 133;
+  --color-error: 255 69 58;
+  --color-error-hover: 255 105 97;
+  --color-error-subtle: 51 12 10;
+  --color-error-subtle-hover: 76 18 15;
+  --color-error-foreground: 255 105 97;
   --color-error-foreground-on-color: 255 255 255;
 
   /* -----------------------------------------
