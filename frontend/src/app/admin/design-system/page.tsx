@@ -1,14 +1,27 @@
 'use client';
 
 import { useState } from 'react';
-import { SunIcon, MoonIcon } from '@heroicons/react/24/outline';
+import { SunIcon, MoonIcon, ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
+
+type SortDirection = 'asc' | 'desc';
 
 export default function DesignSystemPage() {
   const [isDark, setIsDark] = useState(false);
+  const [sortColumn, setSortColumn] = useState<string>('name');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
 
   const toggleTheme = () => {
     setIsDark(!isDark);
     document.documentElement.classList.toggle('dark');
+  };
+
+  const handleSort = (column: string) => {
+    if (sortColumn === column) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortColumn(column);
+      setSortDirection('asc');
+    }
   };
 
   return (
@@ -346,6 +359,82 @@ export default function DesignSystemPage() {
           </div>
         </div>
       </div>
+
+      {/* Sortable Table Headers */}
+      <div className="bg-surface-background rounded-lg shadow-sm p-6 border border-border">
+        <h2 className="text-2xl font-bold text-text-primary mb-6">Sortable Table Headers</h2>
+        <p className="text-sm text-text-secondary mb-4">
+          Interactive table headers with sort indicators
+        </p>
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-border">
+            <thead className="bg-surface-1">
+              <tr>
+                <SortableTableHeader
+                  column="name"
+                  label="Name"
+                  sortColumn={sortColumn}
+                  sortDirection={sortDirection}
+                  onSort={handleSort}
+                />
+                <SortableTableHeader
+                  column="email"
+                  label="Email"
+                  sortColumn={sortColumn}
+                  sortDirection={sortDirection}
+                  onSort={handleSort}
+                />
+                <SortableTableHeader
+                  column="status"
+                  label="Status"
+                  sortColumn={sortColumn}
+                  sortDirection={sortDirection}
+                  onSort={handleSort}
+                />
+                <SortableTableHeader
+                  column="date"
+                  label="Created"
+                  sortColumn={sortColumn}
+                  sortDirection={sortDirection}
+                  onSort={handleSort}
+                />
+              </tr>
+            </thead>
+            <tbody className="bg-surface-background divide-y divide-border">
+              <tr className="hover:bg-surface-1">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-text-primary">John Doe</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">john@example.com</td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success/10 text-success">
+                    Active
+                  </span>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">2024-01-15</td>
+              </tr>
+              <tr className="hover:bg-surface-1">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-text-primary">Jane Smith</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">jane@example.com</td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-warning/10 text-warning">
+                    Pending
+                  </span>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">2024-01-20</td>
+              </tr>
+              <tr className="hover:bg-surface-1">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-text-primary">Bob Johnson</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">bob@example.com</td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success/10 text-success">
+                    Active
+                  </span>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">2024-01-10</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 }
@@ -356,5 +445,42 @@ function ColorSwatch({ name, label, textDark = false }: { name: string; label: s
       <p className={`text-sm font-medium ${textDark ? 'text-text-primary' : 'text-white'}`}>{label}</p>
       <p className={`text-xs ${textDark ? 'text-text-muted' : 'text-white opacity-80'}`}>{name}</p>
     </div>
+  );
+}
+
+interface SortableTableHeaderProps {
+  column: string;
+  label: string;
+  sortColumn: string;
+  sortDirection: SortDirection;
+  onSort: (column: string) => void;
+}
+
+function SortableTableHeader({ column, label, sortColumn, sortDirection, onSort }: SortableTableHeaderProps) {
+  const isActive = sortColumn === column;
+
+  return (
+    <th
+      className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider cursor-pointer hover:bg-surface-2 transition-colors select-none"
+      onClick={() => onSort(column)}
+    >
+      <div className="flex items-center gap-2">
+        <span>{label}</span>
+        <div className="w-4 h-4 flex items-center justify-center">
+          {isActive ? (
+            sortDirection === 'asc' ? (
+              <ChevronUpIcon className="w-4 h-4 text-primary" />
+            ) : (
+              <ChevronDownIcon className="w-4 h-4 text-primary" />
+            )
+          ) : (
+            <div className="flex flex-col gap-0">
+              <ChevronUpIcon className="w-4 h-4 text-text-muted opacity-20" />
+              <ChevronDownIcon className="w-4 h-4 -mt-2 text-text-muted opacity-20" />
+            </div>
+          )}
+        </div>
+      </div>
+    </th>
   );
 }

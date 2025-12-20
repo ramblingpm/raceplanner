@@ -1,14 +1,20 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { getUsers } from '@/lib/admin';
 import type { User } from '@/lib/admin';
 import { formatDate, formatDateTime } from '@/lib/dateFormat';
+import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
+
+type SortColumn = 'email' | 'status' | 'role' | 'created' | 'last_sign_in_at';
+type SortDirection = 'asc' | 'desc';
 
 export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
+  const [sortColumn, setSortColumn] = useState<SortColumn>('created');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
 
   useEffect(() => {
     async function loadUsers() {
@@ -28,6 +34,55 @@ export default function UsersPage() {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const handleSort = (column: SortColumn) => {
+    if (sortColumn === column) {
+      // Toggle direction if same column
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      // Set new column with default ascending direction
+      setSortColumn(column);
+      setSortDirection('asc');
+    }
+  };
+
+  const sortedUsers = useMemo(() => {
+    const sorted = [...users].sort((a, b) => {
+      let aValue: any;
+      let bValue: any;
+
+      switch (sortColumn) {
+        case 'email':
+          aValue = a.email.toLowerCase();
+          bValue = b.email.toLowerCase();
+          break;
+        case 'status':
+          aValue = a.email_confirmed_at ? 1 : 0;
+          bValue = b.email_confirmed_at ? 1 : 0;
+          break;
+        case 'role':
+          aValue = a.is_admin ? 1 : 0;
+          bValue = b.is_admin ? 1 : 0;
+          break;
+        case 'created':
+          aValue = new Date(a.created_at).getTime();
+          bValue = new Date(b.created_at).getTime();
+          break;
+        case 'last_sign_in_at':
+          aValue = a.last_sign_in_at ? new Date(a.last_sign_in_at).getTime() : 0;
+          bValue = b.last_sign_in_at ? new Date(b.last_sign_in_at).getTime() : 0;
+          break;
+        default:
+          return 0;
+      }
+
+      if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
+      if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    return sorted;
+  }, [users, sortColumn, sortDirection]);
 
   if (loading) {
     return (
@@ -101,32 +156,52 @@ export default function UsersPage() {
           <table className="min-w-full divide-y divide-border">
             <thead className="bg-surface-1">
               <tr>
-                <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
-                  Email
-                </th>
-                <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
-                  Role
-                </th>
-                <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
-                  Created
-                </th>
-                <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
-                  Last Login
-                </th>
+                <SortableHeader
+                  column="email"
+                  label="Email"
+                  sortColumn={sortColumn}
+                  sortDirection={sortDirection}
+                  onSort={handleSort}
+                />
+                <SortableHeader
+                  column="status"
+                  label="Status"
+                  sortColumn={sortColumn}
+                  sortDirection={sortDirection}
+                  onSort={handleSort}
+                />
+                <SortableHeader
+                  column="role"
+                  label="Role"
+                  sortColumn={sortColumn}
+                  sortDirection={sortDirection}
+                  onSort={handleSort}
+                />
+                <SortableHeader
+                  column="created"
+                  label="Created"
+                  sortColumn={sortColumn}
+                  sortDirection={sortDirection}
+                  onSort={handleSort}
+                />
+                <SortableHeader
+                  column="last_sign_in_at"
+                  label="Last Login"
+                  sortColumn={sortColumn}
+                  sortDirection={sortDirection}
+                  onSort={handleSort}
+                />
               </tr>
             </thead>
             <tbody className="bg-surface-background divide-y divide-border">
-              {users.length === 0 ? (
+              {sortedUsers.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="px-4 sm:px-6 py-4 text-center text-text-muted">
                     No users found
                   </td>
                 </tr>
               ) : (
-                users.map((user) => (
+                sortedUsers.map((user) => (
                   <tr key={user.id} className="hover:bg-surface-1">
                     <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm font-medium text-text-primary">
                       {user.email}
@@ -167,5 +242,42 @@ export default function UsersPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+interface SortableHeaderProps {
+  column: SortColumn;
+  label: string;
+  sortColumn: SortColumn;
+  sortDirection: SortDirection;
+  onSort: (column: SortColumn) => void;
+}
+
+function SortableHeader({ column, label, sortColumn, sortDirection, onSort }: SortableHeaderProps) {
+  const isActive = sortColumn === column;
+
+  return (
+    <th
+      className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider cursor-pointer hover:bg-surface-2 transition-colors select-none"
+      onClick={() => onSort(column)}
+    >
+      <div className="flex items-center gap-2">
+        <span>{label}</span>
+        <div className="w-4 h-4 flex items-center justify-center">
+          {isActive ? (
+            sortDirection === 'asc' ? (
+              <ChevronUpIcon className="w-4 h-4 text-primary" />
+            ) : (
+              <ChevronDownIcon className="w-4 h-4 text-primary" />
+            )
+          ) : (
+            <div className="flex flex-col gap-0">
+              <ChevronUpIcon className="w-4 h-4 text-text-muted opacity-20" />
+              <ChevronDownIcon className="w-4 h-4 -mt-2 text-text-muted opacity-20" />
+            </div>
+          )}
+        </div>
+      </div>
+    </th>
   );
 }
