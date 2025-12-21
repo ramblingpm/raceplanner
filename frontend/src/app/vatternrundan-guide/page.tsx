@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import Header from '@/components/Header';
 import PageViewTracker from '@/components/PageViewTracker';
+import TrackedLink from '@/components/TrackedLink';
 import { generateSEOMetadata, generateBreadcrumbSchema } from '@/lib/seo';
 import StructuredData from '@/components/StructuredData';
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
@@ -181,27 +182,36 @@ export default async function VatternrundanGuidePage() {
                 Nästa steg
               </h3>
               <div className="grid md:grid-cols-3 gap-4">
-                <Link
+                <TrackedLink
                   href="/vatternrundan"
+                  eventName="link_tillbaka_vatternrundan"
+                  eventLocation="guide_footer"
+                  eventData={{ destination: 'main_page' }}
                   className="bg-surface-background p-6 rounded-lg border border-border hover:shadow-lg transition-shadow text-center"
                 >
                   <div className="text-3xl mb-2">🏠</div>
                   <div className="font-semibold text-text-primary">{t('links.mainPage')}</div>
-                </Link>
-                <Link
+                </TrackedLink>
+                <TrackedLink
                   href="/vattern-checklist"
+                  eventName="link_se_checklista"
+                  eventLocation="guide_footer"
+                  eventData={{ destination: 'checklist' }}
                   className="bg-surface-background p-6 rounded-lg border border-border hover:shadow-lg transition-shadow text-center"
                 >
                   <div className="text-3xl mb-2">✅</div>
                   <div className="font-semibold text-text-primary">{t('links.checklist')}</div>
-                </Link>
-                <Link
+                </TrackedLink>
+                <TrackedLink
                   href="/dashboard"
+                  eventName="cta_skapa_din_plan"
+                  eventLocation="guide_footer"
+                  eventData={{ cta_type: 'primary', destination: 'dashboard' }}
                   className="bg-primary text-primary-foreground p-6 rounded-lg hover:bg-primary-hover transition-colors text-center"
                 >
                   <div className="text-3xl mb-2">🎯</div>
                   <div className="font-semibold">{t('links.dashboard')}</div>
-                </Link>
+                </TrackedLink>
               </div>
             </div>
           </div>

@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import Header from '@/components/Header';
 import PageViewTracker from '@/components/PageViewTracker';
+import TrackedLink from '@/components/TrackedLink';
 import { generateSEOMetadata, generateBreadcrumbSchema } from '@/lib/seo';
 import StructuredData from '@/components/StructuredData';
 
@@ -57,18 +58,24 @@ export default async function VatternrundanPage() {
                 {t('hero.subtitle')}
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link
+                <TrackedLink
                   href="/dashboard"
+                  eventName="cta_borja_planera"
+                  eventLocation="vatternrundan_hero"
+                  eventData={{ cta_type: 'primary', destination: 'dashboard' }}
                   className="bg-primary text-primary-foreground px-8 py-4 rounded-lg hover:bg-primary-hover transition-colors text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-border-focus"
                 >
                   {t('hero.cta')}
-                </Link>
-                <Link
+                </TrackedLink>
+                <TrackedLink
                   href="/vatternrundan-guide"
+                  eventName="cta_las_guiden"
+                  eventLocation="vatternrundan_hero"
+                  eventData={{ cta_type: 'secondary', destination: 'guide' }}
                   className="bg-surface-2 text-text-primary px-8 py-4 rounded-lg hover:bg-surface-3 transition-colors text-lg font-semibold border border-border focus:outline-none focus:ring-2 focus:ring-border-focus"
                 >
                   {t('hero.ctaSecondary')}
-                </Link>
+                </TrackedLink>
               </div>
             </div>
           </div>
@@ -199,12 +206,15 @@ export default async function VatternrundanPage() {
               <p className="text-lg text-text-secondary mb-8 leading-relaxed">
                 {t('cta.description')}
               </p>
-              <Link
+              <TrackedLink
                 href="/dashboard"
+                eventName="cta_kom_igang_nu"
+                eventLocation="vatternrundan_bottom_cta"
+                eventData={{ cta_type: 'final', destination: 'dashboard' }}
                 className="inline-block bg-primary text-primary-foreground px-8 py-4 rounded-lg hover:bg-primary-hover transition-colors text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-border-focus"
               >
                 {t('cta.button')}
-              </Link>
+              </TrackedLink>
             </div>
           </div>
         </section>

@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import Header from '@/components/Header';
 import PageViewTracker from '@/components/PageViewTracker';
+import TrackedLink from '@/components/TrackedLink';
 
 export default function HomePage() {
   const t = useTranslations('home');
@@ -104,12 +105,15 @@ export default function HomePage() {
             <p className="text-lg text-text-secondary mb-8 leading-relaxed max-w-2xl mx-auto">
               Planera din strategi för 315 km runt Vättern med vårt specialanpassade verktyg. Beräkna tider, planera depåstopp och visualisera rutten.
             </p>
-            <Link
+            <TrackedLink
               href="/vatternrundan"
+              eventName="cta_planera_vatternrundan"
+              eventLocation="home_vatternrundan_section"
+              eventData={{ cta_type: 'feature_highlight', destination: 'vatternrundan_landing' }}
               className="inline-block bg-primary text-primary-foreground px-8 py-4 rounded-lg hover:bg-primary-hover transition-colors text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-border-focus"
             >
               Planera Vätternrundan
-            </Link>
+            </TrackedLink>
           </div>
         </div>
       </section>

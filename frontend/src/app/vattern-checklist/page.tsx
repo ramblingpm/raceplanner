@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import Header from '@/components/Header';
 import PageViewTracker from '@/components/PageViewTracker';
+import TrackedLink from '@/components/TrackedLink';
 import { generateSEOMetadata, generateBreadcrumbSchema } from '@/lib/seo';
 import StructuredData from '@/components/StructuredData';
 import { ChevronRightIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
@@ -159,12 +160,15 @@ export default async function VatternChecklistPage() {
               <p className="text-lg text-text-secondary mb-8 leading-relaxed">
                 {t('cta.description')}
               </p>
-              <Link
+              <TrackedLink
                 href="/dashboard"
+                eventName="cta_skapa_plan"
+                eventLocation="checklist_cta"
+                eventData={{ cta_type: 'primary', destination: 'dashboard' }}
                 className="inline-block bg-primary text-primary-foreground px-8 py-4 rounded-lg hover:bg-primary-hover transition-colors text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-border-focus"
               >
                 {t('cta.button')}
-              </Link>
+              </TrackedLink>
             </div>
           </div>
         </section>
@@ -177,20 +181,26 @@ export default async function VatternChecklistPage() {
                 Läs mer
               </h3>
               <div className="grid md:grid-cols-2 gap-4">
-                <Link
+                <TrackedLink
                   href="/vatternrundan"
+                  eventName="link_las_mer_vatternrundan"
+                  eventLocation="checklist_footer"
+                  eventData={{ destination: 'main_page' }}
                   className="bg-surface-background p-6 rounded-lg border border-border hover:shadow-lg transition-shadow text-center"
                 >
                   <div className="text-3xl mb-2">🏠</div>
                   <div className="font-semibold text-text-primary">{t('links.mainPage')}</div>
-                </Link>
-                <Link
+                </TrackedLink>
+                <TrackedLink
                   href="/vatternrundan-guide"
+                  eventName="link_las_planeringsguiden"
+                  eventLocation="checklist_footer"
+                  eventData={{ destination: 'guide' }}
                   className="bg-surface-background p-6 rounded-lg border border-border hover:shadow-lg transition-shadow text-center"
                 >
                   <div className="text-3xl mb-2">📚</div>
                   <div className="font-semibold text-text-primary">{t('links.guide')}</div>
-                </Link>
+                </TrackedLink>
               </div>
             </div>
           </div>
