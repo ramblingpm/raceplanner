@@ -370,5 +370,197 @@
       "confirmApprove": "Are you sure you want to approve this beta invite? The user will be able to sign up.",
       "mustBeLoggedIn": "You must be logged in to approve beta invites."
     }
+  },
+  "vatternrundan": {
+    "tagline": "The world's largest recreational cycling event with over 20,000 participants",
+    "meta": {
+      "title": "Vätternrundan - Plan Your Race | Race Planner",
+      "description": "Complete guide for Vätternrundan. Plan your strategy, calculate times and pace for 315km around Lake Vättern. Free tools and tips."
+    },
+    "hero": {
+      "title": "Plan Your Vätternrundan",
+      "subtitle": "315 km around Sweden's most beautiful lake - do your best with proper planning",
+      "cta": "Start Planning",
+      "ctaSecondary": "Read the Guide"
+    },
+    "about": {
+      "title": "About Vätternrundan",
+      "description": "Vätternrundan is the world's largest recreational cycling event with over 20,000 participants each year. The race covers 315 km around Lake Vättern and has been a classic since 1966.",
+      "distance": "Distance: 315 km",
+      "elevation": "Elevation gain: approx. 1800m",
+      "startPlace": "Start/Finish: Motala"
+    },
+    "features": {
+      "title": "Plan Your Vätternrundan with Race Planner",
+      "feature1": {
+        "title": "Calculate Your Time",
+        "description": "Calculate what average speed you need to maintain to reach your time goal"
+      },
+      "feature2": {
+        "title": "Plan Feed Stops",
+        "description": "Add planned stops at control stations and calculate arrival times"
+      },
+      "feature3": {
+        "title": "Visualize the Route",
+        "description": "See the entire 315 km route on a map with elevation profile and control stations"
+      }
+    },
+    "tips": {
+      "title": "Tips for Vätternrundan",
+      "tip1": {
+        "title": "Start Easy",
+        "description": "The first miles don't decide the outcome - save energy for the last part. Many hit the wall because they start too fast."
+      },
+      "tip2": {
+        "title": "Eat and Drink Regularly",
+        "description": "Plan for at least 2-3 feed stops and refuel continuously during the race."
+      },
+      "tip3": {
+        "title": "Train on Long Rides",
+        "description": "Build endurance with at least one ride over 150 km before the race to be prepared."
+      }
+    },
+    "cta": {
+      "title": "Ready to Plan Your Race?",
+      "description": "Create your personal plan for Vätternrundan for free with Race Planner",
+      "button": "Get Started Now"
+    }
+  },
+  "vatternrundanGuide": {
+    "meta": {
+      "title": "Guide: Plan for Vätternrundan 2026 | Race Planner",
+      "description": "Complete planning guide for Vätternrundan. Learn how to plan pace, feed stops and strategy for 315km. Tips from experienced cyclists."
+    },
+    "hero": {
+      "title": "Vätternrundan Planning Guide",
+      "subtitle": "Everything you need to know to plan and complete your best Vätternrundan"
+    },
+    "sections": {
+      "preparation": {
+        "title": "Preparations for Vätternrundan",
+        "intro": "Vätternrundan requires good preparation. Here's what you need to consider.",
+        "content": "Start your training at least 3-4 months before the race. Gradually increase the distance on your long rides and include at least one ride over 150 km. Test all equipment during training - bike, clothing, saddle and nutrition. Nothing should be new on race day."
+      },
+      "pacing": {
+        "title": "Pacing and Strategies",
+        "intro": "The right pace determines whether you reach the finish with energy left or hit the wall.",
+        "content": "Start slower than planned. The first 60-70 km feel easy but save important energy. Maintain a steady pace and avoid hanging on to fast groups early. Use our planning tool to calculate your optimal average speed based on your time goal."
+      },
+      "nutrition": {
+        "title": "Food and Drink During the Race",
+        "intro": "315 km requires planned energy intake. Here's how to do it.",
+        "content": "Eat and drink before you get hungry or thirsty. Aim for 60-90g of carbohydrates per hour and at least 500-750ml of fluid. Plan your feed stops in advance and take the opportunity to eat real food - bananas, sandwiches and fruit provide energy. Supplement with gels and sports drinks between feed zones."
+      },
+      "equipment": {
+        "title": "Equipment and Packing",
+        "intro": "The right equipment makes a difference in a 315 km race.",
+        "content": "Choose comfortable clothing in multiple layers - it can get cold at night. Pack spare tubes, pump and basic tools. Bring extra lighting and warm gloves. Test everything on long training rides so you know it works."
+      },
+      "recovery": {
+        "title": "After the Race - Recovery",
+        "intro": "Proper recovery is important after such a long race.",
+        "content": "Eat and drink immediately after finishing. Stretch gently and move lightly during recovery days. Let your body rest for at least a week before training hard again. Listen to your body and give yourself time to recover."
+      }
+    },
+    "links": {
+      "mainPage": "Back to Vätternrundan",
+      "checklist": "See Our Checklist",
+      "dashboard": "Create Your Plan"
+    }
+  },
+  "vatternChecklist": {
+    "meta": {
+      "title": "Checklist for Vätternrundan | Race Planner",
+      "description": "Complete checklist for those riding Vätternrundan. Everything you need to pack, plan and prepare for the race."
+    },
+    "hero": {
+      "title": "I'm Riding Vätternrundan!",
+      "subtitle": "Your complete checklist for preparations and packing"
+    },
+    "categories": {
+      "weeks": {
+        "title": "4 Weeks Before",
+        "items": [
+          "Plan training program with long rides over 150 km",
+          "Book accommodation in Motala if traveling far",
+          "Check if bike needs servicing",
+          "Create your time plan with Race Planner",
+          "Test all equipment on long training rides",
+          "Try different types of sports nutrition"
+        ]
+      },
+      "week": {
+        "title": "1 Week Before",
+        "items": [
+          "Do last long ride (max 100 km)",
+          "Service bike - brakes, gears, chain",
+          "Check tire pressure and tire condition",
+          "Test all equipment one last time",
+          "Plan nutrition intake for race",
+          "Rest and load energy"
+        ]
+      },
+      "day": {
+        "title": "Race Day",
+        "items": [
+          "Eat substantial breakfast 3-4 hours before start",
+          "Check weather and wind forecasts",
+          "Fill water bottles and pack nutrition",
+          "Charge GPS/bike computer",
+          "Check lighting (front and rear lights)",
+          "Lubricate chain one last time",
+          "Arrive at start in good time"
+        ]
+      },
+      "gear": {
+        "title": "Packing List - Equipment",
+        "items": [
+          "Bike (well serviced with functioning gears)",
+          "Helmet (mandatory)",
+          "Cycling clothing (shorts with padding)",
+          "Cycling jersey and extra layer for night",
+          "Windproof jacket",
+          "Shoes and possibly shoe covers",
+          "Gloves (thin + warm)",
+          "Cycling glasses",
+          "Front and rear lights (mandatory)",
+          "GPS/bike computer",
+          "Race number and start card"
+        ]
+      },
+      "nutrition": {
+        "title": "Packing List - Food & Drinks",
+        "items": [
+          "Water bottles (2pcs, at least 500ml each)",
+          "Energy gels (6-10pcs)",
+          "Energy bars/bananas",
+          "Electrolyte powder or sports drink",
+          "Salt tablets",
+          "Possibly caffeine gel for final stretch"
+        ]
+      },
+      "tools": {
+        "title": "Packing List - Tools & Spare Parts",
+        "items": [
+          "Spare tubes x2",
+          "Pump or CO2 cartridges (3-4pcs)",
+          "Multitool with hex keys",
+          "Tire levers (2-3pcs)",
+          "Chain lock",
+          "Chain tool (if experienced)",
+          "Tape or quick fix",
+          "Mobile phone and possibly power bank"
+        ]
+      }
+    },
+    "cta": {
+      "title": "Next Step: Create Your Time Plan",
+      "description": "Now that you have everything you need - create your personal time plan for Vätternrundan",
+      "button": "Create Plan"
+    },
+    "links": {
+      "mainPage": "Read More About Vätternrundan",
+      "guide": "Read the Planning Guide"
+    }
   }
 }

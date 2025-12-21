@@ -111,7 +111,7 @@ export default async function VatternrundanPage() {
                 <div className="bg-surface-1 rounded-lg p-8 border border-border">
                   <div className="text-6xl mb-4 text-center">🚴</div>
                   <p className="text-center text-text-secondary italic">
-                    Världens största motionslopp på cykel med över 20 000 deltagare
+                    {t('tagline')}
                   </p>
                 </div>
               </div>
