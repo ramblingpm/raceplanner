@@ -227,33 +227,30 @@ export async function setUserProperties(properties: Record<string, string | numb
 }
 
 // Track the last user ID we set to prevent duplicate tracking
-let lastTrackedUserId: string | null = null;
-let lastTrackedTime: number = 0;
-const TRACKING_DEDUPE_WINDOW_MS = 2000; // 2 seconds
+let lastIdentifiedUserId: string | null = null;
 
 /**
- * Track user login and set user ID
- * Call this after successful login/signup
+ * Set user identity in GA4 without tracking a login event
+ * Call this when loading a user session (page loads, auth state changes)
+ * This ensures GA4 knows who the user is across all their events
  *
  * @param userId - The user's unique ID
  * @param email - The user's email (for identifying beta users)
  * @param isBetaUser - Whether the user is a beta user
  *
  * @example
- * trackUserLogin('user-id-123', 'user@example.com', true)
+ * setUserIdentity('user-id-123', 'user@example.com', true)
  */
-export async function trackUserLogin(userId: string, email: string, isBetaUser: boolean = false) {
+export async function setUserIdentity(userId: string, email: string, isBetaUser: boolean = false) {
   if (typeof window === 'undefined') return;
   if (!hasConsent()) return;
 
-  // Deduplicate: skip if we just tracked this user very recently
-  const now = Date.now();
-  if (lastTrackedUserId === userId && (now - lastTrackedTime) < TRACKING_DEDUPE_WINDOW_MS) {
+  // Only set identity once per user session
+  if (lastIdentifiedUserId === userId) {
     return;
   }
 
-  lastTrackedUserId = userId;
-  lastTrackedTime = now;
+  lastIdentifiedUserId = userId;
 
   // Set the user ID for this session
   await setUserId(userId);
@@ -263,13 +260,8 @@ export async function trackUserLogin(userId: string, email: string, isBetaUser: 
     beta_user: isBetaUser ? 'yes' : 'no',
     user_email_domain: email.split('@')[1] || 'unknown',
   });
-
-  // Track the login event (using custom name to avoid GA4 reserved event filtering)
-  await trackEvent('user_login', {
-    method: 'email',
-    beta_user: isBetaUser,
-  });
 }
+
 
 /**
  * Clear user tracking (call on logout)
@@ -282,9 +274,8 @@ export async function clearUserTracking() {
     method: 'manual',
   });
 
-  // Reset deduplication cache
-  lastTrackedUserId = null;
-  lastTrackedTime = 0;
+  // Reset identity cache
+  lastIdentifiedUserId = null;
 
   await setUserId(null);
 }

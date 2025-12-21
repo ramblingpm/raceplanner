@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { signUp, trackUserAuthentication } from '@/lib/auth';
+import { signUp, trackUserSignup } from '@/lib/auth';
 import Header from '@/components/Header';
 import PageViewTracker from '@/components/PageViewTracker';
 import { trackFormStart, trackFormSubmit } from '@/lib/analytics';
@@ -77,9 +77,9 @@ export default function SignUpPage() {
       const { setConsentStatus } = await import('@/lib/consent');
       setConsentStatus('accepted');
 
-      // Track user authentication in GA4
+      // Track user signup in GA4
       if (user) {
-        await trackUserAuthentication(user);
+        await trackUserSignup(user);
       }
 
       // Show success message

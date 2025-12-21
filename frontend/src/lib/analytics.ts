@@ -6,7 +6,7 @@
 import { trackEvent } from './consent';
 
 // Re-export user tracking functions for convenience
-export { setUserId, setUserProperties, trackUserLogin, clearUserTracking } from './consent';
+export { setUserId, setUserProperties, setUserIdentity, clearUserTracking } from './consent';
 
 /**
  * Track when a user selects a race
@@ -108,20 +108,8 @@ export function trackLanguageChanged(fromLanguage: string, toLanguage: string) {
 }
 
 /**
- * Track authentication events
+ * Track logout event
  */
-export function trackSignup(method: string = 'email') {
-  trackEvent('sign_up', {
-    method,
-  });
-}
-
-export function trackLogin(method: string = 'email') {
-  trackEvent('login', {
-    method,
-  });
-}
-
 export function trackLogout() {
   trackEvent('logout');
 }

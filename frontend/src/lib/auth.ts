@@ -1,6 +1,6 @@
 import { supabase } from './supabase';
 import { User } from '@supabase/supabase-js';
-import { trackUserLogin, clearUserTracking } from './consent';
+import { setUserIdentity, clearUserTracking } from './consent';
 
 export interface AuthUser extends User {}
 
@@ -86,12 +86,53 @@ export async function isBetaUser(email: string): Promise<boolean> {
 }
 
 /**
- * Track user authentication in Google Analytics
- * Call this after successful login or when loading an authenticated user
+ * Set user identity in GA4 for session tracking
+ * Call this when loading an authenticated user (page loads, auth state changes)
+ * This does NOT track a login event - it only sets the user ID for GA4
  */
-export async function trackUserAuthentication(user: AuthUser) {
+export async function setUserIdentityInAnalytics(user: AuthUser) {
   if (!user.email) return;
 
   const isBeta = await isBetaUser(user.email);
-  await trackUserLogin(user.id, user.email, isBeta);
+  await setUserIdentity(user.id, user.email, isBeta);
+}
+
+/**
+ * Track user signup event in Google Analytics
+ * Call this ONLY after successful signup
+ */
+export async function trackUserSignup(user: AuthUser) {
+  if (!user.email) return;
+
+  const isBeta = await isBetaUser(user.email);
+
+  // Set user identity
+  await setUserIdentity(user.id, user.email, isBeta);
+
+  // Import trackEvent to fire signup event
+  const { trackEvent } = await import('./consent');
+  await trackEvent('sign_up', {
+    method: 'email',
+    beta_user: isBeta,
+  });
+}
+
+/**
+ * Track user login event in Google Analytics
+ * Call this ONLY after successful login
+ */
+export async function trackUserLogin(user: AuthUser) {
+  if (!user.email) return;
+
+  const isBeta = await isBetaUser(user.email);
+
+  // Set user identity
+  await setUserIdentity(user.id, user.email, isBeta);
+
+  // Import trackEvent to fire login event
+  const { trackEvent } = await import('./consent');
+  await trackEvent('login', {
+    method: 'email',
+    beta_user: isBeta,
+  });
 }

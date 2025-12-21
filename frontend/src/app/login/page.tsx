@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { signIn, trackUserAuthentication } from '@/lib/auth';
+import { signIn, trackUserLogin } from '@/lib/auth';
 import Header from '@/components/Header';
 import PageViewTracker from '@/components/PageViewTracker';
 import { trackFormStart, trackFormSubmit } from '@/lib/analytics';
@@ -45,9 +45,9 @@ export default function LoginPage() {
     try {
       const { user } = await signIn(email, password);
 
-      // Track user authentication in GA4
+      // Track user login in GA4
       if (user) {
-        await trackUserAuthentication(user);
+        await trackUserLogin(user);
       }
 
       router.push('/dashboard');
