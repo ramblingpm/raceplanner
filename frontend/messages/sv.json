@@ -364,5 +364,196 @@
       "confirmApprove": "Är du säker på att du vill godkänna denna beta-inbjudan? Användaren kommer att kunna registrera sig.",
       "mustBeLoggedIn": "Du måste vara inloggad för att godkänna beta-inbjudningar."
     }
+  },
+  "vatternrundan": {
+    "meta": {
+      "title": "Vätternrundan - Planera ditt lopp | Race Planner",
+      "description": "Komplett guide för Vätternrundan. Planera din strategi, beräkna tider och tempo för 315km runt Vättern. Gratis verktyg och tips."
+    },
+    "hero": {
+      "title": "Planera din Vätternrunda",
+      "subtitle": "315 km runt Sveriges vackraste sjö - gör din bästa insats med rätt planering",
+      "cta": "Börja planera",
+      "ctaSecondary": "Läs guiden"
+    },
+    "about": {
+      "title": "Om Vätternrundan",
+      "description": "Vätternrundan är världens största motionslopp på cykel med över 20 000 deltagare varje år. Loppet går 315 km runt Vättern och är en klassiker sedan 1966.",
+      "distance": "Distans: 315 km",
+      "elevation": "Höjdmeter: ca 1800m",
+      "startPlace": "Start/Mål: Motala"
+    },
+    "features": {
+      "title": "Planera din Vätternrundan med Race Planner",
+      "feature1": {
+        "title": "Beräkna din tid",
+        "description": "Räkna ut vilken medelhastighet du behöver hålla för att nå ditt tidsmål"
+      },
+      "feature2": {
+        "title": "Planera depåstopp",
+        "description": "Lägg in planerade stopp vid kontrollstationer och beräkna ankomsttider"
+      },
+      "feature3": {
+        "title": "Visualisera rutten",
+        "description": "Se hela 315 km-rutten på karta med höjdprofil och kontrollstationer"
+      }
+    },
+    "tips": {
+      "title": "Tips för Vätternrundan",
+      "tip1": {
+        "title": "Börja lugnt",
+        "description": "De första milen avgör inte - spara krafter till sista delen. Många går i väggen för att de börjar för fort."
+      },
+      "tip2": {
+        "title": "Ät och drick regelbundet",
+        "description": "Planera för minst 2-3 depåstopp och fyll på energi kontinuerligt under loppet."
+      },
+      "tip3": {
+        "title": "Träna på långa pass",
+        "description": "Bygg upp kondition med minst ett pass över 15 mil innan loppet för att vara förberedd."
+      }
+    },
+    "cta": {
+      "title": "Redo att planera ditt lopp?",
+      "description": "Skapa din personliga plan för Vätternrundan gratis med Race Planner",
+      "button": "Kom igång nu"
+    }
+  },
+  "vatternrundanGuide": {
+    "meta": {
+      "title": "Guide: Planera för Vätternrundan 2026 | Race Planner",
+      "description": "Komplett planeringsguide för Vätternrundan. Lär dig hur du planerar tempo, depåstopp och strategi för 315km. Tips från erfarna cyklister."
+    },
+    "hero": {
+      "title": "Vätternrundan Planeringsguide",
+      "subtitle": "Allt du behöver veta för att planera och genomföra ditt bästa Vätternrundan"
+    },
+    "sections": {
+      "preparation": {
+        "title": "Förberedelser inför Vätternrundan",
+        "intro": "Vätternrundan kräver god förberedelse. Här är vad du behöver tänka på.",
+        "content": "Börja din träning minst 3-4 månader före loppet. Öka gradvis distansen på dina långpass och lägg in minst ett pass över 15 mil. Testa all utrustning under träningen - cykel, kläder, sadel och nutrition. Ingenting ska vara nytt på loppsda gen."
+      },
+      "pacing": {
+        "title": "Tempoinläggning och strategier",
+        "intro": "Rätt tempo avgör om du når mål med energi kvar eller går i väggen.",
+        "content": "Börja lugnare än vad du planerat. De första 10-12 milen känns lätta men sparar viktiga krafter. Håll jämnt tempo och undvik att hänga på snabba grupper tidigt. Använd vårt planeringsverktyg för att beräkna din optimala medelhastighet baserat på ditt tidsmål."
+      },
+      "nutrition": {
+        "title": "Mat och dryck under loppet",
+        "intro": "315 km kräver planerad energitillförsel. Så här gör du.",
+        "content": "Ät och drick innan du blir hungrig eller törstig. Sikta på 60-90g kolhydrater per timme och minst 500-750ml vätska. Planera dina depåstopp i förväg och ta chansen att äta riktig mat - bananer, smörgåsar och frukt ger energi. Komplettera med gels och sportdryck mellan depåerna."
+      },
+      "equipment": {
+        "title": "Utrustning och packning",
+        "intro": "Rätt utrustning gör skillnad på ett 315 km lopp.",
+        "content": "Välj bekväma kläder i flera lager - det kan bli kallt på natten. Packa reservslang, pumpe och grundläggande verktyg. Ta med extra belysning och varma handskar. Testa allt på långa träningspass så att du vet att det fungerar."
+      },
+      "recovery": {
+        "title": "Efter loppet - återhämtning",
+        "intro": "Rätt återhämtning är viktig efter ett så långt lopp.",
+        "content": "Ät och drick direkt efter mål. Sträck ut försiktigt och rör på dig lätt under återhämtningsdagarna. Låt kroppen vila i minst en vecka innan du tränar hårt igen. Lyssna på kroppen och ge dig själv tid att återhämta dig."
+      }
+    },
+    "links": {
+      "mainPage": "Tillbaka till Vätternrundan",
+      "checklist": "Se vår checklista",
+      "dashboard": "Skapa din plan"
+    }
+  },
+  "vatternChecklist": {
+    "meta": {
+      "title": "Checklista inför Vätternrundan | Race Planner",
+      "description": "Komplett checklista för dig som ska cykla Vätternrundan. Allt du behöver packa, planera och förbereda inför loppet."
+    },
+    "hero": {
+      "title": "Jag ska cykla Vättern!",
+      "subtitle": "Din kompletta checklista för förberedelser och packning"
+    },
+    "categories": {
+      "weeks": {
+        "title": "4 veckor innan",
+        "items": [
+          "Planera träningsprogram med långpass över 15 mil",
+          "Boka boende i Motala om du reser långt",
+          "Kontrollera att cykeln behöver servas",
+          "Skapa din tidsplan med Race Planner",
+          "Testa all utrustning på långa träningspass",
+          "Prova olika typer av sportnutrition"
+        ]
+      },
+      "week": {
+        "title": "1 vecka innan",
+        "items": [
+          "Gör sista långpasset (max 10 mil)",
+          "Serva cykeln - bromsar, växlar, kedja",
+          "Kontrollera däcktryck och däckskick",
+          "Testa all utrustning en sista gång",
+          "Planera näringsintag för loppet",
+          "Vila och ladda energi"
+        ]
+      },
+      "day": {
+        "title": "Loppsdagen",
+        "items": [
+          "Ät rejäl frukost 3-4 timmar innan start",
+          "Kontrollera väder och vindprognoser",
+          "Fyll vattenflaskor och packa nutrition",
+          "Ladda GPS/cykelcomputer",
+          "Kontrollera belysning (framlampa och baklampa)",
+          "Smörj kedjan en sista gång",
+          "Ankom i god tid till starten"
+        ]
+      },
+      "gear": {
+        "title": "Packlista - Utrustning",
+        "items": [
+          "Cykel (väl servad med funktionerande växlar)",
+          "Hjälm (obligatorisk)",
+          "Cykelkläder (byxor med vaddering)",
+          "Cykeltröja och extra lager för natten",
+          "Vindtät jacka",
+          "Skor och eventuellt överdragsskor",
+          "Handskar (tunna + varma)",
+          "Cykelglasögon",
+          "Framlampa och baklampa (obligatoriskt)",
+          "GPS/cykelcomputer",
+          "Nummerlapp och startkort"
+        ]
+      },
+      "nutrition": {
+        "title": "Packlista - Mat & dryck",
+        "items": [
+          "Vattenflaskor (2st, minst 500ml vardera)",
+          "Energigel (6-10st)",
+          "Energibars/bananer",
+          "Elektrolytpulver eller sportdryck",
+          "Salttabletter",
+          "Eventuellt koffeingel för sista biten"
+        ]
+      },
+      "tools": {
+        "title": "Packlista - Verktyg & reservdelar",
+        "items": [
+          "Reservslang x2",
+          "Pumpe eller CO2-patroner (3-4st)",
+          "Multitool med hex-nycklar",
+          "Däckspett (2-3st)",
+          "Kedjelås",
+          "Kedjeverktyg (om du har erfarenhet)",
+          "Tejp eller snabbfix",
+          "Mobil och eventuellt powerbank"
+        ]
+      }
+    },
+    "cta": {
+      "title": "Nästa steg: Skapa din tidsplan",
+      "description": "Nu när du har koll på allt du behöver - skapa din personliga tidsplan för Vätternrundan",
+      "button": "Skapa plan"
+    },
+    "links": {
+      "mainPage": "Läs mer om Vätternrundan",
+      "guide": "Läs planeringsguiden"
+    }
   }
 }

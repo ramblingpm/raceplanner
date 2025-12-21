@@ -1,6 +1,14 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import Header from '@/components/Header';
 import { useTranslations } from 'next-intl';
+import { generateSEOMetadata } from '@/lib/seo';
+
+export const metadata: Metadata = generateSEOMetadata({
+  title: 'Användarvillkor - Race Planner',
+  description: 'Läs våra användarvillkor för att förstå reglerna och riktlinjerna för användning av Race Planner.',
+  url: '/terms',
+});
 
 export default function TermsOfServicePage() {
   const t = useTranslations('common');

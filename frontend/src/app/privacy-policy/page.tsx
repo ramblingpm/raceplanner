@@ -1,6 +1,14 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import Header from '@/components/Header';
 import { useTranslations } from 'next-intl';
+import { generateSEOMetadata } from '@/lib/seo';
+
+export const metadata: Metadata = generateSEOMetadata({
+  title: 'Integritetspolicy - Race Planner',
+  description: 'Läs vår integritetspolicy för att förstå hur vi samlar in, använder och skyddar din personliga information.',
+  url: '/privacy-policy',
+});
 
 export default function PrivacyPolicyPage() {
   const t = useTranslations('common');

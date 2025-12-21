@@ -93,6 +93,27 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Vätternrundan Feature Section */}
+      <section className="py-12 md:py-16 bg-gradient-to-b from-surface-background to-primary-subtle">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="text-6xl mb-4">🚴</div>
+            <h2 className="text-3xl md:text-4xl font-bold text-text-primary mb-4">
+              Ska du cykla Vätternrundan?
+            </h2>
+            <p className="text-lg text-text-secondary mb-8 leading-relaxed max-w-2xl mx-auto">
+              Planera din strategi för 315 km runt Vättern med vårt specialanpassade verktyg. Beräkna tider, planera depåstopp och visualisera rutten.
+            </p>
+            <Link
+              href="/vatternrundan"
+              className="inline-block bg-primary text-primary-foreground px-8 py-4 rounded-lg hover:bg-primary-hover transition-colors text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-border-focus"
+            >
+              Planera Vätternrundan
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="container mx-auto px-4 py-8 md:py-16">
         <div className="max-w-4xl mx-auto text-center">

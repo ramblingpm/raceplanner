@@ -1,0 +1,17 @@
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Disallow private/protected areas
+Disallow: /dashboard
+Disallow: /admin
+Disallow: /api
+Disallow: /beta-signup
+Disallow: /beta-invite-action
+Disallow: /login
+Disallow: /signup
+Disallow: /reset-password
+Disallow: /forgot-password
+
+# Sitemap
+Sitemap: https://raceplanner.com/sitemap.xml

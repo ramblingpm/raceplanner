@@ -24,7 +24,6 @@ const RaceMap = dynamic(() => import('@/components/RaceMap'), {
 import {
   trackPlanCopied,
   trackPlanDeleted,
-  trackAddPlanModalOpened,
   trackButtonClick,
 } from '@/lib/analytics';
 
