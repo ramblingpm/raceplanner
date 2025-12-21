@@ -45,6 +45,10 @@ export default function LoginPage() {
     try {
       const { user } = await signIn(email, password);
 
+      // Set cookie consent (user already agreed during signup)
+      const { setConsentStatus } = await import('@/lib/consent');
+      setConsentStatus('accepted');
+
       // Track user login in GA4
       if (user) {
         await trackUserLogin(user);
@@ -125,6 +129,17 @@ export default function LoginPage() {
               className="w-full px-4 py-2 border border-border rounded-md focus:ring-2 focus:ring-border-focus focus:border-transparent text-text-primary bg-surface-background"
               placeholder={t('passwordPlaceholder')}
             />
+          </div>
+
+          <div className="text-xs text-text-muted text-center">
+            By logging in, you agree to our use of cookies for analytics.{' '}
+            <Link
+              href="/privacy-policy"
+              target="_blank"
+              className="text-text-link hover:text-text-link-hover underline"
+            >
+              Privacy Policy
+            </Link>
           </div>
 
           <button
