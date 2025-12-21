@@ -101,6 +101,11 @@
         "title": "Stöd för flera loppar",
         "description": "Planera och jämför olika loppar. Från maraton till ultralångdistans cykelevenemang."
       }
+    },
+    "vatternrundanCta": {
+      "title": "Ska du cykla Vätternrundan?",
+      "description": "Planera din strategi för 315 km runt Vättern med vårt specialanpassade verktyg. Beräkna tider, planera depåstopp och visualisera rutten.",
+      "button": "Planera Vätternrundan"
     }
   },
   "dashboard": {

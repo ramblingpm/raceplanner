@@ -101,6 +101,11 @@
         "title": "Multiple Race Support",
         "description": "Plan and compare different races. From marathons to ultra-distance cycling events."
       }
+    },
+    "vatternrundanCta": {
+      "title": "Are you riding Vätternrundan?",
+      "description": "Plan your strategy for 315 km around Lake Vättern with our specialized tool. Calculate times, plan feed stops, and visualize the route.",
+      "button": "Plan Vätternrundan"
     }
   },
   "dashboard": {

@@ -100,10 +100,10 @@ export default function HomePage() {
           <div className="max-w-4xl mx-auto text-center">
             <div className="text-6xl mb-4">🚴</div>
             <h2 className="text-3xl md:text-4xl font-bold text-text-primary mb-4">
-              Ska du cykla Vätternrundan?
+              {t('vatternrundanCta.title')}
             </h2>
             <p className="text-lg text-text-secondary mb-8 leading-relaxed max-w-2xl mx-auto">
-              Planera din strategi för 315 km runt Vättern med vårt specialanpassade verktyg. Beräkna tider, planera depåstopp och visualisera rutten.
+              {t('vatternrundanCta.description')}
             </p>
             <TrackedLink
               href="/vatternrundan"
@@ -112,7 +112,7 @@ export default function HomePage() {
               eventData={{ cta_type: 'feature_highlight', destination: 'vatternrundan_landing' }}
               className="inline-block bg-primary text-primary-foreground px-8 py-4 rounded-lg hover:bg-primary-hover transition-colors text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-border-focus"
             >
-              Planera Vätternrundan
+              {t('vatternrundanCta.button')}
             </TrackedLink>
           </div>
         </div>
