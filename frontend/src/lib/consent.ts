@@ -79,15 +79,25 @@ export function initializeGoogleAnalytics() {
   if (typeof window === 'undefined') return;
 
   // Check if GA4 ID is configured
-  if (!GA4_MEASUREMENT_ID) return;
+  if (!GA4_MEASUREMENT_ID) {
+    console.error('[GA4] No measurement ID configured. Set NEXT_PUBLIC_GA4_MEASUREMENT_ID');
+    return;
+  }
 
   // Check if already initialized
-  if ((window as any).gtag) return;
+  if ((window as any).gtag) {
+    console.log('[GA4] Already initialized');
+    return;
+  }
+
+  console.log('[GA4] Initializing with ID:', GA4_MEASUREMENT_ID);
 
   // Load Google Analytics script
   const script1 = document.createElement('script');
   script1.async = true;
   script1.src = `https://www.googletagmanager.com/gtag/js?id=${GA4_MEASUREMENT_ID}`;
+  script1.onload = () => console.log('[GA4] Script loaded successfully');
+  script1.onerror = () => console.error('[GA4] Failed to load script');
   document.head.appendChild(script1);
 
   // Initialize gtag
@@ -99,6 +109,7 @@ export function initializeGoogleAnalytics() {
     gtag('config', '${GA4_MEASUREMENT_ID}', {
       debug_mode: ${IS_DEVELOPMENT}
     });
+    console.log('[GA4] Configuration complete');
   `;
   document.head.appendChild(script2);
 }
@@ -124,15 +135,28 @@ export function setLoggedInConsent() {
  * trackEvent('button_click', { button_name: 'add_plan', location: 'dashboard' })
  */
 export async function trackEvent(eventName: string, eventParams?: Record<string, any>) {
-  if (typeof window === 'undefined') return;
-  if (!hasConsent()) return;
+  if (typeof window === 'undefined') {
+    console.log('[GA4] Skipped (server-side):', eventName);
+    return;
+  }
+
+  if (!hasConsent()) {
+    console.log('[GA4] Skipped (no consent):', eventName);
+    return;
+  }
 
   // Wait for GA to be ready
   const isReady = await waitForGoogleAnalytics();
-  if (!isReady) return;
+  if (!isReady) {
+    console.error('[GA4] Failed to load - event not sent:', eventName);
+    return;
+  }
 
   const gtag = (window as any).gtag;
-  if (!gtag) return;
+  if (!gtag) {
+    console.error('[GA4] gtag not available:', eventName);
+    return;
+  }
 
   // Add debug_mode to event parameters for DebugView (only in development)
   const params = IS_DEVELOPMENT ? {
@@ -140,6 +164,7 @@ export async function trackEvent(eventName: string, eventParams?: Record<string,
     debug_mode: true,
   } : eventParams;
 
+  console.log('[GA4] Event sent:', eventName, params);
   gtag('event', eventName, params);
 }
 
