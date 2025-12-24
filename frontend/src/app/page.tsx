@@ -129,7 +129,7 @@ export default function HomePage() {
               eventData={{ cta_type: 'primary', destination: 'try_calculator' }}
               className="w-full sm:w-auto bg-success text-white px-8 py-3 md:py-4 rounded-lg hover:bg-success/90 transition-colors text-base font-semibold focus:outline-none focus:ring-2 focus:ring-border-focus focus:ring-offset-2"
             >
-              Prova kalkylatorn
+              {t('tryCalculator')}
             </TrackedLink>
             <Link
               href="/beta-signup"

@@ -78,10 +78,10 @@ export default async function VatternChecklistPage() {
             {/* 4 Weeks Before */}
             <section className="bg-surface-1 rounded-lg p-6 md:p-8 border border-border">
               <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">
-                {t('categories.weeks.title')}
+                {t('categories.months.title')}
               </h2>
               <ul className="space-y-2 mt-4">
-                {t.raw('categories.weeks.items').map((item: string, index: number) => (
+                {t.raw('categories.months.items').map((item: string, index: number) => (
                   <ChecklistItem key={index} item={item} />
                 ))}
               </ul>
@@ -90,10 +90,10 @@ export default async function VatternChecklistPage() {
             {/* 1 Week Before */}
             <section className="bg-surface-1 rounded-lg p-6 md:p-8 border border-border">
               <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">
-                {t('categories.week.title')}
+                {t('categories.month.title')}
               </h2>
               <ul className="space-y-2 mt-4">
-                {t.raw('categories.week.items').map((item: string, index: number) => (
+                {t.raw('categories.month.items').map((item: string, index: number) => (
                   <ChecklistItem key={index} item={item} />
                 ))}
               </ul>

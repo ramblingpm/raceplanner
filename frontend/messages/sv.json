@@ -106,7 +106,8 @@
       "title": "Ska du cykla Vätternrundan?",
       "description": "Planera din strategi för 315 km runt Vättern med vårt specialanpassade verktyg. Beräkna tider, planera depåstopp och visualisera rutten.",
       "button": "Planera Vätternrundan"
-    }
+    },
+    "tryCalculator": "Prova kalkylatorn"
   },
   "dashboard": {
     "title": "Planera ditt lopp",
@@ -474,33 +475,32 @@
     },
     "hero": {
       "title": "Jag ska cykla Vättern!",
-      "subtitle": "Din kompletta checklista för förberedelser och packning"
+      "subtitle": "Checklista för förberedelser och packning"
     },
     "categories": {
-      "weeks": {
-        "title": "4 veckor innan",
+      "months": {
+        "title": "3-6 månader innan",
         "items": [
-          "Planera träningsprogram med långpass över 15 mil",
+          "Planera träningsprogram med långpass över 15 mil, du vill försöka ha minst 100mil i benen innan loppet",
           "Boka boende i Motala om du reser långt",
-          "Kontrollera att cykeln behöver servas",
+          "Kontrollera om cykeln behöver servas, och boka tid om så är fallet det kommer inte bara vara du som vill serva sin cykel innan loppet",
           "Skapa din tidsplan med Race Planner",
           "Testa all utrustning på långa träningspass",
-          "Prova olika typer av sportnutrition"
+          "Prova olika typer av sportdryck eller energi i ngn form för att se vad som passar dig bäst"
         ]
       },
-      "week": {
-        "title": "1 vecka innan",
+      "month": {
+        "title": "1-2 månader innan",
         "items": [
-          "Gör sista långpasset (max 10 mil)",
-          "Serva cykeln - bromsar, växlar, kedja",
-          "Kontrollera däcktryck och däckskick",
+          "Se till att göra minst ett långpass (minst 16 mil)",
+          "Kolla igenom cykeln och har du inte gjort det innan, serva cykeln - bromsar, växlar, kedja",
+          "Kontrollera däckens skick och byt om det behövs",
           "Testa all utrustning en sista gång",
-          "Planera näringsintag för loppet",
-          "Vila och ladda energi"
+          "Planera näringsintag för loppet"
         ]
       },
       "day": {
-        "title": "Loppsdagen",
+        "title": "Dagen innan + dagen för loppet",
         "items": [
           "Ät rejäl frukost 3-4 timmar innan start",
           "Kontrollera väder och vindprognoser",

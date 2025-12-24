@@ -106,7 +106,8 @@
       "title": "Are you riding Vätternrundan?",
       "description": "Plan your strategy for 315 km around Lake Vättern with our specialized tool. Calculate times, plan feed stops, and visualize the route.",
       "button": "Plan Vätternrundan"
-    }
+    },
+    "tryCalculator": "Try Calculator"
   },
   "dashboard": {
     "title": "Plan Your Race",
@@ -475,33 +476,32 @@
     },
     "hero": {
       "title": "I'm Riding Vätternrundan!",
-      "subtitle": "Your complete checklist for preparations and packing"
+      "subtitle": "Checklist for preparations and packing"
     },
     "categories": {
-      "weeks": {
-        "title": "4 Weeks Before",
+      "months": {
+        "title": "3-6 months Before",
         "items": [
-          "Plan training program with long rides over 150 km",
+          "Plan training program with long rides over 150 km, you want to do atleast 1000 km before Vätternrundan",
           "Book accommodation in Motala if traveling far",
-          "Check if bike needs servicing",
+          "Check if bike needs servicing and book a bike service if needed, you will not be the only one the closer it gets",
           "Create your time plan with Race Planner",
-          "Test all equipment on long training rides",
-          "Try different types of sports nutrition"
+          "Test all your equipment on long training rides",
+          "Try different types of sports nutrition to see which one suits you the best"
         ]
       },
-      "week": {
-        "title": "1 Week Before",
+      "month": {
+        "title": "1-2 month Before",
         "items": [
-          "Do last long ride (max 100 km)",
-          "Service bike - brakes, gears, chain",
-          "Check tire pressure and tire condition",
+          "Make sure to do a real long ride (min 160 km)",
+          "Check or if you haven't already, Service bike - brakes, gears, chain",
+          "Check tire condition and replace if needed",
           "Test all equipment one last time",
-          "Plan nutrition intake for race",
-          "Rest and load energy"
+          "Plan nutrition intake for race"
         ]
       },
       "day": {
-        "title": "Race Day",
+        "title": "Day before + Race Day",
         "items": [
           "Eat substantial breakfast 3-4 hours before start",
           "Check weather and wind forecasts",
