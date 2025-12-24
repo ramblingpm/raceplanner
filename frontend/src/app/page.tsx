@@ -122,6 +122,15 @@ export default function HomePage() {
       <section className="container mx-auto px-4 py-8 md:py-16">
         <div className="max-w-4xl mx-auto text-center">
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+            <TrackedLink
+              href="/try"
+              eventName="cta_try_calculator"
+              eventLocation="home_cta_section"
+              eventData={{ cta_type: 'primary', destination: 'try_calculator' }}
+              className="w-full sm:w-auto bg-success text-white px-8 py-3 md:py-4 rounded-lg hover:bg-success/90 transition-colors text-base font-semibold focus:outline-none focus:ring-2 focus:ring-border-focus focus:ring-offset-2"
+            >
+              Prova kalkylatorn
+            </TrackedLink>
             <Link
               href="/beta-signup"
               className="w-full sm:w-auto bg-primary text-primary-foreground px-8 py-3 md:py-4 rounded-lg hover:bg-primary-hover transition-colors text-base font-semibold focus:outline-none focus:ring-2 focus:ring-border-focus focus:ring-offset-2"

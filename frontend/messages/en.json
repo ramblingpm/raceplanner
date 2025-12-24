@@ -378,20 +378,20 @@
       "description": "Complete guide for Vätternrundan. Plan your strategy, calculate times and pace for 315km around Lake Vättern. Free tools and tips."
     },
     "hero": {
-      "title": "Plan Your Vätternrundan",
-      "subtitle": "315 km around Sweden's most beautiful lake - do your best with proper planning",
+      "title": "Plan Vätternrundan",
+      "subtitle": "315, 150 or 100 km around Sweden's most beautiful lake - do your best with proper planning",
       "cta": "Start Planning",
       "ctaSecondary": "Read the Guide"
     },
     "about": {
-      "title": "About Vätternrundan",
+      "title": "About Vätternrundan 315",
       "description": "Vätternrundan is the world's largest recreational cycling event with over 20,000 participants each year. The race covers 315 km around Lake Vättern and has been a classic since 1966.",
       "distance": "Distance: 315 km",
       "elevation": "Elevation gain: approx. 1800m",
       "startPlace": "Start/Finish: Motala"
     },
     "features": {
-      "title": "Plan Your Vätternrundan with Race Planner",
+      "title": "Plan Vätternrundan with Race Planner",
       "feature1": {
         "title": "Calculate Your Time",
         "description": "Calculate what average speed you need to maintain to reach your time goal"
@@ -409,7 +409,7 @@
       "title": "Tips for Vätternrundan",
       "tip1": {
         "title": "Start Easy",
-        "description": "The first miles don't decide the outcome - save energy for the last part. Many hit the wall because they start too fast."
+        "description": "The first kilometers don't decide the outcome - save energy for the last part. Many hit the wall because they start too fast."
       },
       "tip2": {
         "title": "Eat and Drink Regularly",
@@ -417,7 +417,7 @@
       },
       "tip3": {
         "title": "Train on Long Rides",
-        "description": "Build endurance with at least one ride over 150 km before the race to be prepared."
+        "description": "Build endurance with at least one ride over 160 km before the race to be prepared."
       }
     },
     "cta": {
@@ -561,6 +561,49 @@
     "links": {
       "mainPage": "Read More About Vätternrundan",
       "guide": "Read the Planning Guide"
+    }
+  },
+  "tryCalculator": {
+    "hero": {
+      "title": "Try Race Planner",
+      "subtitle": "Test our calculator and see how easy it is to plan your race"
+    },
+    "form": {
+      "presetRace": "Choose a race",
+      "distance": "Distance",
+      "startTime": "Start Time",
+      "estimatedDuration": "Estimated Total Time",
+      "hours": "Hours",
+      "minutes": "Minutes",
+      "totalStopTime": "Total stop time at feed zones",
+      "stopTimeHelper": "Include time for food, drinks and breaks",
+      "calculate": "Calculate Results"
+    },
+    "results": {
+      "title": "Your Calculated Results",
+      "finishTime": "Estimated Finish Time",
+      "avgSpeed": "Required Average Speed",
+      "totalTime": "Total Time",
+      "movingTime": "Moving Time (excl. stops)",
+      "darknessWarning": "You will be riding in darkness - don't forget lights and reflectors!"
+    },
+    "cta": {
+      "title": "Ready to Start Planning for Real?",
+      "description": "Create an account to save your plans, add official feed stops, view maps and much more!",
+      "featuresTitle": "With an account you get:",
+      "feature1": "Save unlimited number of plans",
+      "feature2": "Detailed planning with multiple official feed stops",
+      "feature3": "Interactive maps with elevation profile",
+      "feature4": "Segment analysis - speed between stops",
+      "feature5": "Plan for multiple different races",
+      "signup": "Create Free Account",
+      "login": "Sign In"
+    },
+    "learnMore": {
+      "title": "Learn More",
+      "vatternrundan": "About Vätternrundan",
+      "guide": "Planning Guide",
+      "checklist": "Checklist"
     }
   }
 }

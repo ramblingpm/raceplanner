@@ -377,20 +377,20 @@
       "description": "Komplett guide för Vätternrundan. Planera din strategi, beräkna tider och tempo för 315km runt Vättern. Gratis verktyg och tips."
     },
     "hero": {
-      "title": "Planera din Vätternrunda",
-      "subtitle": "315 km runt Sveriges vackraste sjö - gör din bästa insats med rätt planering",
+      "title": "Planera Vätternrundan",
+      "subtitle": "315, 150 eller 100 km runt eller vid Sveriges vackraste sjö - gör din bästa insats med rätt planering",
       "cta": "Börja planera",
       "ctaSecondary": "Läs guiden"
     },
     "about": {
-      "title": "Om Vätternrundan",
+      "title": "Vätternrundan 315",
       "description": "Vätternrundan är världens största motionslopp på cykel med över 20 000 deltagare varje år. Loppet går 315 km runt Vättern och är en klassiker sedan 1966.",
       "distance": "Distans: 315 km",
       "elevation": "Höjdmeter: ca 1800m",
       "startPlace": "Start/Mål: Motala"
     },
     "features": {
-      "title": "Planera din Vätternrundan med Race Planner",
+      "title": "Planera Vätternrundan med Race Planner",
       "feature1": {
         "title": "Beräkna din tid",
         "description": "Räkna ut vilken medelhastighet du behöver hålla för att nå ditt tidsmål"
@@ -416,7 +416,7 @@
       },
       "tip3": {
         "title": "Träna på långa pass",
-        "description": "Bygg upp kondition med minst ett pass över 15 mil innan loppet för att vara förberedd."
+        "description": "Bygg upp kondition med minst ett pass över 16 mil innan loppet för att vara förberedd."
       }
     },
     "cta": {
@@ -560,6 +560,49 @@
     "links": {
       "mainPage": "Läs mer om Vätternrundan",
       "guide": "Läs planeringsguiden"
+    }
+  },
+  "tryCalculator": {
+    "hero": {
+      "title": "Prova Race Planner",
+      "subtitle": "Testa kalkylatorn och se hur enkelt det är att planera ditt lopp"
+    },
+    "form": {
+      "presetRace": "Välj ett lopp",
+      "distance": "Distans",
+      "startTime": "Starttid",
+      "estimatedDuration": "Uppskattat total tid",
+      "hours": "Timmar",
+      "minutes": "Minuter",
+      "totalStopTime": "Total tid vid depåer",
+      "stopTimeHelper": "Inkludera tid för mat, dryck och övriga pauser",
+      "calculate": "Beräkna resultat"
+    },
+    "results": {
+      "title": "Dina beräknade resultat",
+      "finishTime": "Beräknad målgång",
+      "avgSpeed": "Genomsnittshastighet som krävs",
+      "totalTime": "Total tid",
+      "movingTime": "Körtid (exkl. stopp)",
+      "darknessWarning": "Du kommer cykla i mörker - glöm inte lampor och reflexer!"
+    },
+    "cta": {
+      "title": "Redo att börja planera på riktigt?",
+      "description": "Skapa ett konto för att spara dina planer, lägga till officiella depåstopp, se kartor och mycket mer!",
+      "featuresTitle": "Med ett konto får du:",
+      "feature1": "Spara obegränsat antal planer",
+      "feature2": "Detaljerad planering med flera officiella depåstopp",
+      "feature3": "Interaktiva kartor med höjdprofil",
+      "feature4": "Segmentanalys - hastighet mellan stopp",
+      "feature5": "Planera för flera olika lopp",
+      "signup": "Skapa gratis konto",
+      "login": "Logga in"
+    },
+    "learnMore": {
+      "title": "Läs mer",
+      "vatternrundan": "Om Vätternrundan",
+      "guide": "Planeringsguide",
+      "checklist": "Checklista"
     }
   }
 }
