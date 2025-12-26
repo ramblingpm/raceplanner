@@ -19,20 +19,22 @@ export default function Header() {
             {t('appName')}
           </Link>
 
-          <nav className="hidden md:flex items-center gap-4">
-            <Link
-              href="/try"
-              className="text-text-secondary hover:text-text-primary transition-colors font-medium"
-            >
-              Prova gratis
-            </Link>
-            <Link
-              href="/vatternrundan"
-              className="text-text-secondary hover:text-text-primary transition-colors font-medium"
-            >
-              Vätternrundan
-            </Link>
-          </nav>
+          {!user && (
+            <nav className="hidden md:flex items-center gap-4">
+              <Link
+                href="/try"
+                className="text-text-secondary hover:text-text-primary transition-colors font-medium"
+              >
+                Prova gratis
+              </Link>
+              <Link
+                href="/vatternrundan"
+                className="text-text-secondary hover:text-text-primary transition-colors font-medium"
+              >
+                Vätternrundan
+              </Link>
+            </nav>
+          )}
         </div>
 
         <div className="flex items-center gap-2">

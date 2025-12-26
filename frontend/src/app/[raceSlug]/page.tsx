@@ -15,8 +15,6 @@ import { Race } from '@/types';
 import { PencilSquareIcon, DocumentDuplicateIcon, TrashIcon, PlusIcon } from '@heroicons/react/24/outline';
 import {
   trackRaceSelected,
-  trackPlanCreated,
-  trackPlanUpdated,
   trackPlanDeleted,
   trackPlanCopied,
   trackAddPlanModalOpened,
@@ -31,6 +29,16 @@ const RaceMap = dynamic(() => import('@/components/RaceMap'), {
   loading: () => (
     <div className="h-96 bg-surface-1 rounded-lg flex items-center justify-center">
       <p className="text-text-muted">Loading map...</p>
+    </div>
+  ),
+});
+
+// Dynamically import ElevationProfile
+const ElevationProfile = dynamic(() => import('@/components/ElevationProfile'), {
+  ssr: false,
+  loading: () => (
+    <div className="h-48 bg-surface-1 rounded-lg flex items-center justify-center">
+      <p className="text-text-muted">Loading elevation profile...</p>
     </div>
   ),
 });
@@ -512,18 +520,37 @@ export default function RacePage() {
                   </h3>
 
                   {race.route_geometry?.coordinates ? (
-                    <RaceMap
-                      routeCoordinates={
-                        race.route_geometry.coordinates as number[][]
-                      }
-                      selectedFeedZones={feedZonesForMap as any}
-                    />
+                    <div className="h-96">
+                      <RaceMap
+                        routeCoordinates={
+                          race.route_geometry.coordinates as number[][]
+                        }
+                        selectedFeedZones={feedZonesForMap as any}
+                      />
+                    </div>
                   ) : (
                     <div className="h-96 bg-surface-1 rounded-lg flex items-center justify-center">
                       <p className="text-text-muted">{tMap('noRouteData')}</p>
                     </div>
                   )}
                 </div>
+
+                {/* Elevation Profile */}
+                {race.elevation_data && race.elevation_data.length > 0 && (
+                  <div className="bg-surface-background rounded-lg shadow-md p-6 border border-border">
+                    <ElevationProfile
+                      elevations={race.elevation_data}
+                      totalDistanceKm={race.distance_km}
+                      feedZones={availableFeedZones
+                        .filter((fz) => selectedFeedZones.some((sfz) => sfz.feed_zone_id === fz.id))
+                        .map((fz) => ({
+                          name: fz.name,
+                          distance_from_start_km: fz.distance_from_start_km,
+                        }))}
+                      height={200}
+                    />
+                  </div>
+                )}
 
                 {/* Results Section */}
                 {calculationResult && planDetails && (

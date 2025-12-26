@@ -3,10 +3,16 @@
 import { useMemo } from 'react';
 import { useTranslations } from 'next-intl';
 
+interface FeedZoneMarker {
+  name: string;
+  distance_from_start_km: number;
+}
+
 interface ElevationProfileProps {
   elevations: number[]; // Elevation data in meters
   distances?: number[]; // Optional distance data in km (if not provided, will be evenly distributed)
   totalDistanceKm: number;
+  feedZones?: FeedZoneMarker[]; // Optional feed zones to mark on profile
   className?: string;
   height?: number;
 }
@@ -15,43 +21,79 @@ export default function ElevationProfile({
   elevations,
   distances,
   totalDistanceKm,
+  feedZones = [],
   className = '',
   height = 200,
 }: ElevationProfileProps) {
   const t = useTranslations('elevationProfile');
 
-  const { points, minElevation, maxElevation, elevationRange } = useMemo(() => {
+  // Calculate elevation gain between two distance points
+  const calculateSegmentGain = (startKm: number, endKm: number): number => {
+    if (elevations.length === 0) return 0;
+
+    const distancePoints = distances || elevations.map((_, i) => (i / (elevations.length - 1)) * totalDistanceKm);
+
+    let gain = 0;
+    for (let i = 1; i < elevations.length; i++) {
+      const distPrev = distancePoints[i - 1];
+      const distCurr = distancePoints[i];
+
+      // Check if this segment is within our range
+      if (distPrev >= startKm && distCurr <= endKm) {
+        const change = elevations[i] - elevations[i - 1];
+        if (change > 0) {
+          gain += change;
+        }
+      }
+    }
+
+    return Math.round(gain);
+  };
+
+  const { points, minElevation, maxElevation, totalElevationGain } = useMemo(() => {
     if (elevations.length === 0) {
-      return { points: '', minElevation: 0, maxElevation: 0, elevationRange: 0 };
+      return { points: '', minElevation: 0, maxElevation: 0, totalElevationGain: 0 };
     }
 
     const min = Math.min(...elevations);
     const max = Math.max(...elevations);
     const range = max - min;
 
+    // Calculate total elevation gain (sum of all positive changes)
+    let gain = 0;
+    for (let i = 1; i < elevations.length; i++) {
+      const change = elevations[i] - elevations[i - 1];
+      if (change > 0) {
+        gain += change;
+      }
+    }
+
     // If no distances provided, distribute evenly across total distance
     const distancePoints = distances || elevations.map((_, i) => (i / (elevations.length - 1)) * totalDistanceKm);
 
     // Generate SVG path points
-    const width = 800; // SVG viewBox width
-    const pathHeight = height - 40; // Leave space for axis labels
+    const chartWidth = 800; // SVG chart area width
+    const leftMargin = 60; // Left margin for Y-axis labels
+    const topMargin = 15; // Top margin for max elevation label
+    const bottomMargin = 40; // Bottom margin for X-axis labels
+    const chartHeight = height - topMargin - bottomMargin;
 
     const svgPoints = elevations
       .map((elevation, index) => {
-        const x = (distancePoints[index] / totalDistanceKm) * width;
-        const y = pathHeight - ((elevation - min) / (range || 1)) * pathHeight;
+        const x = leftMargin + (distancePoints[index] / totalDistanceKm) * chartWidth;
+        const y = topMargin + chartHeight - ((elevation - min) / (range || 1)) * chartHeight;
         return `${x},${y}`;
       })
       .join(' ');
 
     // Create a closed path for filling
-    const pathData = `M 0,${pathHeight} L ${svgPoints} L ${width},${pathHeight} Z`;
+    const pathData = `M ${leftMargin},${topMargin + chartHeight} L ${svgPoints} L ${leftMargin + chartWidth},${topMargin + chartHeight} Z`;
 
     return {
       points: pathData,
       minElevation: Math.round(min),
       maxElevation: Math.round(max),
-      elevationRange: Math.round(range),
+      totalElevationGain: Math.round(gain),
     };
   }, [elevations, distances, totalDistanceKm, height]);
 
@@ -59,7 +101,7 @@ export default function ElevationProfile({
     return (
       <div className={`bg-surface-1 rounded-lg p-6 border border-border ${className}`}>
         <p className="text-sm text-text-muted text-center">
-          No elevation data available for this route
+          {t('noData')}
         </p>
       </div>
     );
@@ -69,24 +111,24 @@ export default function ElevationProfile({
     <div className={`bg-surface-1 rounded-lg p-6 border border-border ${className}`}>
       <div className="mb-4">
         <h3 className="text-lg font-semibold text-text-primary mb-2">
-          Elevation Profile
+          {t('title')}
         </h3>
         <div className="flex gap-6 text-sm text-text-secondary">
           <div>
-            <span className="font-medium">Min:</span> {minElevation}m
+            <span className="font-medium">{t('min')}:</span> {minElevation}{t('meters')}
           </div>
           <div>
-            <span className="font-medium">Max:</span> {maxElevation}m
+            <span className="font-medium">{t('max')}:</span> {maxElevation}{t('meters')}
           </div>
           <div>
-            <span className="font-medium">Range:</span> {elevationRange}m
+            <span className="font-medium">{t('gain')}:</span> {totalElevationGain}{t('meters')}
           </div>
         </div>
       </div>
 
       <div className="relative">
         <svg
-          viewBox={`0 0 800 ${height}`}
+          viewBox={`0 0 860 ${height}`}
           className="w-full"
           style={{ maxHeight: `${height}px` }}
         >
@@ -95,10 +137,10 @@ export default function ElevationProfile({
             {[0, 0.25, 0.5, 0.75, 1].map((fraction) => (
               <line
                 key={`grid-${fraction}`}
-                x1="0"
-                y1={fraction * (height - 40)}
-                x2="800"
-                y2={fraction * (height - 40)}
+                x1="60"
+                y1={15 + fraction * (height - 55)}
+                x2="860"
+                y2={15 + fraction * (height - 55)}
                 stroke="currentColor"
                 strokeWidth="1"
                 className="text-text-muted"
@@ -124,11 +166,11 @@ export default function ElevationProfile({
           </defs>
 
           {/* X-axis labels (distance) */}
-          <g className="text-xs text-text-muted">
+          <g className="text-base font-semibold text-text-secondary">
             {[0, 0.25, 0.5, 0.75, 1].map((fraction) => (
               <text
                 key={`distance-${fraction}`}
-                x={fraction * 800}
+                x={60 + fraction * 800}
                 y={height - 5}
                 textAnchor="middle"
                 fill="currentColor"
@@ -139,14 +181,15 @@ export default function ElevationProfile({
           </g>
 
           {/* Y-axis labels (elevation) */}
-          <g className="text-xs text-text-muted">
+          <g className="text-base font-semibold text-text-secondary">
             {[0, 0.5, 1].map((fraction) => {
               const elevation = minElevation + fraction * (maxElevation - minElevation);
               return (
                 <text
                   key={`elevation-${fraction}`}
-                  x="5"
-                  y={(1 - fraction) * (height - 40) + 4}
+                  x="55"
+                  y={15 + (1 - fraction) * (height - 55) + 5}
+                  textAnchor="end"
                   fill="currentColor"
                 >
                   {Math.round(elevation)}m
@@ -154,6 +197,112 @@ export default function ElevationProfile({
               );
             })}
           </g>
+
+          {/* Segment elevation gains */}
+          {(() => {
+            // Create segments based on feed zones
+            const segments: Array<{ startKm: number; endKm: number }> = [];
+            const sortedFeedZones = [...feedZones].sort((a, b) => a.distance_from_start_km - b.distance_from_start_km);
+
+            if (sortedFeedZones.length === 0) {
+              // No feed zones, show total as one segment
+              segments.push({ startKm: 0, endKm: totalDistanceKm });
+            } else {
+              // Start to first feed zone
+              segments.push({ startKm: 0, endKm: sortedFeedZones[0].distance_from_start_km });
+
+              // Between feed zones
+              for (let i = 0; i < sortedFeedZones.length - 1; i++) {
+                segments.push({
+                  startKm: sortedFeedZones[i].distance_from_start_km,
+                  endKm: sortedFeedZones[i + 1].distance_from_start_km,
+                });
+              }
+
+              // Last feed zone to finish
+              segments.push({
+                startKm: sortedFeedZones[sortedFeedZones.length - 1].distance_from_start_km,
+                endKm: totalDistanceKm,
+              });
+            }
+
+            return segments.map((segment, index) => {
+              const gain = calculateSegmentGain(segment.startKm, segment.endKm);
+              if (gain === 0) return null; // Don't show segments with no gain
+
+              const midKm = (segment.startKm + segment.endKm) / 2;
+              const x = 60 + (midKm / totalDistanceKm) * 800;
+              const y = 35; // Position near top of chart
+
+              return (
+                <g key={`segment-gain-${index}`}>
+                  {/* Elevation gain text */}
+                  <text
+                    x={x}
+                    y={y}
+                    textAnchor="middle"
+                    fill="currentColor"
+                    className="text-base font-bold text-text-primary"
+                  >
+                    ↑{gain}m
+                  </text>
+                </g>
+              );
+            });
+          })()}
+
+          {/* Feed zone markers */}
+          {feedZones.map((feedZone, index) => {
+            const x = 60 + (feedZone.distance_from_start_km / totalDistanceKm) * 800;
+            const chartBottom = height - 40;
+
+            return (
+              <g key={`feedzone-${index}`}>
+                {/* Vertical line */}
+                <line
+                  x1={x}
+                  y1="15"
+                  x2={x}
+                  y2={chartBottom}
+                  stroke="rgb(var(--color-warning))"
+                  strokeWidth="3"
+                  strokeDasharray="6 3"
+                  className="opacity-80"
+                />
+                {/* Marker circle */}
+                <circle
+                  cx={x}
+                  cy={chartBottom + 15}
+                  r="8"
+                  fill="rgb(var(--color-warning))"
+                  stroke="white"
+                  strokeWidth="3"
+                />
+                {/* Label background */}
+                <rect
+                  x={x - 35}
+                  y={chartBottom + 20}
+                  width="70"
+                  height="18"
+                  fill="rgb(var(--color-surface-1))"
+                  stroke="rgb(var(--color-warning))"
+                  strokeWidth="1"
+                  rx="4"
+                  className="opacity-95"
+                />
+                {/* Label */}
+                <text
+                  x={x}
+                  y={chartBottom + 32}
+                  textAnchor="middle"
+                  fill="currentColor"
+                  className="text-xs font-semibold text-text-primary"
+                >
+                  {feedZone.name}
+                </text>
+              </g>
+            );
+          })}
         </svg>
       </div>
     </div>
