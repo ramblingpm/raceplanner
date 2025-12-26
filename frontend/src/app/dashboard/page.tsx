@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import Header from '@/components/Header';
+import AuthenticatedLayout from '@/components/AuthenticatedLayout';
 import PageViewTracker from '@/components/PageViewTracker';
 import WizardModal from '@/components/wizard/WizardModal';
 import { supabase } from '@/lib/supabase';
@@ -169,10 +170,10 @@ export default function DashboardPage() {
   return (
     <ProtectedRoute>
       <PageViewTracker pageName="Dashboard" />
-      <div className="min-h-screen bg-surface-1">
+      <AuthenticatedLayout>
         <Header />
-
-        <main className="container mx-auto px-4 py-8">
+        <div className="min-h-screen bg-surface-1">
+          <main className="container mx-auto px-4 py-8">
           {loading ? (
             <div className="text-center py-12">
               <div className="text-lg text-text-secondary">{t('loadingRaces')}</div>
@@ -320,7 +321,7 @@ export default function DashboardPage() {
 
               {/* Saved Plans Section */}
               {savedCalculations.length > 0 && (
-                <div className="mt-12">
+                <div id="my-plans" className="mt-12">
                   <h2 className="text-2xl font-bold mb-6 text-text-primary">
                     {t('myRecentPlans')}
                   </h2>
@@ -463,16 +464,17 @@ export default function DashboardPage() {
               )}
             </>
           )}
-        </main>
-      </div>
+          </main>
+        </div>
 
-      {/* Wizard Modal */}
-      <WizardModal
-        isOpen={isWizardOpen}
-        onClose={handleWizardClose}
-        onComplete={handleWizardComplete}
-        editingCalculation={editingCalculation}
-      />
+        {/* Wizard Modal */}
+        <WizardModal
+          isOpen={isWizardOpen}
+          onClose={handleWizardClose}
+          onComplete={handleWizardComplete}
+          editingCalculation={editingCalculation}
+        />
+      </AuthenticatedLayout>
     </ProtectedRoute>
   );
 }

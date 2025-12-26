@@ -6,6 +6,7 @@ import { useTranslations, useLocale } from 'next-intl';
 import dynamic from 'next/dynamic';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import Header from '@/components/Header';
+import AuthenticatedLayout from '@/components/AuthenticatedLayout';
 import RaceCalculator from '@/components/RaceCalculator';
 import Modal from '@/components/Modal';
 import WizardModal from '@/components/wizard/WizardModal';
@@ -270,10 +271,10 @@ export default function RacePage() {
   return (
     <ProtectedRoute>
       <PageViewTracker pageName={`Race: ${race.name}`} />
-      <div className="min-h-screen bg-surface-1">
+      <AuthenticatedLayout>
         <Header />
-
-        <main className="container mx-auto px-4 py-8">
+        <div className="min-h-screen bg-surface-1">
+          <main className="container mx-auto px-4 py-8">
           {/* Back Button */}
           <button
             onClick={() => {
@@ -642,8 +643,9 @@ export default function RacePage() {
             onComplete={handleWizardComplete}
             initialRace={race || undefined}
           />
-        </main>
-      </div>
+          </main>
+        </div>
+      </AuthenticatedLayout>
     </ProtectedRoute>
   );
 }

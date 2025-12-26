@@ -15,7 +15,10 @@
     "dashboard": "Dashboard",
     "login": "Sign In",
     "signup": "Sign Up",
-    "logout": "Sign Out"
+    "logout": "Sign Out",
+    "races": "Races",
+    "myRaces": "My Races",
+    "menu": "Menu"
   },
   "auth": {
     "email": "Email",
@@ -138,6 +141,17 @@
     "noPlans": "You haven't created any plans yet. Start by adding your first plan!",
     "createFirstPlan": "Create Your First Plan",
     "distance": "Distance"
+  },
+  "myPlans": {
+    "title": "My Plans",
+    "subtitle": "All your saved race plans",
+    "loading": "Loading plans...",
+    "noPlans": "You don't have any saved plans yet",
+    "noPlansDescription": "Create your first plan by selecting a race from the dashboard",
+    "goToDashboard": "Go to Dashboard",
+    "updatedOn": "Updated",
+    "createdOn": "Created",
+    "plansCount": "{count} {count, plural, one {plan} other {plans}}"
   },
   "raceCalculator": {
     "distance": "Distance",

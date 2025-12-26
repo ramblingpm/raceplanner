@@ -12,7 +12,7 @@ export default function Header() {
   const { user } = useAuth();
 
   return (
-    <header className="bg-surface-background border-b border-border shadow-sm">
+    <header className={`bg-surface-background border-b border-border shadow-sm ${user ? 'sticky top-0 z-30' : ''}`}>
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <div className="flex items-center gap-6">
           <Link href="/" className="text-2xl font-bold text-text-primary hover:text-text-secondary transition-colors">

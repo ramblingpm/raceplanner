@@ -15,7 +15,10 @@
     "dashboard": "Instrumentpanel",
     "login": "Logga in",
     "signup": "Registrera",
-    "logout": "Logga ut"
+    "logout": "Logga ut",
+    "races": "Lopp",
+    "myRaces": "Mina lopp",
+    "menu": "Meny"
   },
   "auth": {
     "email": "E-post",
@@ -138,6 +141,17 @@
     "noPlans": "Du har inte skapat några planer ännu. Börja med att lägga till din första plan!",
     "createFirstPlan": "Skapa din första plan",
     "distance": "Distans"
+  },
+  "myPlans": {
+    "title": "Mina planer",
+    "subtitle": "Alla dina sparade planer",
+    "loading": "Laddar planer...",
+    "noPlans": "Du har inga sparade planer ännu",
+    "noPlansDescription": "Skapa din första plan genom att välja ett lopp från instrumentpanelen",
+    "goToDashboard": "Gå till översikten",
+    "updatedOn": "Uppdaterad",
+    "createdOn": "Skapad",
+    "plansCount": "{count} {count, plural, one {plan} other {planer}}"
   },
   "raceCalculator": {
     "distance": "Distans",
