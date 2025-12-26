@@ -12,12 +12,13 @@
   },
   "nav": {
     "home": "Hem",
-    "dashboard": "Instrumentpanel",
+    "dashboard": "Översikt",
     "login": "Logga in",
     "signup": "Registrera",
     "logout": "Logga ut",
     "races": "Lopp",
-    "myRaces": "Mina lopp",
+    "myRaces": "Mina planer",
+    "availableRaces": "Tillgängliga lopp",
     "menu": "Meny"
   },
   "auth": {
@@ -629,5 +630,17 @@
     "loss": "Nedförsbacke",
     "meters": "m",
     "kilometers": "km"
+  },
+  "availableRaces": {
+    "title": "Tillgängliga lopp",
+    "subtitle": "Välj ett lopp att planera",
+    "loading": "Laddar lopp...",
+    "noRaces": "Inga lopp tillgängliga ännu",
+    "noRacesDescription": "Kom tillbaka snart för fler lopp!",
+    "distance": "Distans",
+    "elevationGain": "Höjdmeter",
+    "raceDates": "Datum",
+    "startPlanning": "Börja planera",
+    "errorLoading": "Kunde inte ladda lopp. Försök igen senare."
   }
 }

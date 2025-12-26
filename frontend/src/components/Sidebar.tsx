@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
-import { HomeIcon, FlagIcon } from '@heroicons/react/24/outline';
+import { HomeIcon, FlagIcon, Squares2X2Icon } from '@heroicons/react/24/outline';
 
 export default function Sidebar() {
   const t = useTranslations('nav');
@@ -22,6 +22,11 @@ export default function Sidebar() {
       name: t('myRaces'),
       href: '/my-plans',
       icon: FlagIcon,
+    },
+    {
+      name: t('availableRaces'),
+      href: '/available-races',
+      icon: Squares2X2Icon,
     },
   ];
 

@@ -18,6 +18,7 @@
     "logout": "Sign Out",
     "races": "Races",
     "myRaces": "My Races",
+    "availableRaces": "Available Races",
     "menu": "Menu"
   },
   "auth": {
@@ -630,5 +631,17 @@
     "loss": "Loss",
     "meters": "m",
     "kilometers": "km"
+  },
+  "availableRaces": {
+    "title": "Available Races",
+    "subtitle": "Choose a race to plan",
+    "loading": "Loading races...",
+    "noRaces": "No races available yet",
+    "noRacesDescription": "Come back soon for more races!",
+    "distance": "Distance",
+    "elevationGain": "Elevation Gain",
+    "raceDates": "Dates",
+    "startPlanning": "Start Planning",
+    "errorLoading": "Could not load races. Please try again later."
   }
 }

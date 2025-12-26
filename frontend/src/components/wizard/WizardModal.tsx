@@ -174,7 +174,7 @@ export default function WizardModal({ isOpen, onClose, onComplete, initialRace, 
   return (
     <WizardProvider initialRace={initialRace} editingCalculation={editingCalculation}>
       {/* Mobile: Full-screen */}
-      <div className="md:hidden fixed inset-0 z-40 bg-surface-background">
+      <div className="md:hidden fixed inset-0 z-[60] bg-surface-background">
         <WizardContent onClose={onClose} onComplete={onComplete} />
       </div>
 
@@ -182,12 +182,12 @@ export default function WizardModal({ isOpen, onClose, onComplete, initialRace, 
       <div className="hidden md:block">
         {/* Backdrop */}
         <div
-          className="fixed inset-0 z-40 bg-black bg-opacity-50 transition-opacity"
+          className="fixed inset-0 z-[55] bg-black bg-opacity-75 transition-opacity"
           onClick={onClose}
         />
 
         {/* Modal */}
-        <div className="fixed inset-0 z-50 overflow-y-auto">
+        <div className="fixed inset-0 z-[60] overflow-y-auto">
           <div className="flex min-h-full items-center justify-center p-4">
             <div className="relative w-full max-w-4xl bg-surface-background rounded-lg shadow-2xl h-[80vh] flex flex-col border border-border">
               <WizardContent onClose={onClose} onComplete={onComplete} />

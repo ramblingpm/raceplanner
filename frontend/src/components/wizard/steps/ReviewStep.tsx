@@ -307,11 +307,13 @@ export default function ReviewStep() {
       {race.route_geometry?.coordinates && (
         <div className="mb-6">
           <h3 className="text-lg font-semibold text-text-primary mb-3">{t('routeMap')}</h3>
-          <div className="rounded-lg overflow-hidden border border-border">
-            <RaceMap
-              routeCoordinates={race.route_geometry.coordinates as number[][]}
-              selectedFeedZones={feedZones}
-            />
+          <div className="mx-auto max-w-2xl">
+            <div className="h-64 rounded-lg overflow-hidden border border-border">
+              <RaceMap
+                routeCoordinates={race.route_geometry.coordinates as number[][]}
+                selectedFeedZones={feedZones}
+              />
+            </div>
           </div>
         </div>
       )}
