@@ -16,9 +16,10 @@ const RaceMap = dynamic(() => import('@/components/RaceMap'), {
 interface RaceCardProps {
   race: Race;
   onSelectRace: (race: Race) => void;
+  onViewDetails: (race: Race) => void;
 }
 
-export default function RaceCard({ race, onSelectRace }: RaceCardProps) {
+export default function RaceCard({ race, onSelectRace, onViewDetails }: RaceCardProps) {
   const t = useTranslations('availableRaces');
 
   // Format dates for display
@@ -42,8 +43,7 @@ export default function RaceCard({ race, onSelectRace }: RaceCardProps) {
 
   return (
     <div
-      className="bg-surface-background rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer border border-border"
-      onClick={() => onSelectRace(race)}
+      className="bg-surface-background rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow border border-border"
     >
       {/* Map Preview - Fixed height for consistency */}
       <div className="relative h-40 overflow-hidden bg-surface-1">
@@ -106,16 +106,21 @@ export default function RaceCard({ race, onSelectRace }: RaceCardProps) {
           </div>
         )}
 
-        {/* CTA Button */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onSelectRace(race);
-          }}
-          className="w-full bg-primary text-primary-foreground px-4 py-2.5 rounded-lg hover:bg-primary-hover transition-colors font-semibold text-sm"
-        >
-          {t('startPlanning')}
-        </button>
+        {/* CTA Buttons */}
+        <div className="grid grid-cols-2 gap-3">
+          <button
+            onClick={() => onViewDetails(race)}
+            className="w-full bg-surface-2 text-text-primary px-4 py-2.5 rounded-lg hover:bg-surface-3 transition-colors font-semibold text-sm border border-border"
+          >
+            {t('moreInfo')}
+          </button>
+          <button
+            onClick={() => onSelectRace(race)}
+            className="w-full bg-primary text-primary-foreground px-4 py-2.5 rounded-lg hover:bg-primary-hover transition-colors font-semibold text-sm"
+          >
+            {t('startPlanning')}
+          </button>
+        </div>
       </div>
     </div>
   );

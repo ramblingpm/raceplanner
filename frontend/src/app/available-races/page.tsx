@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import Header from '@/components/Header';
 import AuthenticatedLayout from '@/components/AuthenticatedLayout';
@@ -14,6 +15,7 @@ import { trackButtonClick } from '@/lib/analytics';
 
 export default function AvailableRacesPage() {
   const t = useTranslations('availableRaces');
+  const router = useRouter();
   const [races, setRaces] = useState<Race[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -52,6 +54,14 @@ export default function AvailableRacesPage() {
     setIsWizardOpen(true);
   };
 
+  const handleViewDetails = (race: Race) => {
+    trackButtonClick('view_race_details', 'available_races', {
+      race_name: race.name,
+      race_id: race.id
+    });
+    router.push(`/${race.slug}`);
+  };
+
   const handleWizardClose = () => {
     setIsWizardOpen(false);
     setSelectedRace(null);
@@ -60,7 +70,8 @@ export default function AvailableRacesPage() {
   const handleWizardComplete = () => {
     setIsWizardOpen(false);
     setSelectedRace(null);
-    // Optionally navigate to my-plans or show success message
+    // Navigate to My Plans page after saving
+    router.push('/my-plans');
   };
 
   return (
@@ -68,7 +79,7 @@ export default function AvailableRacesPage() {
       <PageViewTracker pageName="Available Races" />
       <AuthenticatedLayout>
         <Header />
-        <div className="min-h-screen bg-surface-1">
+        <div className={`min-h-screen bg-surface-1 ${isWizardOpen ? 'hidden md:block md:invisible' : ''}`}>
           <main className="container mx-auto px-4 py-8">
             {/* Page Header */}
             <div className="mb-8">
@@ -111,6 +122,7 @@ export default function AvailableRacesPage() {
                     key={race.id}
                     race={race}
                     onSelectRace={handleSelectRace}
+                    onViewDetails={handleViewDetails}
                   />
                 ))}
               </div>

@@ -141,7 +141,10 @@
     "editPlan": "Redigera plan",
     "noPlans": "Du har inte skapat några planer ännu. Börja med att lägga till din första plan!",
     "createFirstPlan": "Skapa din första plan",
-    "distance": "Distans"
+    "distance": "Distans",
+    "ctaTitle": "Redo att planera ditt lopp?",
+    "ctaDescription": "Skapa en detaljerad plan med starttider, farthållning och depåstopp.",
+    "ctaButton": "Skapa din plan"
   },
   "myPlans": {
     "title": "Mina planer",
@@ -641,6 +644,7 @@
     "elevationGain": "Höjdmeter",
     "raceDates": "Datum",
     "startPlanning": "Börja planera",
+    "moreInfo": "Mer information",
     "errorLoading": "Kunde inte ladda lopp. Försök igen senare."
   }
 }

@@ -90,7 +90,7 @@ export default function ReviewStep() {
   );
 
   return (
-    <div className="container mx-auto px-4 py-6 max-w-4xl">
+    <div className="container mx-auto px-4 py-6 max-w-4xl pb-24">
       {/* Header */}
       <div className="mb-6">
         <h2 className="text-2xl sm:text-3xl font-bold text-text-primary mb-2">
@@ -307,19 +307,21 @@ export default function ReviewStep() {
       {race.route_geometry?.coordinates && (
         <div className="mb-6">
           <h3 className="text-lg font-semibold text-text-primary mb-3">{t('routeMap')}</h3>
-          <div className="mx-auto max-w-2xl">
-            <div className="h-64 rounded-lg overflow-hidden border border-border">
-              <RaceMap
-                routeCoordinates={race.route_geometry.coordinates as number[][]}
-                selectedFeedZones={feedZones}
-              />
+          <div className="bg-surface-background rounded-lg p-4 border border-border">
+            <div className="mx-auto max-w-2xl">
+              <div className="relative h-48 max-h-48 rounded-lg overflow-hidden border border-border bg-surface-1" style={{ height: '12rem', maxHeight: '12rem' }}>
+                <RaceMap
+                  routeCoordinates={race.route_geometry.coordinates as number[][]}
+                  selectedFeedZones={feedZones}
+                />
+              </div>
             </div>
           </div>
         </div>
       )}
 
       {/* Action Buttons */}
-      <div className="sticky bottom-0 left-0 right-0 bg-surface-background border-t border-border p-4">
+      <div className="sticky bottom-0 left-0 right-0 bg-surface-background border-t border-border p-4 z-10 shadow-lg">
         <button
           onClick={nextStep}
           className="w-full py-3 px-6 rounded-lg font-semibold text-primary-foreground transition-colors bg-primary hover:bg-primary-hover"

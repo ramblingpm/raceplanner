@@ -19,14 +19,14 @@ export default function Sidebar() {
       icon: HomeIcon,
     },
     {
-      name: t('myRaces'),
-      href: '/my-plans',
-      icon: FlagIcon,
-    },
-    {
       name: t('availableRaces'),
       href: '/available-races',
       icon: Squares2X2Icon,
+    },
+    {
+      name: t('myRaces'),
+      href: '/my-plans',
+      icon: FlagIcon,
     },
   ];
 

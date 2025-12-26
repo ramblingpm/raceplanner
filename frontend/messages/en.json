@@ -141,7 +141,10 @@
     "editPlan": "Edit Plan",
     "noPlans": "You haven't created any plans yet. Start by adding your first plan!",
     "createFirstPlan": "Create Your First Plan",
-    "distance": "Distance"
+    "distance": "Distance",
+    "ctaTitle": "Ready to plan your race?",
+    "ctaDescription": "Create a detailed plan with start times, pacing strategy, and feed zone stops.",
+    "ctaButton": "Create Your Plan"
   },
   "myPlans": {
     "title": "My Plans",
@@ -642,6 +645,7 @@
     "elevationGain": "Elevation Gain",
     "raceDates": "Dates",
     "startPlanning": "Start Planning",
+    "moreInfo": "More Info",
     "errorLoading": "Could not load races. Please try again later."
   }
 }
