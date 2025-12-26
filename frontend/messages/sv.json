@@ -604,5 +604,16 @@
       "guide": "Planeringsguide",
       "checklist": "Checklista"
     }
+  },
+  "elevationProfile": {
+    "title": "Höjdprofil",
+    "noData": "Ingen höjddata tillgänglig för denna rutt",
+    "min": "Min",
+    "max": "Max",
+    "range": "Variation",
+    "gain": "Stigning",
+    "loss": "Nedförsbacke",
+    "meters": "m",
+    "kilometers": "km"
   }
 }

@@ -17,6 +17,7 @@ export default function AdminLayout({
     { href: '/admin/beta-invites', label: 'Beta Invites', enabled: true },
     { href: '/admin/users', label: 'Users', enabled: true },
     { href: '/admin/races', label: 'Races', enabled: true },
+    { href: '/admin/elevation-migration', label: 'Elevation Migration', enabled: true },
     { href: '/admin/features', label: 'Feature Flags', enabled: true },
     { href: '/admin/design-system', label: 'Design System', enabled: true },
   ];

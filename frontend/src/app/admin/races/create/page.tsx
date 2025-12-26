@@ -5,6 +5,17 @@ import { useRouter } from 'next/navigation';
 import { ArrowUpTrayIcon, TrashIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { parseRouteFile, findClosestPointOnRoute, type ParsedRoute } from '@/lib/routeParser';
 import { supabase } from '@/lib/supabase';
+import dynamic from 'next/dynamic';
+
+// Dynamically import ElevationProfile to avoid SSR issues
+const ElevationProfile = dynamic(() => import('@/components/ElevationProfile'), {
+  ssr: false,
+  loading: () => (
+    <div className="h-48 bg-surface-1 rounded-lg flex items-center justify-center">
+      <p className="text-text-muted">Loading elevation profile...</p>
+    </div>
+  ),
+});
 
 interface FeedZoneInput {
   id: string; // Temporary ID for UI
@@ -181,6 +192,11 @@ export default function CreateRacePage() {
             type: 'LineString',
             coordinates: parsedRoute.coordinates,
           },
+          elevation_data: parsedRoute.elevations || null,
+          elevation_gain_m: parsedRoute.totalElevationGainM || null,
+          elevation_loss_m: parsedRoute.totalElevationLossM || null,
+          min_elevation_m: parsedRoute.minElevationM || null,
+          max_elevation_m: parsedRoute.maxElevationM || null,
         })
         .select()
         .single();
@@ -277,11 +293,35 @@ export default function CreateRacePage() {
             <p className="mt-2 text-sm text-error-foreground">{parseError}</p>
           )}
           {parsedRoute && (
-            <p className="mt-2 text-sm text-success-foreground">
-              ✓ Route parsed successfully: {parsedRoute.coordinates.length} points
-            </p>
+            <div className="mt-2 space-y-2">
+              <p className="text-sm text-success-foreground">
+                ✓ Route parsed successfully: {parsedRoute.coordinates.length} points
+              </p>
+              {parsedRoute.elevations && (
+                <div className="text-sm text-text-secondary space-y-1">
+                  <p>📈 Elevation data available:</p>
+                  <ul className="list-disc list-inside pl-2 space-y-0.5">
+                    <li>Gain: {parsedRoute.totalElevationGainM}m</li>
+                    <li>Loss: {parsedRoute.totalElevationLossM}m</li>
+                    <li>Min: {parsedRoute.minElevationM}m - Max: {parsedRoute.maxElevationM}m</li>
+                  </ul>
+                </div>
+              )}
+            </div>
           )}
         </div>
+
+        {/* Elevation Profile Preview */}
+        {parsedRoute && parsedRoute.elevations && parsedRoute.elevations.length > 0 && (
+          <div>
+            <h4 className="text-sm font-medium text-text-secondary mb-2">Elevation Profile Preview</h4>
+            <ElevationProfile
+              elevations={parsedRoute.elevations}
+              totalDistanceKm={parsedRoute.totalDistanceKm}
+              height={180}
+            />
+          </div>
+        )}
 
         {/* Distance */}
         <div>

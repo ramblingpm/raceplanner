@@ -7,6 +7,11 @@ export interface Race {
     type: string;
     coordinates: number[][];
   };
+  elevation_data?: number[]; // Elevation in meters for each coordinate point
+  elevation_gain_m?: number; // Total elevation gain in meters
+  elevation_loss_m?: number; // Total elevation loss in meters
+  min_elevation_m?: number; // Minimum elevation in meters
+  max_elevation_m?: number; // Maximum elevation in meters
   is_public: boolean;
   start_date?: string | null;
   end_date?: string | null;

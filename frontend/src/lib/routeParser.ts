@@ -7,6 +7,11 @@ export interface ParsedRoute {
   coordinates: number[][]; // [lng, lat] pairs for GeoJSON LineString
   totalDistanceKm: number;
   name?: string;
+  elevations?: number[]; // Elevation in meters for each coordinate point
+  totalElevationGainM?: number; // Total elevation gain in meters
+  totalElevationLossM?: number; // Total elevation loss in meters
+  minElevationM?: number; // Minimum elevation in meters
+  maxElevationM?: number; // Maximum elevation in meters
 }
 
 /**
@@ -32,11 +37,19 @@ export async function parseGPX(file: File): Promise<ParsedRoute> {
     throw new Error('No route or track points found in GPX file');
   }
 
-  // Extract coordinates [lng, lat]
-  const coordinates: number[][] = points.map(point => {
+  // Extract coordinates [lng, lat] and elevations
+  const coordinates: number[][] = [];
+  const elevations: number[] = [];
+
+  points.forEach(point => {
     const lat = parseFloat(point.getAttribute('lat') || '0');
     const lon = parseFloat(point.getAttribute('lon') || '0');
-    return [lon, lat];
+    coordinates.push([lon, lat]);
+
+    // Extract elevation if present
+    const eleElement = point.querySelector('ele');
+    const elevation = eleElement ? parseFloat(eleElement.textContent || '0') : 0;
+    elevations.push(elevation);
   });
 
   // Extract route/track name
@@ -46,10 +59,15 @@ export async function parseGPX(file: File): Promise<ParsedRoute> {
   // Calculate total distance
   const totalDistanceKm = calculateTotalDistance(coordinates);
 
+  // Calculate elevation statistics
+  const elevationStats = calculateElevationStats(elevations);
+
   return {
     coordinates,
     totalDistanceKm,
     name,
+    elevations: elevations.length > 0 && elevations.some(e => e !== 0) ? elevations : undefined,
+    ...elevationStats,
   };
 }
 
@@ -178,5 +196,50 @@ export function findClosestPointOnRoute(
   return {
     index: closestIndex,
     distanceFromStartKm,
+  };
+}
+
+/**
+ * Calculate elevation statistics from an array of elevation points
+ * @param elevations Array of elevation values in meters
+ * @returns Object with elevation gain, loss, min, and max
+ */
+function calculateElevationStats(elevations: number[]): {
+  totalElevationGainM?: number;
+  totalElevationLossM?: number;
+  minElevationM?: number;
+  maxElevationM?: number;
+} {
+  if (elevations.length === 0 || elevations.every(e => e === 0)) {
+    return {};
+  }
+
+  let totalGain = 0;
+  let totalLoss = 0;
+  let minElevation = elevations[0];
+  let maxElevation = elevations[0];
+
+  for (let i = 1; i < elevations.length; i++) {
+    const diff = elevations[i] - elevations[i - 1];
+
+    if (diff > 0) {
+      totalGain += diff;
+    } else if (diff < 0) {
+      totalLoss += Math.abs(diff);
+    }
+
+    if (elevations[i] < minElevation) {
+      minElevation = elevations[i];
+    }
+    if (elevations[i] > maxElevation) {
+      maxElevation = elevations[i];
+    }
+  }
+
+  return {
+    totalElevationGainM: Math.round(totalGain),
+    totalElevationLossM: Math.round(totalLoss),
+    minElevationM: Math.round(minElevation),
+    maxElevationM: Math.round(maxElevation),
   };
 }

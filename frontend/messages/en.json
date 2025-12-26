@@ -605,5 +605,16 @@
       "guide": "Planning Guide",
       "checklist": "Checklist"
     }
+  },
+  "elevationProfile": {
+    "title": "Elevation Profile",
+    "noData": "No elevation data available for this route",
+    "min": "Min",
+    "max": "Max",
+    "range": "Range",
+    "gain": "Gain",
+    "loss": "Loss",
+    "meters": "m",
+    "kilometers": "km"
   }
 }
