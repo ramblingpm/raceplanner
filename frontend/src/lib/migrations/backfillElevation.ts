@@ -25,10 +25,14 @@ export interface BackfillResult {
 
 /**
  * Backfill elevation data for a single race
+ * @param race - The race to backfill
+ * @param onProgress - Optional progress callback
+ * @param forceRecalculate - If true, recalculate even if elevation data already exists
  */
 export async function backfillRaceElevation(
   race: Race,
-  onProgress?: (progress: BackfillProgress) => void
+  onProgress?: (progress: BackfillProgress) => void,
+  forceRecalculate: boolean = false
 ): Promise<BackfillProgress> {
   const progress: BackfillProgress = {
     raceId: race.id,
@@ -48,8 +52,8 @@ export async function backfillRaceElevation(
       return progress;
     }
 
-    // Check if elevation data already exists
-    if (race.elevation_data && race.elevation_data.length > 0) {
+    // Check if elevation data already exists (skip if not forcing recalculation)
+    if (!forceRecalculate && race.elevation_data && race.elevation_data.length > 0) {
       progress.status = 'success';
       progress.message = 'Elevation data already exists';
       progress.progress = 100;
@@ -60,7 +64,9 @@ export async function backfillRaceElevation(
     const coordinates = race.route_geometry.coordinates;
 
     progress.progress = 20;
-    progress.message = `Fetching elevation for ${coordinates.length} points...`;
+    progress.message = forceRecalculate
+      ? `Recalculating elevation for ${coordinates.length} points...`
+      : `Fetching elevation for ${coordinates.length} points...`;
     if (onProgress) onProgress(progress);
 
     // Fetch elevation data (with smart downsampling)
@@ -121,9 +127,12 @@ export async function backfillRaceElevation(
 
 /**
  * Backfill elevation data for all races that don't have it
+ * @param onProgress - Optional progress callback
+ * @param forceRecalculate - If true, recalculate even for races that already have elevation data
  */
 export async function backfillAllRaces(
-  onProgress?: (overall: BackfillProgress[]) => void
+  onProgress?: (overall: BackfillProgress[]) => void,
+  forceRecalculate: boolean = false
 ): Promise<BackfillResult> {
   const result: BackfillResult = {
     total: 0,
@@ -149,16 +158,20 @@ export async function backfillAllRaces(
 
     // Process each race
     for (const race of races) {
-      const progress = await backfillRaceElevation(race, (p) => {
-        // Update in details array
-        const index = result.details.findIndex((d) => d.raceId === p.raceId);
-        if (index >= 0) {
-          result.details[index] = p;
-        } else {
-          result.details.push(p);
-        }
-        if (onProgress) onProgress(result.details);
-      });
+      const progress = await backfillRaceElevation(
+        race,
+        (p) => {
+          // Update in details array
+          const index = result.details.findIndex((d) => d.raceId === p.raceId);
+          if (index >= 0) {
+            result.details[index] = p;
+          } else {
+            result.details.push(p);
+          }
+          if (onProgress) onProgress(result.details);
+        },
+        forceRecalculate
+      );
 
       if (progress.status === 'success') {
         if (progress.message?.includes('already exists')) {

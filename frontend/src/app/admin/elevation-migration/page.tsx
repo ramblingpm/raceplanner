@@ -46,7 +46,7 @@ export default function ElevationMigrationPage() {
     }
   };
 
-  const handleBackfillSingle = async (raceId: string) => {
+  const handleBackfillSingle = async (raceId: string, force: boolean = false) => {
     try {
       setProcessing(true);
 
@@ -62,9 +62,13 @@ export default function ElevationMigrationPage() {
       }
 
       // Backfill elevation
-      await backfillRaceElevation(race as Race, (p) => {
-        setProgress([p]);
-      });
+      await backfillRaceElevation(
+        race as Race,
+        (p) => {
+          setProgress([p]);
+        },
+        force
+      );
 
       // Reload races
       await loadRaces();
@@ -77,8 +81,12 @@ export default function ElevationMigrationPage() {
     }
   };
 
-  const handleBackfillAll = async () => {
-    if (!confirm('This will fetch elevation data for all races without it. This may take several minutes. Continue?')) {
+  const handleBackfillAll = async (force: boolean = false) => {
+    const message = force
+      ? 'This will RECALCULATE elevation data for ALL races using the updated algorithm. This may take several minutes. Continue?'
+      : 'This will fetch elevation data for all races without it. This may take several minutes. Continue?';
+
+    if (!confirm(message)) {
       return;
     }
 
@@ -89,7 +97,7 @@ export default function ElevationMigrationPage() {
 
       const backfillResult = await backfillAllRaces((progressList) => {
         setProgress([...progressList]);
-      });
+      }, force);
 
       setResult(backfillResult);
       await loadRaces();
@@ -102,6 +110,7 @@ export default function ElevationMigrationPage() {
   };
 
   const racesNeedingElevation = races.filter(r => r.hasRouteGeometry && !r.hasElevationData);
+  const racesWithElevation = races.filter(r => r.hasRouteGeometry && r.hasElevationData);
 
   if (loading) {
     return (
@@ -161,7 +170,7 @@ export default function ElevationMigrationPage() {
             The process may take a few minutes depending on route complexity.
           </p>
           <button
-            onClick={handleBackfillAll}
+            onClick={() => handleBackfillAll(false)}
             disabled={processing}
             className="flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg hover:bg-primary-hover transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
           >
@@ -173,7 +182,37 @@ export default function ElevationMigrationPage() {
             ) : (
               <>
                 <ArrowPathIcon className="w-5 h-5" />
-                Backfill All
+                Backfill All Missing
+              </>
+            )}
+          </button>
+        </div>
+      )}
+
+      {/* Recalculate All Button */}
+      {racesWithElevation.length > 0 && (
+        <div className="bg-warning-subtle rounded-lg p-6 border border-warning">
+          <h3 className="text-lg font-semibold text-text-primary mb-2">
+            Recalculate All Elevation Data
+          </h3>
+          <p className="text-sm text-text-secondary mb-4">
+            This will RECALCULATE elevation data for {racesWithElevation.length} race(s) using the updated smoothing algorithm.
+            Use this to apply the new Strava-like elevation calculation to all existing races.
+          </p>
+          <button
+            onClick={() => handleBackfillAll(true)}
+            disabled={processing}
+            className="flex items-center gap-2 bg-warning text-warning-foreground px-6 py-3 rounded-lg hover:opacity-90 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {processing ? (
+              <>
+                <ArrowPathIcon className="w-5 h-5 animate-spin" />
+                Processing...
+              </>
+            ) : (
+              <>
+                <ArrowPathIcon className="w-5 h-5" />
+                Recalculate All
               </>
             )}
           </button>
@@ -317,11 +356,20 @@ export default function ElevationMigrationPage() {
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
                     {race.hasRouteGeometry && !race.hasElevationData && (
                       <button
-                        onClick={() => handleBackfillSingle(race.id)}
+                        onClick={() => handleBackfillSingle(race.id, false)}
                         disabled={processing}
                         className="text-primary hover:text-primary-hover font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         Fetch Elevation
+                      </button>
+                    )}
+                    {race.hasRouteGeometry && race.hasElevationData && (
+                      <button
+                        onClick={() => handleBackfillSingle(race.id, true)}
+                        disabled={processing}
+                        className="text-warning hover:opacity-80 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        Recalculate
                       </button>
                     )}
                   </td>

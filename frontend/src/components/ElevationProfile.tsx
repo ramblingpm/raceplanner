@@ -17,6 +17,83 @@ interface ElevationProfileProps {
   height?: number;
 }
 
+// Minimum elevation change for a segment to count (meters) - same as routeParser.ts
+const ELEVATION_THRESHOLD = 3;
+
+// Window size for moving average smoothing
+const SMOOTHING_WINDOW = 5;
+
+/**
+ * Apply moving average smoothing to elevation data
+ * Helps filter out GPS noise and small fluctuations
+ */
+function smoothElevations(elevations: number[]): number[] {
+  if (elevations.length < SMOOTHING_WINDOW) {
+    return elevations;
+  }
+
+  const smoothed: number[] = [];
+  const halfWindow = Math.floor(SMOOTHING_WINDOW / 2);
+
+  for (let i = 0; i < elevations.length; i++) {
+    const start = Math.max(0, i - halfWindow);
+    const end = Math.min(elevations.length, i + halfWindow + 1);
+
+    let sum = 0;
+    let count = 0;
+    for (let j = start; j < end; j++) {
+      sum += elevations[j];
+      count++;
+    }
+
+    smoothed.push(sum / count);
+  }
+
+  return smoothed;
+}
+
+/**
+ * Calculate elevation gain using segment-based approach (same as routeParser.ts)
+ */
+function calculateElevationGain(elevations: number[]): number {
+  if (elevations.length === 0) return 0;
+
+  const smoothed = smoothElevations(elevations);
+
+  let totalGain = 0;
+  let segmentStart = 0;
+  let isClimbing = false;
+
+  for (let i = 1; i < smoothed.length; i++) {
+    const diff = smoothed[i] - smoothed[i - 1];
+
+    // Detect start of climbing segment
+    if (diff > 0 && !isClimbing) {
+      segmentStart = i - 1;
+      isClimbing = true;
+    }
+    // Detect start of descending segment
+    else if (diff < 0 && isClimbing) {
+      // End climbing segment
+      const segmentGain = smoothed[i - 1] - smoothed[segmentStart];
+      if (segmentGain >= ELEVATION_THRESHOLD) {
+        totalGain += segmentGain;
+      }
+      isClimbing = false;
+    }
+  }
+
+  // Handle final segment if still climbing
+  if (isClimbing) {
+    const segmentGain = smoothed[smoothed.length - 1] - smoothed[segmentStart];
+    if (segmentGain >= ELEVATION_THRESHOLD) {
+      totalGain += segmentGain;
+    }
+  }
+
+  return Math.round(totalGain);
+}
+
 export default function ElevationProfile({
   elevations,
   distances,
@@ -33,21 +110,17 @@ export default function ElevationProfile({
 
     const distancePoints = distances || elevations.map((_, i) => (i / (elevations.length - 1)) * totalDistanceKm);
 
-    let gain = 0;
-    for (let i = 1; i < elevations.length; i++) {
-      const distPrev = distancePoints[i - 1];
-      const distCurr = distancePoints[i];
-
-      // Check if this segment is within our range
-      if (distPrev >= startKm && distCurr <= endKm) {
-        const change = elevations[i] - elevations[i - 1];
-        if (change > 0) {
-          gain += change;
-        }
+    // Extract elevations within the segment range
+    const segmentElevations: number[] = [];
+    for (let i = 0; i < elevations.length; i++) {
+      const dist = distancePoints[i];
+      if (dist >= startKm && dist <= endKm) {
+        segmentElevations.push(elevations[i]);
       }
     }
 
-    return Math.round(gain);
+    // Use the same algorithm as the main calculation
+    return calculateElevationGain(segmentElevations);
   };
 
   const { points, minElevation, maxElevation, totalElevationGain } = useMemo(() => {
@@ -59,14 +132,8 @@ export default function ElevationProfile({
     const max = Math.max(...elevations);
     const range = max - min;
 
-    // Calculate total elevation gain (sum of all positive changes)
-    let gain = 0;
-    for (let i = 1; i < elevations.length; i++) {
-      const change = elevations[i] - elevations[i - 1];
-      if (change > 0) {
-        gain += change;
-      }
-    }
+    // Calculate total elevation gain using segment-based approach with smoothing
+    const gain = calculateElevationGain(elevations);
 
     // If no distances provided, distribute evenly across total distance
     const distancePoints = distances || elevations.map((_, i) => (i / (elevations.length - 1)) * totalDistanceKm);
@@ -93,7 +160,7 @@ export default function ElevationProfile({
       points: pathData,
       minElevation: Math.round(min),
       maxElevation: Math.round(max),
-      totalElevationGain: Math.round(gain),
+      totalElevationGain: gain, // Already rounded by calculateElevationGain
     };
   }, [elevations, distances, totalDistanceKm, height]);
 

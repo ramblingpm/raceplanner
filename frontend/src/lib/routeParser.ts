@@ -199,8 +199,48 @@ export function findClosestPointOnRoute(
   };
 }
 
+// Minimum elevation change for a segment to count (meters) - similar to Strava's threshold
+const ELEVATION_THRESHOLD = 3;
+
+// Window size for moving average smoothing
+const SMOOTHING_WINDOW = 5;
+
+/**
+ * Apply moving average smoothing to elevation data
+ * Helps filter out GPS noise and small fluctuations
+ * @param elevations Raw elevation data
+ * @returns Smoothed elevation data
+ */
+function smoothElevations(elevations: number[]): number[] {
+  if (elevations.length < SMOOTHING_WINDOW) {
+    return elevations;
+  }
+
+  const smoothed: number[] = [];
+  const halfWindow = Math.floor(SMOOTHING_WINDOW / 2);
+
+  for (let i = 0; i < elevations.length; i++) {
+    // Determine the window boundaries
+    const start = Math.max(0, i - halfWindow);
+    const end = Math.min(elevations.length, i + halfWindow + 1);
+
+    // Calculate average of values in window
+    let sum = 0;
+    let count = 0;
+    for (let j = start; j < end; j++) {
+      sum += elevations[j];
+      count++;
+    }
+
+    smoothed.push(sum / count);
+  }
+
+  return smoothed;
+}
+
 /**
  * Calculate elevation statistics from an array of elevation points
+ * Uses smoothing and segment-based threshold similar to Strava's algorithm
  * @param elevations Array of elevation values in meters
  * @returns Object with elevation gain, loss, min, and max
  */
@@ -214,25 +254,64 @@ function calculateElevationStats(elevations: number[]): {
     return {};
   }
 
+  // Apply smoothing to filter GPS noise
+  const smoothed = smoothElevations(elevations);
+
   let totalGain = 0;
   let totalLoss = 0;
-  let minElevation = elevations[0];
-  let maxElevation = elevations[0];
+  let minElevation = smoothed[0];
+  let maxElevation = smoothed[0];
 
-  for (let i = 1; i < elevations.length; i++) {
-    const diff = elevations[i] - elevations[i - 1];
+  // Find continuous climbing/descending segments
+  let segmentStart = 0;
+  let isClimbing = false;
+  let isDescending = false;
 
-    if (diff > 0) {
-      totalGain += diff;
-    } else if (diff < 0) {
-      totalLoss += Math.abs(diff);
+  for (let i = 1; i < smoothed.length; i++) {
+    const diff = smoothed[i] - smoothed[i - 1];
+
+    // Track min/max
+    if (smoothed[i] < minElevation) minElevation = smoothed[i];
+    if (smoothed[i] > maxElevation) maxElevation = smoothed[i];
+
+    // Detect start of climbing segment
+    if (diff > 0 && !isClimbing) {
+      // End any descending segment
+      if (isDescending) {
+        const segmentLoss = smoothed[segmentStart] - smoothed[i - 1];
+        if (segmentLoss >= ELEVATION_THRESHOLD) {
+          totalLoss += segmentLoss;
+        }
+      }
+      segmentStart = i - 1;
+      isClimbing = true;
+      isDescending = false;
     }
-
-    if (elevations[i] < minElevation) {
-      minElevation = elevations[i];
+    // Detect start of descending segment
+    else if (diff < 0 && !isDescending) {
+      // End any climbing segment
+      if (isClimbing) {
+        const segmentGain = smoothed[i - 1] - smoothed[segmentStart];
+        if (segmentGain >= ELEVATION_THRESHOLD) {
+          totalGain += segmentGain;
+        }
+      }
+      segmentStart = i - 1;
+      isDescending = true;
+      isClimbing = false;
     }
-    if (elevations[i] > maxElevation) {
-      maxElevation = elevations[i];
+  }
+
+  // Handle the final segment
+  if (isClimbing) {
+    const segmentGain = smoothed[smoothed.length - 1] - smoothed[segmentStart];
+    if (segmentGain >= ELEVATION_THRESHOLD) {
+      totalGain += segmentGain;
+    }
+  } else if (isDescending) {
+    const segmentLoss = smoothed[segmentStart] - smoothed[smoothed.length - 1];
+    if (segmentLoss >= ELEVATION_THRESHOLD) {
+      totalLoss += segmentLoss;
     }
   }
 
