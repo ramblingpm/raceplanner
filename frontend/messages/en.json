@@ -220,6 +220,8 @@
     "discardChangesTitle": "Discard changes?",
     "discardChangesMessage": "You have unsaved changes. Are you sure you want to close the wizard?",
     "discard": "Discard",
+    "keepEditing": "Keep editing",
+    "closeAndDiscard": "Close and discard",
     "selectRace": "Select Race",
     "selectRaceShort": "Race",
     "planTime": "Duration",

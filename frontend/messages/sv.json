@@ -220,6 +220,8 @@
     "discardChangesTitle": "Kasta ändringar?",
     "discardChangesMessage": "Du har osparade ändringar. Är du säker på att du vill stänga guiden?",
     "discard": "Kasta",
+    "keepEditing": "Fortsätt redigera",
+    "closeAndDiscard": "Stäng och kasta",
     "selectRace": "Välj lopp",
     "selectRaceShort": "Lopp",
     "planTime": "Varaktighet",

@@ -134,15 +134,15 @@ function WizardContent({ onClose, onComplete }: { onClose: () => void; onComplet
             <div className="flex gap-3">
               <button
                 onClick={handleCancelDiscard}
-                className="flex-1 px-4 py-2 bg-surface-2 text-text-secondary rounded-lg hover:bg-surface-3 transition-colors font-medium"
+                className="flex-1 px-4 py-2 bg-surface-2 text-text-primary rounded-lg hover:bg-surface-3 transition-colors font-medium border border-border"
               >
-                {t('cancel')}
+                {t('keepEditing')}
               </button>
               <button
                 onClick={handleConfirmDiscard}
-                className="flex-1 px-4 py-2 bg-error text-error-foreground rounded-lg hover:opacity-90 transition-colors font-medium"
+                className="flex-1 px-4 py-2 bg-error text-white rounded-lg hover:opacity-90 transition-colors font-medium"
               >
-                {t('discard')}
+                {t('closeAndDiscard')}
               </button>
             </div>
           </div>
