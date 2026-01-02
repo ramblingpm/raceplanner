@@ -18,6 +18,7 @@ export default function EditRacePage() {
   const [error, setError] = useState<string | null>(null);
 
   // Edit states
+  const [raceName, setRaceName] = useState<string>('');
   const [isPublic, setIsPublic] = useState(false);
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
@@ -68,6 +69,7 @@ export default function EditRacePage() {
 
       if (raceError) throw raceError;
       setRace(raceData);
+      setRaceName(raceData.name || '');
       setIsPublic(raceData.is_public);
       setStartDate(raceData.start_date || '');
       setEndDate(raceData.end_date || '');
@@ -86,6 +88,32 @@ export default function EditRacePage() {
       setError(err instanceof Error ? err.message : 'Failed to load race');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleUpdateName = async () => {
+    if (!raceName.trim()) {
+      alert('Race name cannot be empty');
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('races')
+        .update({ name: raceName.trim() })
+        .eq('id', raceId);
+
+      if (error) throw error;
+
+      // Update the local race state
+      if (race) {
+        setRace({ ...race, name: raceName.trim() });
+      }
+
+      alert('Race name updated successfully');
+    } catch (err) {
+      console.error('Error updating race name:', err);
+      alert('Failed to update race name');
     }
   };
 
@@ -315,6 +343,29 @@ export default function EditRacePage() {
       {/* Race Settings */}
       <div className="bg-surface-background rounded-lg shadow-sm border border-border p-6 space-y-6">
         <h3 className="text-lg font-semibold text-text-primary">Race Settings</h3>
+
+        {/* Race Name */}
+        <div>
+          <label htmlFor="edit-raceName" className="block text-sm font-medium text-text-secondary mb-2">
+            Race Name
+          </label>
+          <div className="flex gap-3">
+            <input
+              type="text"
+              id="edit-raceName"
+              value={raceName}
+              onChange={(e) => setRaceName(e.target.value)}
+              className="flex-1 px-3 py-2 text-sm border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-text-primary bg-surface-background"
+              placeholder="Enter race name"
+            />
+            <button
+              onClick={handleUpdateName}
+              className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary-hover transition-colors text-sm font-semibold"
+            >
+              Update Name
+            </button>
+          </div>
+        </div>
 
         {/* Public Visibility */}
         <div className="flex items-center justify-between">

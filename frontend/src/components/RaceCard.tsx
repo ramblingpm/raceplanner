@@ -64,7 +64,7 @@ export default function RaceCard({ race, onSelectRace, onViewDetails, comingSoon
             {comingSoon ? (
               <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/50 via-black/45 to-black/60 backdrop-blur-[1px] flex items-center justify-center pointer-events-none">
                 <div className="text-center px-4">
-                  <div className="bg-warning text-warning-foreground px-5 py-2.5 rounded-lg font-bold text-base mb-2 shadow-xl inline-block">
+                  <div className="bg-info text-white px-5 py-2.5 rounded-lg font-bold text-base mb-2 shadow-xl inline-block">
                     🔜 {t('comingSoonBadge')}
                   </div>
                   <p className="text-white text-xs font-medium">{t('comingSoonDescription')}</p>
