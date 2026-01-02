@@ -151,8 +151,9 @@
     "subtitle": "Alla dina sparade planer",
     "loading": "Laddar planer...",
     "noPlans": "Du har inga sparade planer ännu",
-    "noPlansDescription": "Skapa din första plan genom att välja ett lopp från instrumentpanelen",
+    "noPlansDescription": "Skapa din första plan genom att välja ett lopp från tillgängliga lopp",
     "goToDashboard": "Gå till översikten",
+    "goToAvailableRaces": "Gå till tillgängliga lopp",
     "updatedOn": "Uppdaterad",
     "createdOn": "Skapad",
     "plansCount": "{count} {count, plural, one {plan} other {planer}}"
@@ -645,6 +646,10 @@
     "raceDates": "Datum",
     "startPlanning": "Börja planera",
     "moreInfo": "Mer information",
-    "errorLoading": "Kunde inte ladda lopp. Försök igen senare."
+    "errorLoading": "Kunde inte ladda lopp. Försök igen senare.",
+    "availableRacesSection": "Tillgängliga lopp",
+    "comingSoonSection": "Kommande lopp",
+    "comingSoonBadge": "Kommer snart",
+    "comingSoonDescription": "Detta lopp blir tillgängligt snart"
   }
 }

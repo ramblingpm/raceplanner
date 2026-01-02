@@ -172,10 +172,10 @@ export default function MyPlansPage() {
                   </h3>
                   <p className="text-text-secondary mb-6">{t('noPlansDescription')}</p>
                   <Link
-                    href="/dashboard"
+                    href="/available-races"
                     className="inline-block bg-primary text-primary-foreground px-6 py-3 rounded-lg hover:bg-primary-hover transition-colors font-semibold"
                   >
-                    {t('goToDashboard')}
+                    {t('goToAvailableRaces')}
                   </Link>
                 </div>
               </div>

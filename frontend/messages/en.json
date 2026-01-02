@@ -151,8 +151,9 @@
     "subtitle": "All your saved race plans",
     "loading": "Loading plans...",
     "noPlans": "You don't have any saved plans yet",
-    "noPlansDescription": "Create your first plan by selecting a race from the dashboard",
+    "noPlansDescription": "Create your first plan by selecting a race from available races",
     "goToDashboard": "Go to Dashboard",
+    "goToAvailableRaces": "Go to Available Races",
     "updatedOn": "Updated",
     "createdOn": "Created",
     "plansCount": "{count} {count, plural, one {plan} other {plans}}"
@@ -646,6 +647,10 @@
     "raceDates": "Dates",
     "startPlanning": "Start Planning",
     "moreInfo": "More Info",
-    "errorLoading": "Could not load races. Please try again later."
+    "errorLoading": "Could not load races. Please try again later.",
+    "availableRacesSection": "Available Races",
+    "comingSoonSection": "Coming Soon",
+    "comingSoonBadge": "Coming Soon",
+    "comingSoonDescription": "This race will be available soon"
   }
 }

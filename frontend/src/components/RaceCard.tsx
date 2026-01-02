@@ -17,9 +17,10 @@ interface RaceCardProps {
   race: Race;
   onSelectRace: (race: Race) => void;
   onViewDetails: (race: Race) => void;
+  comingSoon?: boolean;
 }
 
-export default function RaceCard({ race, onSelectRace, onViewDetails }: RaceCardProps) {
+export default function RaceCard({ race, onSelectRace, onViewDetails, comingSoon = false }: RaceCardProps) {
   const t = useTranslations('availableRaces');
 
   // Format dates for display
@@ -43,13 +44,15 @@ export default function RaceCard({ race, onSelectRace, onViewDetails }: RaceCard
 
   return (
     <div
-      className="bg-surface-background rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow border border-border"
+      className={`bg-surface-background rounded-lg shadow-lg overflow-hidden transition-shadow border border-border ${
+        comingSoon ? '' : 'hover:shadow-xl'
+      }`}
     >
       {/* Map Preview - Fixed height for consistency */}
       <div className="relative h-40 overflow-hidden bg-surface-1">
         {race.route_geometry?.coordinates ? (
           <>
-            <div className="absolute inset-0 flex items-center justify-center">
+            <div className="absolute inset-0 z-0 flex items-center justify-center">
               <div className="w-4/5 h-full">
                 <RaceMap
                   routeCoordinates={race.route_geometry.coordinates as number[][]}
@@ -57,14 +60,25 @@ export default function RaceCard({ race, onSelectRace, onViewDetails }: RaceCard
                 />
               </div>
             </div>
-            {/* Overlay with distance */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent flex items-center justify-center pointer-events-none">
-              <div className="text-center text-white">
-                <div className="text-lg font-semibold drop-shadow-lg">
-                  {race.distance_km} km
+            {/* Overlay with distance OR coming soon */}
+            {comingSoon ? (
+              <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/50 via-black/45 to-black/60 backdrop-blur-[1px] flex items-center justify-center pointer-events-none">
+                <div className="text-center px-4">
+                  <div className="bg-warning text-warning-foreground px-5 py-2.5 rounded-lg font-bold text-base mb-2 shadow-xl inline-block">
+                    🔜 {t('comingSoonBadge')}
+                  </div>
+                  <p className="text-white text-xs font-medium">{t('comingSoonDescription')}</p>
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/60 via-black/30 to-transparent flex items-center justify-center pointer-events-none">
+                <div className="text-center text-white">
+                  <div className="text-lg font-semibold drop-shadow-lg">
+                    {race.distance_km} km
+                  </div>
+                </div>
+              </div>
+            )}
           </>
         ) : (
           // Fallback if no route geometry
@@ -109,14 +123,24 @@ export default function RaceCard({ race, onSelectRace, onViewDetails }: RaceCard
         {/* CTA Buttons */}
         <div className="grid grid-cols-2 gap-3">
           <button
-            onClick={() => onViewDetails(race)}
-            className="w-full bg-surface-2 text-text-primary px-4 py-2.5 rounded-lg hover:bg-surface-3 transition-colors font-semibold text-sm border border-border"
+            onClick={() => !comingSoon && onViewDetails(race)}
+            disabled={comingSoon}
+            className={`w-full px-4 py-2.5 rounded-lg font-semibold text-sm border ${
+              comingSoon
+                ? 'bg-surface-1 text-text-muted border-border cursor-not-allowed opacity-50'
+                : 'bg-surface-2 text-text-primary border-border hover:bg-surface-3 transition-colors'
+            }`}
           >
             {t('moreInfo')}
           </button>
           <button
-            onClick={() => onSelectRace(race)}
-            className="w-full bg-primary text-primary-foreground px-4 py-2.5 rounded-lg hover:bg-primary-hover transition-colors font-semibold text-sm"
+            onClick={() => !comingSoon && onSelectRace(race)}
+            disabled={comingSoon}
+            className={`w-full px-4 py-2.5 rounded-lg font-semibold text-sm ${
+              comingSoon
+                ? 'bg-surface-1 text-text-muted cursor-not-allowed opacity-50'
+                : 'bg-primary text-primary-foreground hover:bg-primary-hover transition-colors'
+            }`}
           >
             {t('startPlanning')}
           </button>

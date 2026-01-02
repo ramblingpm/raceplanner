@@ -12,6 +12,7 @@ import RaceCard from '@/components/RaceCard';
 import { supabase } from '@/lib/supabase';
 import { Race } from '@/types';
 import { trackButtonClick } from '@/lib/analytics';
+import { isAdmin as checkIsAdmin } from '@/lib/admin';
 
 export default function AvailableRacesPage() {
   const t = useTranslations('availableRaces');
@@ -21,22 +22,62 @@ export default function AvailableRacesPage() {
   const [error, setError] = useState<string | null>(null);
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [selectedRace, setSelectedRace] = useState<Race | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    fetchRaces();
+    checkAdminStatus();
   }, []);
 
-  const fetchRaces = async () => {
+  const checkAdminStatus = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      console.log('User:', user);
+      if (!user) {
+        setIsAdmin(false);
+        fetchRaces(false);
+        return;
+      }
+
+      // Check if user is admin using the checkIsAdmin function from lib/admin
+      const adminStatus = await checkIsAdmin(user.id);
+      console.log('Admin status:', adminStatus);
+      setIsAdmin(adminStatus);
+      fetchRaces(adminStatus);
+    } catch (error) {
+      console.error('Error checking admin status:', error);
+      fetchRaces(false);
+    }
+  };
+
+  const fetchRaces = async (userIsAdmin: boolean = false) => {
     try {
       setError(null);
-      const { data, error } = await supabase
-        .from('races')
-        .select('*')
-        .eq('is_public', true)
-        .order('created_at', { ascending: false });
+      console.log('Fetching all races (including coming soon)');
 
-      if (error) throw error;
-      setRaces(data || []);
+      // Fetch all races using public API endpoint (to show coming soon races)
+      const response = await fetch('/api/races/all');
+
+      console.log('API response status:', response.status);
+
+      if (!response.ok) {
+        console.error('API failed');
+        throw new Error('Failed to fetch races');
+      }
+
+      const { races: allRaces } = await response.json();
+      console.log('All races fetched:', allRaces?.length, 'races');
+      console.log('Races:', allRaces);
+
+      // Sort races: public races first, then private races (coming soon)
+      const sortedRaces = (allRaces || []).sort((a: Race, b: Race) => {
+        // If one is public and the other isn't, public comes first
+        if (a.is_public && !b.is_public) return -1;
+        if (!a.is_public && b.is_public) return 1;
+        // Otherwise maintain created_at order (already sorted by API)
+        return 0;
+      });
+
+      setRaces(sortedRaces);
     } catch (error) {
       console.error('Error fetching races:', error);
       setError(t('errorLoading'));
@@ -115,17 +156,56 @@ export default function AvailableRacesPage() {
                 </div>
               </div>
             ) : (
-              /* Race Grid */
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {races.map((race) => (
-                  <RaceCard
-                    key={race.id}
-                    race={race}
-                    onSelectRace={handleSelectRace}
-                    onViewDetails={handleViewDetails}
-                  />
-                ))}
-              </div>
+              <>
+                {/* Admin Info */}
+                {isAdmin && (
+                  <div className="mb-6 p-4 bg-info-subtle border border-info rounded-lg">
+                    <p className="text-sm text-text-primary">
+                      👤 <strong>Admin view:</strong> You can see and plan all races. Private races show as "Coming Soon" for regular users.
+                    </p>
+                  </div>
+                )}
+
+                {/* Available Races */}
+                {races.filter(r => r.is_public).length > 0 && (
+                  <div className="mb-8">
+                    <h2 className="text-2xl font-bold text-text-primary mb-4">
+                      {t('availableRacesSection')}
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {races.filter(r => r.is_public).map((race) => (
+                        <RaceCard
+                          key={race.id}
+                          race={race}
+                          onSelectRace={handleSelectRace}
+                          onViewDetails={handleViewDetails}
+                          comingSoon={false}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Coming Soon Races */}
+                {races.filter(r => !r.is_public).length > 0 && (
+                  <div>
+                    <h2 className="text-2xl font-bold text-text-primary mb-4">
+                      {t('comingSoonSection')}
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {races.filter(r => !r.is_public).map((race) => (
+                        <RaceCard
+                          key={race.id}
+                          race={race}
+                          onSelectRace={handleSelectRace}
+                          onViewDetails={handleViewDetails}
+                          comingSoon={!isAdmin}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
             )}
           </main>
         </div>

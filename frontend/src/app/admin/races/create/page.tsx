@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowUpTrayIcon, TrashIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { ArrowUpTrayIcon, TrashIcon, PlusIcon, DocumentDuplicateIcon } from '@heroicons/react/24/outline';
 import { parseRouteFile, findClosestPointOnRoute, type ParsedRoute } from '@/lib/routeParser';
 import { supabase } from '@/lib/supabase';
 import dynamic from 'next/dynamic';
@@ -40,12 +40,34 @@ export default function CreateRacePage() {
 
   // Feed zones
   const [feedZones, setFeedZones] = useState<FeedZoneInput[]>([]);
+  const [availableRaces, setAvailableRaces] = useState<Array<{ id: string; name: string; distance_km: number }>>([]);
+  const [selectedRaceToCopy, setSelectedRaceToCopy] = useState<string>('');
+  const [copyingFeedZones, setCopyingFeedZones] = useState(false);
 
   // UI state
   const [parsing, setParsing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [parseError, setParseError] = useState<string | null>(null);
+
+  // Load available races on mount
+  useEffect(() => {
+    loadAvailableRaces();
+  }, []);
+
+  const loadAvailableRaces = async () => {
+    try {
+      const { data: races, error } = await supabase
+        .from('races')
+        .select('id, name, distance_km')
+        .order('name', { ascending: true });
+
+      if (error) throw error;
+      setAvailableRaces(races || []);
+    } catch (err) {
+      console.error('Error loading races:', err);
+    }
+  };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -82,6 +104,78 @@ export default function CreateRacePage() {
       order_index: feedZones.length,
     };
     setFeedZones([...feedZones, newFeedZone]);
+  };
+
+  const handleCopyFeedZones = async () => {
+    if (!selectedRaceToCopy) {
+      alert('Please select a race to copy from');
+      return;
+    }
+
+    if (!distanceKm || distanceKm <= 0) {
+      alert('Please set the race distance first');
+      return;
+    }
+
+    setCopyingFeedZones(true);
+    setError(null);
+
+    try {
+      // Fetch feed zones from selected race
+      const { data: sourceFeedZones, error: fetchError } = await supabase
+        .from('feed_zones')
+        .select('*')
+        .eq('race_id', selectedRaceToCopy)
+        .order('order_index', { ascending: true });
+
+      if (fetchError) throw fetchError;
+
+      if (!sourceFeedZones || sourceFeedZones.length === 0) {
+        alert('The selected race has no feed zones to copy');
+        return;
+      }
+
+      // Get source race distance for scaling
+      const sourceRace = availableRaces.find(r => r.id === selectedRaceToCopy);
+      if (!sourceRace) throw new Error('Source race not found');
+
+      // Scale distances if the races have different distances
+      const distanceRatio = distanceKm / sourceRace.distance_km;
+      const shouldScale = Math.abs(distanceRatio - 1) > 0.01; // Only scale if > 1% difference
+
+      // Convert to FeedZoneInput format
+      const copiedFeedZones: FeedZoneInput[] = sourceFeedZones.map((fz, index) => {
+        let scaledDistance = fz.distance_from_start_km;
+
+        if (shouldScale) {
+          scaledDistance = fz.distance_from_start_km * distanceRatio;
+        }
+
+        return {
+          id: `temp-${Date.now()}-${index}`,
+          name: fz.name,
+          distance_from_start_km: parseFloat(scaledDistance.toFixed(2)),
+          coordinates: fz.coordinates,
+          order_index: feedZones.length + index,
+        };
+      });
+
+      // Add to existing feed zones
+      setFeedZones([...feedZones, ...copiedFeedZones]);
+
+      const scaleMessage = shouldScale
+        ? ` (distances scaled by ${distanceRatio.toFixed(2)}x)`
+        : '';
+      alert(`Successfully copied ${copiedFeedZones.length} feed zone(s) from ${sourceRace.name}${scaleMessage}`);
+
+      // Reset selection
+      setSelectedRaceToCopy('');
+    } catch (err) {
+      console.error('Error copying feed zones:', err);
+      setError(err instanceof Error ? err.message : 'Failed to copy feed zones');
+    } finally {
+      setCopyingFeedZones(false);
+    }
   };
 
   const handleRemoveFeedZone = (id: string) => {
@@ -406,19 +500,63 @@ export default function CreateRacePage() {
 
       {/* Feed Zones Section */}
       <div className="bg-surface-background rounded-lg shadow-sm border border-border p-6 space-y-4">
-        <div className="flex items-center justify-between">
+        <div className="flex items-start justify-between gap-4">
           <div>
             <h3 className="text-lg font-semibold text-text-primary">Feed Zones</h3>
             <p className="text-sm text-text-muted">Optional pit stops along the race route</p>
           </div>
-          <button
-            onClick={handleAddFeedZone}
-            className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors"
-          >
-            <PlusIcon className="w-5 h-5" />
-            <span className="text-sm">Add Feed Zone</span>
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleAddFeedZone}
+              className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors whitespace-nowrap"
+            >
+              <PlusIcon className="w-5 h-5" />
+              <span className="text-sm">Add Feed Zone</span>
+            </button>
+          </div>
         </div>
+
+        {/* Copy from another race */}
+        {availableRaces.length > 0 && (
+          <div className="bg-info-subtle border border-info rounded-lg p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <DocumentDuplicateIcon className="w-5 h-5 text-info-foreground" />
+              <h4 className="text-sm font-semibold text-text-primary">Copy from Another Race</h4>
+            </div>
+            <p className="text-xs text-text-secondary mb-3">
+              Copy feed zones from an existing race. Distances will be automatically scaled if the races have different lengths.
+            </p>
+            <div className="flex gap-2">
+              <select
+                value={selectedRaceToCopy}
+                onChange={(e) => setSelectedRaceToCopy(e.target.value)}
+                className="flex-1 px-3 py-2 text-sm border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-text-primary bg-surface-background"
+                disabled={copyingFeedZones}
+              >
+                <option value="">Select a race...</option>
+                {availableRaces.map((race) => (
+                  <option key={race.id} value={race.id}>
+                    {race.name} ({race.distance_km} km)
+                  </option>
+                ))}
+              </select>
+              <button
+                onClick={handleCopyFeedZones}
+                disabled={!selectedRaceToCopy || copyingFeedZones}
+                className="flex items-center gap-2 px-4 py-2 bg-info text-info-foreground rounded-lg hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+              >
+                {copyingFeedZones ? (
+                  <>Copying...</>
+                ) : (
+                  <>
+                    <DocumentDuplicateIcon className="w-4 h-4" />
+                    <span className="text-sm">Copy</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        )}
 
         {feedZones.length === 0 && (
           <div className="text-center py-8 text-text-muted">
