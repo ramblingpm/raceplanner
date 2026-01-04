@@ -9,6 +9,7 @@ import Header from '@/components/Header';
 import AuthenticatedLayout from '@/components/AuthenticatedLayout';
 import WizardModal from '@/components/wizard/WizardModal';
 import PageViewTracker from '@/components/PageViewTracker';
+import StaticRouteMap from '@/components/StaticRouteMap';
 import { supabase } from '@/lib/supabase';
 import { Race } from '@/types';
 import {
@@ -61,6 +62,8 @@ export default function RacePage() {
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [plan, setPlan] = useState<any>(null);
   const [planId, setPlanId] = useState<string | null>(null);
+  const [feedZones, setFeedZones] = useState<any[]>([]);
+  const [planFeedZones, setPlanFeedZones] = useState<any[]>([]);
 
   useEffect(() => {
     // Check if there's a plan ID in the URL
@@ -73,6 +76,18 @@ export default function RacePage() {
       fetchPlan(planIdFromUrl);
     }
   }, [raceSlug]);
+
+  useEffect(() => {
+    if (race) {
+      fetchFeedZones();
+    }
+  }, [race]);
+
+  useEffect(() => {
+    if (planId) {
+      fetchPlanFeedZones();
+    }
+  }, [planId]);
 
   useEffect(() => {
     if (race) {
@@ -110,6 +125,39 @@ export default function RacePage() {
       setPlan(data);
     } catch (error) {
       console.error('Error fetching plan:', error);
+    }
+  };
+
+  const fetchFeedZones = async () => {
+    if (!race) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('feed_zones')
+        .select('*')
+        .eq('race_id', race.id)
+        .order('distance_from_start_km', { ascending: true });
+
+      if (error) throw error;
+      setFeedZones(data || []);
+    } catch (error) {
+      console.error('Error fetching feed zones:', error);
+    }
+  };
+
+  const fetchPlanFeedZones = async () => {
+    if (!planId) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('plan_feed_zones')
+        .select('*')
+        .eq('calculation_id', planId);
+
+      if (error) throw error;
+      setPlanFeedZones(data || []);
+    } catch (error) {
+      console.error('Error fetching plan feed zones:', error);
     }
   };
 
@@ -305,10 +353,32 @@ export default function RacePage() {
               {race.route_geometry?.coordinates && (
                 <div className="lg:col-span-2 print:col-span-2 bg-surface-background rounded-lg shadow-md p-6 border border-border print:p-2 print:shadow-none">
                   <h2 className="text-xl font-bold text-text-primary mb-4 print:text-sm print:mb-1">{tMap('title')}</h2>
-                  <div className="h-96 rounded-lg overflow-hidden border border-border print:h-[120px]">
+
+                  {/* Interactive Leaflet map for screen */}
+                  <div className="h-96 rounded-lg overflow-hidden border border-border print:hidden">
                     <RaceMap
                       routeCoordinates={race.route_geometry.coordinates as number[][]}
-                      selectedFeedZones={[]}
+                      selectedFeedZones={feedZones.map(fz => ({
+                        id: fz.id,
+                        name: fz.name,
+                        coordinates: fz.coordinates,
+                        distance_from_start_km: fz.distance_from_start_km,
+                        isStop: planFeedZones.some(pfz => pfz.feed_zone_id === fz.id),
+                      }))}
+                    />
+                  </div>
+
+                  {/* Static SVG map for print */}
+                  <div className="hidden print:block h-[120px] rounded-lg overflow-hidden border border-border">
+                    <StaticRouteMap
+                      routeCoordinates={race.route_geometry.coordinates as number[][]}
+                      feedZones={feedZones.map(fz => ({
+                        id: fz.id,
+                        name: fz.name,
+                        coordinates: fz.coordinates,
+                        distance_from_start_km: fz.distance_from_start_km,
+                        isStop: planFeedZones.some(pfz => pfz.feed_zone_id === fz.id),
+                      }))}
                     />
                   </div>
                 </div>
@@ -357,6 +427,12 @@ export default function RacePage() {
 
       {/* Print Styles */}
       <style jsx global>{`
+        /* Force color preservation globally */
+        * {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+        }
+
         @media print {
           @page {
             size: A4 portrait;
@@ -371,6 +447,8 @@ export default function RacePage() {
             padding: 0 !important;
             background: white !important;
             overflow: visible !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
           }
 
           /* Hide elements that shouldn't be printed */
@@ -469,10 +547,16 @@ export default function RacePage() {
             height: 120px !important;
           }
 
-          /* Make sure content fits on page */
+          /* Ensure SVG elements print correctly */
           svg {
             max-width: 100% !important;
-            max-height: 120px !important;
+          }
+
+          svg path,
+          svg circle,
+          svg rect {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
           }
 
           /* Scale down font sizes for A4 */

@@ -12,6 +12,7 @@ interface FeedZoneMarker {
     lng: number;
   };
   distance_from_start_km: number;
+  isStop?: boolean;
 }
 
 interface RaceMapProps {
@@ -106,26 +107,49 @@ export default function RaceMap({
       // Add feed zone markers
       if (selectedFeedZones.length > 0) {
         selectedFeedZones.forEach((feedZone) => {
+          const isStop = feedZone.isStop;
+
           const feedZoneMarker = L.marker(
             [feedZone.coordinates.lat, feedZone.coordinates.lng],
             {
               icon: L.divIcon({
                 className: 'custom-marker',
-                html: `
-                  <div style="
-                    background-color: white;
-                    width: 30px;
-                    height: 30px;
-                    border-radius: 50%;
-                    border: 2px solid ${warningColor};
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 16px;
-                  ">🍔</div>
-                `,
-                iconSize: [30, 30],
-                iconAnchor: [15, 15],
+                html: isStop
+                  ? `
+                    <div style="
+                      background-color: ${warningColor};
+                      width: 24px;
+                      height: 24px;
+                      border-radius: 50%;
+                      border: 2px solid white;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+                    ">
+                      <div style="
+                        display: flex;
+                        gap: 2px;
+                        align-items: center;
+                        justify-content: center;
+                      ">
+                        <div style="width: 2px; height: 10px; background: white;"></div>
+                        <div style="width: 2px; height: 10px; background: white;"></div>
+                      </div>
+                    </div>
+                  `
+                  : `
+                    <div style="
+                      background-color: ${errorColor};
+                      width: 12px;
+                      height: 12px;
+                      border-radius: 50%;
+                      border: 2px solid white;
+                      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+                    "></div>
+                  `,
+                iconSize: isStop ? [24, 24] : [12, 12],
+                iconAnchor: isStop ? [12, 12] : [6, 6],
               }),
             }
           )
@@ -133,6 +157,7 @@ export default function RaceMap({
             .bindPopup(`
               <strong>${feedZone.name}</strong><br/>
               ${feedZone.distance_from_start_km} km from start
+              ${isStop ? '<br/><em>Stop</em>' : '<br/><em>Passing</em>'}
             `);
           markersRef.current.push(feedZoneMarker);
         });

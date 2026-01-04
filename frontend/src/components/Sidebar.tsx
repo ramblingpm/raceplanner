@@ -42,7 +42,7 @@ export default function Sidebar() {
       {/* Mobile menu button */}
       <button
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        className="lg:hidden fixed top-20 left-4 z-50 p-2 bg-surface-1 border border-border rounded-lg shadow-md hover:bg-surface-2 transition-colors focus:outline-none focus:ring-2 focus:ring-border-focus"
+        className="lg:hidden fixed top-20 left-4 z-50 p-2 bg-surface-1 border border-border rounded-lg shadow-md hover:bg-surface-2 transition-colors focus:outline-none focus:ring-2 focus:ring-border-focus print:hidden"
         aria-label={t('menu')}
       >
         {isMobileMenuOpen ? (
@@ -55,7 +55,7 @@ export default function Sidebar() {
       {/* Mobile overlay */}
       {isMobileMenuOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-20"
+          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-20 print:hidden"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
@@ -66,7 +66,7 @@ export default function Sidebar() {
           fixed lg:sticky top-0 lg:top-[73px] left-0 h-screen lg:h-[calc(100vh-73px)] bg-surface-1 border-r border-border z-40 lg:z-10
           transition-transform duration-300 ease-in-out
           ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-          w-64 flex flex-col
+          w-64 flex flex-col print:hidden
         `}
       >
         {/* Sidebar header - only visible on mobile */}
