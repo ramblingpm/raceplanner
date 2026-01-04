@@ -414,7 +414,27 @@
       "errorLoad": "Kunde inte ladda beta-inbjudningar. Försök igen.",
       "confirmDelete": "Är du säker på att du vill ta bort denna beta-inbjudan?",
       "confirmApprove": "Är du säker på att du vill godkänna denna beta-inbjudan? Användaren kommer att kunna registrera sig.",
-      "mustBeLoggedIn": "Du måste vara inloggad för att godkänna beta-inbjudningar."
+      "mustBeLoggedIn": "Du måste vara inloggad för att godkänna beta-inbjudningar.",
+      "marketingEmail": {
+        "title": "Skicka marknadsförings-e-post",
+        "toggleButton": "📧 Skicka marknadsförings-e-post",
+        "subjectLabel": "E-postämne",
+        "subjectPlaceholder": "Ange e-postämne...",
+        "htmlLabel": "E-postinnehåll (HTML)",
+        "htmlPlaceholder": "Ange HTML-innehåll för e-post...",
+        "recipientFilterLabel": "Skicka till",
+        "recipientFilterAll": "Alla beta-användare",
+        "recipientFilterApproved": "Alla godkända användare",
+        "recipientFilterApprovedNotUsed": "Godkända (inte registrerat sig än)",
+        "recipientFilterUsed": "Användare som registrerat sig",
+        "recipientFilterPending": "Väntar på godkännande",
+        "sendButton": "Skicka e-post",
+        "sending": "Skickar...",
+        "successSent": "E-post skickades till {count} mottagare!",
+        "errorSend": "Kunde inte skicka e-post. Försök igen.",
+        "confirmSend": "Är du säker på att du vill skicka detta e-postmeddelande till {count} mottagare?",
+        "noRecipientsError": "Inga mottagare hittades för det valda filtret."
+      }
     }
   },
   "vatternrundan": {

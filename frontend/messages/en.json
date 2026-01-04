@@ -415,7 +415,27 @@
       "errorLoad": "Failed to load beta invites. Please try again.",
       "confirmDelete": "Are you sure you want to delete this beta invite?",
       "confirmApprove": "Are you sure you want to approve this beta invite? The user will be able to sign up.",
-      "mustBeLoggedIn": "You must be logged in to approve beta invites."
+      "mustBeLoggedIn": "You must be logged in to approve beta invites.",
+      "marketingEmail": {
+        "title": "Send Marketing Email",
+        "toggleButton": "📧 Send Marketing Email",
+        "subjectLabel": "Email Subject",
+        "subjectPlaceholder": "Enter email subject...",
+        "htmlLabel": "Email Content (HTML)",
+        "htmlPlaceholder": "Enter email HTML content...",
+        "recipientFilterLabel": "Send To",
+        "recipientFilterAll": "All Beta Users",
+        "recipientFilterApproved": "All Approved Users",
+        "recipientFilterApprovedNotUsed": "Approved (Not Signed Up Yet)",
+        "recipientFilterUsed": "Users Who Signed Up",
+        "recipientFilterPending": "Pending Approval",
+        "sendButton": "Send Email",
+        "sending": "Sending...",
+        "successSent": "Email sent successfully to {count} recipients!",
+        "errorSend": "Failed to send email. Please try again.",
+        "confirmSend": "Are you sure you want to send this email to {count} recipients?",
+        "noRecipientsError": "No recipients found for the selected filter."
+      }
     }
   },
   "vatternrundan": {
