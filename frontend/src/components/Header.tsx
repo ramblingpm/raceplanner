@@ -7,12 +7,16 @@ import LanguageSelector from './LanguageSelector';
 import { useAuth } from './AuthProvider';
 import { ThemeToggle } from '@/design-system';
 
-export default function Header() {
+interface HeaderProps {
+  className?: string;
+}
+
+export default function Header({ className = '' }: HeaderProps) {
   const t = useTranslations('common');
   const { user } = useAuth();
 
   return (
-    <header className={`bg-surface-background border-b border-border shadow-sm ${user ? 'sticky top-0 z-30' : ''}`}>
+    <header className={`bg-surface-background border-b border-border shadow-sm ${user ? 'sticky top-0 z-30' : ''} ${className}`}>
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <div className="flex items-center gap-6">
           <Link href="/" className="text-2xl font-bold text-text-primary hover:text-text-secondary transition-colors">

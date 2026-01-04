@@ -14,6 +14,8 @@ import {
   trackPlanCopied,
   trackPlanDeleted,
 } from '@/lib/analytics';
+import RacePlanCard from '@/components/RacePlanCard';
+import PrintablePlanView from '@/components/PrintablePlanView';
 
 interface GroupedPlans {
   [raceId: string]: {
@@ -29,6 +31,11 @@ export default function MyPlansPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [groupedPlans, setGroupedPlans] = useState<GroupedPlans>({});
+  const [printPlan, setPrintPlan] = useState<any>(null);
+  const [printRace, setPrintRace] = useState<any>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [planToDelete, setPlanToDelete] = useState<any>(null);
+  const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
 
   useEffect(() => {
     fetchPlans();
@@ -110,22 +117,35 @@ export default function MyPlansPage() {
   };
 
   const handleDelete = async (plan: any) => {
-    if (!confirm(tDashboard('confirmDelete'))) return;
+    setPlanToDelete(plan);
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!planToDelete) return;
 
     try {
       const { error } = await supabase
         .from('race_calculations')
         .delete()
-        .eq('id', plan.id);
+        .eq('id', planToDelete.id);
 
       if (error) throw error;
 
-      trackPlanDeleted(plan.id, plan.label || 'Untitled Plan');
+      trackPlanDeleted(planToDelete.id, planToDelete.label || 'Untitled Plan');
       await fetchPlans();
     } catch (error) {
       console.error('Error deleting plan:', error);
       alert('Failed to delete plan');
+    } finally {
+      setShowDeleteConfirm(false);
+      setPlanToDelete(null);
     }
+  };
+
+  const handlePrint = (plan: any) => {
+    setPrintPlan(plan);
+    setPrintRace(plan.races);
   };
 
   const formatDate = (dateString: string) => {
@@ -180,9 +200,70 @@ export default function MyPlansPage() {
                 </div>
               </div>
             ) : (
-              <div className="space-y-8">
-                {Object.entries(groupedPlans).map(([raceId, { race, plans }]) => (
-                  <div key={raceId} className="bg-surface-1 rounded-lg shadow-md border border-border overflow-hidden">
+              <>
+                {/* View Toggle */}
+                <div className="flex justify-end mb-6">
+                  <div className="inline-flex rounded-lg border border-border bg-surface-1 p-1">
+                    <button
+                      onClick={() => setViewMode('cards')}
+                      className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                        viewMode === 'cards'
+                          ? 'bg-primary text-primary-foreground'
+                          : 'text-text-secondary hover:text-text-primary'
+                      }`}
+                    >
+                      {t('cardView')}
+                    </button>
+                    <button
+                      onClick={() => setViewMode('table')}
+                      className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                        viewMode === 'table'
+                          ? 'bg-primary text-primary-foreground'
+                          : 'text-text-secondary hover:text-text-primary'
+                      }`}
+                    >
+                      {t('tableView')}
+                    </button>
+                  </div>
+                </div>
+
+                {viewMode === 'cards' ? (
+                  /* Netflix-Style Card View */
+                  <div className="space-y-8">
+                    {Object.entries(groupedPlans).map(([raceId, { race, plans }]) => (
+                      <div key={raceId}>
+                        {/* Race Header */}
+                        <div className="mb-4">
+                          <h2 className="text-2xl font-bold text-text-primary mb-1">
+                            {race?.name || 'Unknown Race'}
+                          </h2>
+                          <p className="text-sm text-text-muted">
+                            {plans.length} {plans.length === 1 ? 'plan' : 'planer'}
+                          </p>
+                        </div>
+
+                        {/* Cards Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                          {plans.map((plan) => (
+                            <RacePlanCard
+                              key={plan.id}
+                              plan={plan}
+                              race={race}
+                              onEdit={handleEdit}
+                              onCopy={handleCopy}
+                              onDelete={handleDelete}
+                              onPrint={handlePrint}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  /* Table View (existing layout) */
+                  <div className="space-y-8">
+                    {Object.entries(groupedPlans).map(([raceId, { race, plans }]) => (
+                      <div key={raceId} className="bg-surface-1 rounded-lg shadow-md border border-border overflow-hidden">
                     {/* Race Header */}
                     <div className="bg-surface-2 px-6 py-4 border-b border-border">
                       <div className="flex items-center justify-between">
@@ -205,8 +286,6 @@ export default function MyPlansPage() {
                     {/* Plans List - Mobile Cards */}
                     <div className="md:hidden divide-y divide-border">
                       {plans.map((plan) => {
-                        const startTime = new Date(plan.planned_start_time);
-                        const finishTime = new Date(plan.calculated_finish_time);
                         const durationHours = Math.floor(plan.estimated_duration_seconds / 3600);
                         const durationMinutes = Math.floor((plan.estimated_duration_seconds % 3600) / 60);
 
@@ -305,8 +384,6 @@ export default function MyPlansPage() {
                         </thead>
                         <tbody className="bg-surface-1 divide-y divide-border">
                           {plans.map((plan) => {
-                            const startTime = new Date(plan.planned_start_time);
-                            const finishTime = new Date(plan.calculated_finish_time);
                             const durationHours = Math.floor(plan.estimated_duration_seconds / 3600);
                             const durationMinutes = Math.floor((plan.estimated_duration_seconds % 3600) / 60);
 
@@ -370,6 +447,51 @@ export default function MyPlansPage() {
                   </div>
                 ))}
               </div>
+                )}
+              </>
+            )}
+
+            {/* Delete Confirmation Modal */}
+            {showDeleteConfirm && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+                <div className="bg-surface-background rounded-lg shadow-xl max-w-sm w-full p-6 border border-border">
+                  <h3 className="text-lg font-semibold text-text-primary mb-2">
+                    {t('deleteConfirmTitle')}
+                  </h3>
+                  <p className="text-sm text-text-secondary mb-6">
+                    {t('deleteConfirmMessage')}
+                  </p>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => {
+                        setShowDeleteConfirm(false);
+                        setPlanToDelete(null);
+                      }}
+                      className="flex-1 px-4 py-2 bg-surface-2 text-text-primary rounded-lg hover:bg-surface-3 transition-colors font-medium border border-border"
+                    >
+                      {tCommon('cancel')}
+                    </button>
+                    <button
+                      onClick={confirmDelete}
+                      className="flex-1 px-4 py-2 bg-error text-white rounded-lg hover:opacity-90 transition-colors font-medium"
+                    >
+                      {tCommon('delete')}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Print Modal */}
+            {printPlan && printRace && (
+              <PrintablePlanView
+                plan={printPlan}
+                race={printRace}
+                onClose={() => {
+                  setPrintPlan(null);
+                  setPrintRace(null);
+                }}
+              />
             )}
           </main>
         </div>
