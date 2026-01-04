@@ -166,7 +166,6 @@ export default function BetaInvitesPage() {
           subject: emailSubject,
           html: emailHtml,
           recipientFilter,
-          adminUserId: user.id,
         }),
       });
 

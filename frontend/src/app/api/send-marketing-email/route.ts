@@ -1,42 +1,71 @@
 import { Resend } from 'resend';
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 import { defaultLocale, Locale, locales } from '@/i18n/config';
+import DOMPurify from 'isomorphic-dompurify';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 export async function POST(request: NextRequest) {
   try {
-    const { subject, html, recipientFilter, adminUserId } = await request.json();
+    const { subject, html, recipientFilter } = await request.json();
 
     // Validate input
     if (!subject || !html) {
-      console.log('❌ Missing required fields');
       return NextResponse.json(
         { error: 'Subject and HTML content are required' },
         { status: 400 }
       );
     }
 
-    if (!adminUserId) {
-      console.log('❌ No admin user ID provided');
+    // Create Supabase client with cookies for auth
+    const cookieStore = await cookies();
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() {
+            return cookieStore.getAll();
+          },
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options)
+            );
+          },
+        },
+      }
+    );
+
+    // Get authenticated user from session
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+    if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Verify the user is an admin
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
-    const { data: adminData, error: adminError } = await supabase
+    // Verify the authenticated user is an admin using service role
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+    const { createClient } = await import('@supabase/supabase-js');
+    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
+
+    const { data: adminData, error: adminError } = await supabaseAdmin
       .from('admin_users')
       .select('user_id')
-      .eq('user_id', adminUserId)
+      .eq('user_id', user.id)
       .single();
 
     if (adminError || !adminData) {
-      console.log('❌ User is not an admin');
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
+
+    // Sanitize HTML content to prevent XSS
+    const sanitizedHtml = DOMPurify.sanitize(html, {
+      ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'a', 'img', 'div', 'span', 'table', 'tr', 'td', 'th', 'thead', 'tbody'],
+      ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'style', 'target'],
+    });
 
     // Get locale preference and app name
     const locale = defaultLocale;
@@ -55,8 +84,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Fetch beta invites based on filter
-    let query = supabase.from('beta_invites').select('email');
+    // Fetch beta invites based on filter using admin client
+    let query = supabaseAdmin.from('beta_invites').select('email');
 
     switch (recipientFilter) {
       case 'all':
@@ -86,7 +115,7 @@ export async function POST(request: NextRequest) {
     if (invitesError) {
       console.error('❌ Error fetching invites:', invitesError);
       return NextResponse.json(
-        { error: 'Failed to fetch recipients', details: invitesError.message },
+        { error: 'Failed to fetch recipients' },
         { status: 500 }
       );
     }
@@ -100,7 +129,7 @@ export async function POST(request: NextRequest) {
     }
 
     const recipients = invites.map((invite) => invite.email);
-    console.log(`📧 Sending marketing email to ${recipients.length} recipients`);
+    console.log(`📧 Sending marketing email to ${recipients.length} recipients by admin ${user.id}`);
 
     // Send emails using BCC to respect privacy
     const emailResult = await resend.emails.send({
@@ -108,34 +137,31 @@ export async function POST(request: NextRequest) {
       to: fromEmail, // Send to self
       bcc: recipients, // Use BCC for privacy
       subject: subject,
-      html: html,
+      html: sanitizedHtml, // Use sanitized HTML
     });
 
     if (emailResult.error) {
       console.error('❌ Error sending marketing email:', emailResult.error);
       return NextResponse.json(
-        { error: 'Failed to send email', details: emailResult.error },
+        { error: 'Failed to send email' },
         { status: 500 }
       );
     }
 
     console.log(`✅ Marketing email sent successfully to ${recipients.length} recipients`, {
       emailId: emailResult.data?.id,
+      adminUserId: user.id,
     });
 
     return NextResponse.json({
       success: true,
       message: `Email sent to ${recipients.length} recipients`,
-      emailId: emailResult.data?.id,
       recipientCount: recipients.length,
     });
   } catch (error) {
     console.error('❌ Error in send-marketing-email:', error);
     return NextResponse.json(
-      {
-        error: 'Internal server error',
-        details: error instanceof Error ? error.message : String(error),
-      },
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }
