@@ -305,16 +305,25 @@ export function WizardProvider({ children, initialRace, editingCalculation }: Wi
         }
       }
 
-      // Save feed zones if any are selected
-      if (calculationId && state.planData.selectedFeedZones.length > 0) {
+      // Save feed zones (always call when editing to properly delete old ones)
+      if (calculationId && (state.planData.selectedFeedZones.length > 0 || state.isEditing)) {
         try {
+          // Convert time strings (HH:MM) to full ISO datetime strings
+          const convertTimeToISO = (timeString?: string): string | undefined => {
+            if (!timeString) return undefined;
+            const [hours, minutes] = timeString.split(':').map(Number);
+            const date = new Date(state.planData.startDate);
+            date.setHours(hours, minutes, 0, 0);
+            return date.toISOString();
+          };
+
           await savePlanFeedZones(
             calculationId,
             state.planData.selectedFeedZones.map(zone => ({
               feed_zone_id: zone.feed_zone_id,
               planned_duration_seconds: zone.planned_duration_seconds,
-              planned_arrival_time: zone.planned_arrival_time,
-              planned_departure_time: zone.planned_departure_time,
+              planned_arrival_time: convertTimeToISO(zone.planned_arrival_time),
+              planned_departure_time: convertTimeToISO(zone.planned_departure_time),
             }))
           );
         } catch (error) {

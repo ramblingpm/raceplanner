@@ -14,7 +14,11 @@ export default function WizardStepIndicator() {
     { number: 2, label: t('planTime'), shortLabel: t('planTimeShort') },
     { number: 3, label: t('feedZones'), shortLabel: t('feedZonesShort') },
     { number: 4, label: t('review'), shortLabel: t('reviewShort') },
-    { number: 5, label: t('savePlan'), shortLabel: t('savePlanShort') },
+    {
+      number: 5,
+      label: state.isEditing ? t('updatePlan') : t('savePlan'),
+      shortLabel: state.isEditing ? t('updatePlan') : t('savePlanShort')
+    },
   ];
 
   return (

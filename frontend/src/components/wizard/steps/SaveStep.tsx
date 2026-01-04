@@ -49,10 +49,10 @@ export default function SaveStep({ onClose, onComplete }: SaveStepProps) {
       {/* Header */}
       <div className="mb-6">
         <h2 className="text-2xl sm:text-3xl font-bold text-text-primary mb-2">
-          {t('saveYourPlan')}
+          {state.isEditing ? t('updateYourPlan') : t('saveYourPlan')}
         </h2>
         <p className="text-sm sm:text-base text-text-secondary">
-          {t('givePlanName')}
+          {state.isEditing ? t('updatePlanName') : t('givePlanName')}
         </p>
       </div>
 

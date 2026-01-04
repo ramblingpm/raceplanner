@@ -144,8 +144,11 @@ export default function MyPlansPage() {
   };
 
   const handlePrint = (plan: any) => {
-    setPrintPlan(plan);
-    setPrintRace(plan.races);
+    // Navigate to the race page with the plan parameter
+    const raceSlug = plan.races?.slug;
+    if (raceSlug) {
+      router.push(`/${raceSlug}?plan=${plan.id}`);
+    }
   };
 
   const formatDate = (dateString: string) => {
@@ -250,9 +253,6 @@ export default function MyPlansPage() {
                               plan={plan}
                               race={race}
                               onEdit={handleEdit}
-                              onCopy={handleCopy}
-                              onDelete={handleDelete}
-                              onPrint={handlePrint}
                             />
                           ))}
                         </div>

@@ -16,7 +16,7 @@ import {
   trackRaceSelected,
   trackButtonClick,
 } from '@/lib/analytics';
-import { PencilSquareIcon, PrinterIcon } from '@heroicons/react/24/outline';
+import { PencilSquareIcon, PrinterIcon, DocumentDuplicateIcon, TrashIcon } from '@heroicons/react/24/outline';
 
 // Dynamically import RaceMap with no SSR to avoid Leaflet window errors
 const RaceMap = dynamic(() => import('@/components/RaceMap'), {
@@ -53,6 +53,7 @@ export default function RacePage() {
   const router = useRouter();
   const raceSlug = params.raceSlug as string;
   const t = useTranslations('dashboard');
+  const tCommon = useTranslations('common');
   const tMap = useTranslations('raceMap');
   const tElevation = useTranslations('elevationProfile');
   const locale = useLocale();
@@ -64,6 +65,7 @@ export default function RacePage() {
   const [planId, setPlanId] = useState<string | null>(null);
   const [feedZones, setFeedZones] = useState<any[]>([]);
   const [planFeedZones, setPlanFeedZones] = useState<any[]>([]);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
     // Check if there's a plan ID in the URL
@@ -163,7 +165,7 @@ export default function RacePage() {
 
   const handleOpenWizard = () => {
     setIsWizardOpen(true);
-    trackButtonClick('create_plan', 'race_page', { race_name: race?.name });
+    trackButtonClick(plan ? 'edit_plan' : 'create_plan', 'race_page', { race_name: race?.name });
   };
 
   const handleWizardComplete = () => {
@@ -177,6 +179,97 @@ export default function RacePage() {
 
   const handlePrint = () => {
     window.print();
+  };
+
+  const handleCopy = async () => {
+    if (!plan) return;
+
+    trackButtonClick('copy_plan', 'race_page', { plan_id: plan.id, race_name: race?.name });
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      // Create a copy of the plan
+      const { data: newPlan, error: planError } = await supabase
+        .from('race_calculations')
+        .insert({
+          race_id: plan.race_id,
+          user_id: user.id,
+          label: `${plan.label} (Copy)`,
+          planned_start_time: plan.planned_start_time,
+          estimated_duration_seconds: plan.estimated_duration_seconds,
+          planned_stop_duration_seconds: plan.planned_stop_duration_seconds,
+          calculated_finish_time: plan.calculated_finish_time,
+          required_speed_kmh: plan.required_speed_kmh,
+        })
+        .select()
+        .single();
+
+      if (planError) throw planError;
+
+      // Copy feed zones if any exist
+      if (newPlan && planFeedZones.length > 0) {
+        const feedZoneCopies = planFeedZones.map(fz => ({
+          calculation_id: newPlan.id,
+          feed_zone_id: fz.feed_zone_id,
+          planned_duration_seconds: fz.planned_duration_seconds,
+          planned_arrival_time: fz.planned_arrival_time,
+          planned_departure_time: fz.planned_departure_time,
+        }));
+
+        const { error: feedZoneError } = await supabase
+          .from('plan_feed_zones')
+          .insert(feedZoneCopies);
+
+        if (feedZoneError) throw feedZoneError;
+      }
+
+      // Navigate to the copied plan
+      router.push(`/${raceSlug}?plan=${newPlan.id}`);
+    } catch (error) {
+      console.error('Error copying plan:', error);
+      alert('Failed to copy plan. Please try again.');
+    }
+  };
+
+  const handleDeleteClick = () => {
+    setShowDeleteConfirm(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!plan) return;
+
+    trackButtonClick('delete_plan_confirmed', 'race_page', { plan_id: plan.id, race_name: race?.name });
+
+    try {
+      // Delete plan feed zones first (foreign key constraint)
+      const { error: feedZoneError } = await supabase
+        .from('plan_feed_zones')
+        .delete()
+        .eq('calculation_id', plan.id);
+
+      if (feedZoneError) throw feedZoneError;
+
+      // Delete the plan
+      const { error: planError } = await supabase
+        .from('race_calculations')
+        .delete()
+        .eq('id', plan.id);
+
+      if (planError) throw planError;
+
+      // Navigate to My Plans
+      router.push('/my-plans');
+    } catch (error) {
+      console.error('Error deleting plan:', error);
+      alert('Failed to delete plan. Please try again.');
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setShowDeleteConfirm(false);
+    trackButtonClick('delete_plan_cancelled', 'race_page', { plan_id: plan?.id, race_name: race?.name });
   };
 
   const formatDateRange = () => {
@@ -248,14 +341,22 @@ export default function RacePage() {
                   )}
                 </div>
                 {plan ? (
-                  <div className="flex items-center gap-3 print:hidden">
+                  <div className="flex items-center gap-2 print:hidden">
                     <button
                       onClick={handlePrint}
                       className="flex items-center gap-2 bg-info text-white px-4 py-2 rounded-lg hover:bg-info-hover transition-colors font-medium"
                       title={t('printPlan')}
                     >
                       <PrinterIcon className="w-5 h-5" />
-                      <span>{t('printPlan')}</span>
+                      <span className="hidden sm:inline">{t('printPlan')}</span>
+                    </button>
+                    <button
+                      onClick={handleCopy}
+                      className="flex items-center gap-2 bg-surface-2 text-text-primary px-4 py-2 rounded-lg hover:bg-surface-3 transition-colors font-medium border border-border"
+                      title={t('copyPlan')}
+                    >
+                      <DocumentDuplicateIcon className="w-5 h-5" />
+                      <span className="hidden sm:inline">{t('copyPlan')}</span>
                     </button>
                     <button
                       onClick={handleOpenWizard}
@@ -263,7 +364,15 @@ export default function RacePage() {
                       title={t('editPlan')}
                     >
                       <PencilSquareIcon className="w-5 h-5" />
-                      <span>{t('editPlan')}</span>
+                      <span className="hidden sm:inline">{t('editPlan')}</span>
+                    </button>
+                    <button
+                      onClick={handleDeleteClick}
+                      className="flex items-center gap-2 bg-error text-white px-4 py-2 rounded-lg hover:opacity-90 transition-colors font-medium"
+                      title={t('deletePlan')}
+                    >
+                      <TrashIcon className="w-5 h-5" />
+                      <span className="hidden sm:inline">{t('deletePlan')}</span>
                     </button>
                   </div>
                 ) : (
@@ -422,7 +531,36 @@ export default function RacePage() {
           onClose={handleWizardClose}
           onComplete={handleWizardComplete}
           initialRace={race}
+          editingCalculation={plan}
         />
+
+        {/* Delete Confirmation Dialog */}
+        {showDeleteConfirm && (
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black bg-opacity-50">
+            <div className="bg-surface-background rounded-lg shadow-xl max-w-sm w-full p-6 border border-border">
+              <h3 className="text-lg font-semibold text-text-primary mb-2">
+                {t('deletePlan')}?
+              </h3>
+              <p className="text-sm text-text-secondary mb-6">
+                {t('confirmDelete')}
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={handleDeleteCancel}
+                  className="flex-1 px-4 py-2 bg-surface-2 text-text-primary rounded-lg hover:bg-surface-3 transition-colors font-medium border border-border"
+                >
+                  {tCommon('cancel')}
+                </button>
+                <button
+                  onClick={handleDeleteConfirm}
+                  className="flex-1 px-4 py-2 bg-error text-white rounded-lg hover:opacity-90 transition-colors font-medium"
+                >
+                  {tCommon('delete')}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </AuthenticatedLayout>
 
       {/* Print Styles */}

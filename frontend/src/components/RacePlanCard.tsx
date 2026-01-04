@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { DocumentDuplicateIcon, TrashIcon, PrinterIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
+import { PencilSquareIcon } from '@heroicons/react/24/outline';
 import { ClockIcon, BoltIcon, CalendarIcon } from '@heroicons/react/24/solid';
 import dynamic from 'next/dynamic';
 
@@ -18,18 +18,12 @@ interface RacePlanCardProps {
   plan: any;
   race: any;
   onEdit: (plan: any) => void;
-  onCopy: (plan: any) => void;
-  onDelete: (plan: any) => void;
-  onPrint: (plan: any) => void;
 }
 
 export default function RacePlanCard({
   plan,
   race,
   onEdit,
-  onCopy,
-  onDelete,
-  onPrint,
 }: RacePlanCardProps) {
   const t = useTranslations('myPlans');
   const tDashboard = useTranslations('dashboard');
@@ -148,45 +142,8 @@ export default function RacePlanCard({
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="grid grid-cols-3 gap-2">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onPrint(plan);
-            }}
-            className="flex items-center justify-center gap-1.5 px-3 py-2 bg-info-subtle text-info rounded-lg hover:bg-info hover:text-white transition-colors text-xs font-medium border border-info"
-            title={t('printPlan')}
-          >
-            <PrinterIcon className="w-4 h-4" />
-            <span>{t('print')}</span>
-          </button>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onCopy(plan);
-            }}
-            className="flex items-center justify-center gap-1.5 px-3 py-2 bg-success-subtle text-success rounded-lg hover:bg-success hover:text-white transition-colors text-xs font-medium border border-success"
-            title={tCommon('copy')}
-          >
-            <DocumentDuplicateIcon className="w-4 h-4" />
-            <span>{tCommon('copy')}</span>
-          </button>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onDelete(plan);
-            }}
-            className="flex items-center justify-center gap-1.5 px-3 py-2 bg-error-subtle text-error rounded-lg hover:bg-error hover:text-white transition-colors text-xs font-medium border border-error"
-            title={tCommon('delete')}
-          >
-            <TrashIcon className="w-4 h-4" />
-            <span>{tCommon('delete')}</span>
-          </button>
-        </div>
-
         {/* Created date */}
-        <div className="mt-3 pt-3 border-t border-border">
+        <div className="mt-4 pt-4 border-t border-border">
           <p className="text-xs text-text-muted text-center">
             {t('createdOn')}: {formatDate(plan.created_at)}
           </p>
