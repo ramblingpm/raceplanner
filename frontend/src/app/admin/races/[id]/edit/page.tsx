@@ -16,6 +16,8 @@ export default function EditRacePage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   // Edit states
   const [raceName, setRaceName] = useState<string>('');
@@ -297,6 +299,40 @@ export default function EditRacePage() {
     }
   };
 
+  const handleDeleteRace = async () => {
+    setDeleting(true);
+    setError(null);
+
+    try {
+      // Get the current session token
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        throw new Error('You must be logged in to delete races');
+      }
+
+      const response = await fetch(`/api/admin/races/${raceId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to delete race');
+      }
+
+      // Navigate back to races list
+      router.push('/admin/races');
+    } catch (err) {
+      console.error('Error deleting race:', err);
+      setError(err instanceof Error ? err.message : 'Failed to delete race');
+      setShowDeleteConfirm(false);
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -326,12 +362,21 @@ export default function EditRacePage() {
             {race.distance_km} km • {race.is_public ? 'Public' : 'Admin Only'}
           </p>
         </div>
-        <button
-          onClick={() => router.back()}
-          className="px-4 py-2 text-text-secondary hover:bg-surface-1 rounded-lg transition-colors"
-        >
-          ← Back
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setShowDeleteConfirm(true)}
+            className="flex items-center gap-2 px-4 py-2 text-error hover:bg-error-subtle rounded-lg transition-colors"
+          >
+            <TrashIcon className="w-4 h-4" />
+            Delete Race
+          </button>
+          <button
+            onClick={() => router.back()}
+            className="px-4 py-2 text-text-secondary hover:bg-surface-1 rounded-lg transition-colors"
+          >
+            ← Back
+          </button>
+        </div>
       </div>
 
       {error && (
@@ -659,6 +704,39 @@ export default function EditRacePage() {
           </div>
         )}
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black bg-opacity-50">
+          <div className="bg-surface-background rounded-lg shadow-xl max-w-sm w-full p-6 border border-border">
+            <h3 className="text-lg font-semibold text-text-primary mb-2">
+              Delete Race
+            </h3>
+
+            <p className="text-sm text-text-secondary mb-6">
+              Are you sure you want to delete <strong>{race?.name}</strong>? This will permanently delete the race and all its feed zones. This action cannot be undone.
+            </p>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                disabled={deleting}
+                className="flex-1 px-4 py-2 bg-surface-2 text-text-primary rounded-lg hover:bg-surface-3 transition-colors font-medium border border-border disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={handleDeleteRace}
+                disabled={deleting}
+                className="flex-1 px-4 py-2 bg-error text-white rounded-lg hover:opacity-90 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {deleting ? 'Deleting...' : 'Delete'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
