@@ -11,6 +11,7 @@ import {
 } from '@/lib/admin';
 import { useAuth } from '@/components/AuthProvider';
 import { formatDateTime } from '@/lib/dateFormat';
+import { supabase } from '@/lib/supabase';
 
 export default function BetaInvitesPage() {
   const { user } = useAuth();
@@ -157,10 +158,19 @@ export default function BetaInvitesPage() {
     setSuccess(null);
 
     try {
+      // Get the current session token
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        setError('You must be logged in to send marketing emails');
+        setSendingEmail(false);
+        return;
+      }
+
       const response = await fetch('/api/send-marketing-email', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
         },
         body: JSON.stringify({
           subject: emailSubject,

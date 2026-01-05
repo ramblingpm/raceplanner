@@ -1,7 +1,6 @@
 import { Resend } from 'resend';
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
+import { createClient } from '@supabase/supabase-js';
 import { defaultLocale, Locale, locales } from '@/i18n/config';
 import DOMPurify from 'isomorphic-dompurify';
 
@@ -19,36 +18,39 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create Supabase client with cookies for auth
-    const cookieStore = await cookies();
-    const supabase = createServerClient(
+    // Get auth token from request headers
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      console.error('❌ No authorization header found');
+      return NextResponse.json({ error: 'Unauthorized', debug: 'Missing auth token' }, { status: 401 });
+    }
+
+    const token = authHeader.replace('Bearer ', '');
+
+    // Create Supabase client and verify the token
+    const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          getAll() {
-            return cookieStore.getAll();
-          },
-          setAll(cookiesToSet) {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            );
-          },
-        },
-      }
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
 
-    // Get authenticated user from session
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    // Get authenticated user using the token
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
 
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    if (authError) {
+      console.error('❌ Auth error:', authError);
+      return NextResponse.json({ error: 'Unauthorized', debug: 'Invalid token' }, { status: 401 });
     }
+
+    if (!user) {
+      console.error('❌ No user found with token');
+      return NextResponse.json({ error: 'Unauthorized', debug: 'No user found' }, { status: 401 });
+    }
+
+    console.log('✅ User authenticated:', user.id);
 
     // Verify the authenticated user is an admin using service role
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
     const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-    const { createClient } = await import('@supabase/supabase-js');
     const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
 
     const { data: adminData, error: adminError } = await supabaseAdmin
@@ -57,9 +59,17 @@ export async function POST(request: NextRequest) {
       .eq('user_id', user.id)
       .single();
 
-    if (adminError || !adminData) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    if (adminError) {
+      console.error('❌ Admin check error:', adminError);
+      return NextResponse.json({ error: 'Forbidden', debug: 'Admin check failed' }, { status: 403 });
     }
+
+    if (!adminData) {
+      console.error('❌ User is not an admin:', user.id);
+      return NextResponse.json({ error: 'Forbidden', debug: 'Not an admin' }, { status: 403 });
+    }
+
+    console.log('✅ Admin verified:', user.id);
 
     // Sanitize HTML content to prevent XSS
     const sanitizedHtml = DOMPurify.sanitize(html, {
