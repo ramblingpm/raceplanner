@@ -8,12 +8,19 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: NextRequest) {
   try {
-    const { subject, html, recipientFilter } = await request.json();
+    const { subject, html, recipients } = await request.json();
 
     // Validate input
     if (!subject || !html) {
       return NextResponse.json(
         { error: 'Subject and HTML content are required' },
+        { status: 400 }
+      );
+    }
+
+    if (!recipients || !Array.isArray(recipients) || recipients.length === 0) {
+      return NextResponse.json(
+        { error: 'Recipients array is required and must not be empty' },
         { status: 400 }
       );
     }
@@ -94,51 +101,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Fetch beta invites based on filter using admin client
-    let query = supabaseAdmin.from('beta_invites').select('email');
-
-    switch (recipientFilter) {
-      case 'all':
-        // No filter - get all
-        break;
-      case 'approved':
-        query = query.eq('approved', true);
-        break;
-      case 'approved_not_used':
-        query = query.eq('approved', true).eq('used', false);
-        break;
-      case 'used':
-        query = query.eq('used', true);
-        break;
-      case 'pending':
-        query = query.eq('approved', false).eq('used', false);
-        break;
-      default:
-        return NextResponse.json(
-          { error: 'Invalid recipient filter' },
-          { status: 400 }
-        );
-    }
-
-    const { data: invites, error: invitesError } = await query;
-
-    if (invitesError) {
-      console.error('❌ Error fetching invites:', invitesError);
-      return NextResponse.json(
-        { error: 'Failed to fetch recipients' },
-        { status: 500 }
-      );
-    }
-
-    if (!invites || invites.length === 0) {
-      console.log('⚠️ No recipients found for filter:', recipientFilter);
-      return NextResponse.json(
-        { error: 'No recipients found matching the selected filter' },
-        { status: 400 }
-      );
-    }
-
-    const recipients = invites.map((invite) => invite.email);
     console.log(`📧 Sending marketing email to ${recipients.length} recipients by admin ${user.id}`);
 
     // Send emails using BCC to respect privacy
