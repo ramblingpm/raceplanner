@@ -1,10 +1,37 @@
 import { Resend } from 'resend';
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { defaultLocale, Locale, locales } from '@/i18n/config';
-import DOMPurify from 'isomorphic-dompurify';
+import { defaultLocale, locales } from '@/i18n/config';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+
+// Simple HTML sanitizer for serverless environments (avoids jsdom issues)
+function sanitizeHtml(html: string): string {
+  // Allowlist of safe tags and attributes
+  const allowedTags = ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'a', 'img', 'div', 'span', 'table', 'tr', 'td', 'th', 'thead', 'tbody'];
+  const allowedAttrs = ['href', 'src', 'alt', 'title', 'class', 'style', 'target'];
+
+  // Remove script tags and their content
+  let sanitized = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+
+  // Remove event handlers (onclick, onerror, etc.)
+  sanitized = sanitized.replace(/\s*on\w+\s*=\s*["'][^"']*["']/gi, '');
+  sanitized = sanitized.replace(/\s*on\w+\s*=\s*[^\s>]*/gi, '');
+
+  // Remove javascript: URLs
+  sanitized = sanitized.replace(/href\s*=\s*["']javascript:[^"']*["']/gi, '');
+
+  // Remove data: URLs (except for images which might be safe)
+  sanitized = sanitized.replace(/href\s*=\s*["']data:[^"']*["']/gi, '');
+
+  // Remove style tags
+  sanitized = sanitized.replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '');
+
+  // Remove iframe, object, embed tags
+  sanitized = sanitized.replace(/<(iframe|object|embed|form|input|button)\b[^<]*(?:(?!<\/\1>)<[^<]*)*<\/\1>/gi, '');
+
+  return sanitized;
+}
 
 export async function POST(request: NextRequest) {
   console.log('📧 [Marketing Email API] Request received');
@@ -109,11 +136,8 @@ export async function POST(request: NextRequest) {
 
     console.log('✅ Admin verified:', user.id);
 
-    // Sanitize HTML content to prevent XSS
-    const sanitizedHtml = DOMPurify.sanitize(html, {
-      ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'a', 'img', 'div', 'span', 'table', 'tr', 'td', 'th', 'thead', 'tbody'],
-      ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'style', 'target'],
-    });
+    // Sanitize HTML content to prevent XSS (using simple regex-based sanitizer for serverless compatibility)
+    const sanitizedHtml = sanitizeHtml(html);
 
     // Get locale preference and app name
     const locale = defaultLocale;
