@@ -11,6 +11,7 @@ import {
 } from '@/lib/admin';
 import { useAuth } from '@/components/AuthProvider';
 import { formatDateTime } from '@/lib/dateFormat';
+import { supabase } from '@/lib/supabase';
 
 export default function BetaInvitesPage() {
   const { user } = useAuth();
@@ -26,6 +27,13 @@ export default function BetaInvitesPage() {
   const [email, setEmail] = useState('');
   const [invitedBy, setInvitedBy] = useState('');
   const [notes, setNotes] = useState('');
+
+  // Marketing email state
+  const [showMarketingForm, setShowMarketingForm] = useState(false);
+  const [emailSubject, setEmailSubject] = useState('');
+  const [emailHtml, setEmailHtml] = useState('');
+  const [recipientFilter, setRecipientFilter] = useState('all');
+  const [sendingEmail, setSendingEmail] = useState(false);
 
   useEffect(() => {
     loadInvites();
@@ -102,6 +110,94 @@ export default function BetaInvitesPage() {
     }
   }
 
+  async function handleSendMarketingEmail(e: React.FormEvent) {
+    e.preventDefault();
+
+    if (!user?.id) {
+      setError(t('mustBeLoggedIn'));
+      return;
+    }
+
+    if (!emailSubject || !emailHtml) {
+      setError(t('marketingEmail.errorSend'));
+      return;
+    }
+
+    // Calculate recipient count for confirmation
+    let recipientCount = 0;
+    switch (recipientFilter) {
+      case 'all':
+        recipientCount = invites.length;
+        break;
+      case 'approved':
+        recipientCount = invites.filter((i) => i.approved).length;
+        break;
+      case 'approved_not_used':
+        recipientCount = invites.filter((i) => i.approved && !i.used).length;
+        break;
+      case 'used':
+        recipientCount = invites.filter((i) => i.used).length;
+        break;
+      case 'pending':
+        recipientCount = invites.filter((i) => !i.approved && !i.used).length;
+        break;
+    }
+
+    if (recipientCount === 0) {
+      setError(t('marketingEmail.noRecipientsError'));
+      return;
+    }
+
+    const confirmMessage = t('marketingEmail.confirmSend', { count: recipientCount });
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+
+    setSendingEmail(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      // Get the current session token
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        setError('You must be logged in to send marketing emails');
+        setSendingEmail(false);
+        return;
+      }
+
+      const response = await fetch('/api/send-marketing-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({
+          subject: emailSubject,
+          html: emailHtml,
+          recipientFilter,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || t('marketingEmail.errorSend'));
+      }
+
+      setSuccess(t('marketingEmail.successSent', { count: data.recipientCount }));
+      setEmailSubject('');
+      setEmailHtml('');
+      setRecipientFilter('all');
+      setShowMarketingForm(false);
+    } catch (err: any) {
+      setError(err.message || t('marketingEmail.errorSend'));
+      console.error('Error sending marketing email:', err);
+    } finally {
+      setSendingEmail(false);
+    }
+  }
+
   return (
     <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -111,12 +207,26 @@ export default function BetaInvitesPage() {
             {t('subtitle')}
           </p>
         </div>
-        <button
-          onClick={() => setShowAddForm(!showAddForm)}
-          className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-border-focus focus:ring-offset-2 transition-colors whitespace-nowrap"
-        >
-          {showAddForm ? t('cancel') : t('addInvite')}
-        </button>
+        <div className="flex flex-col sm:flex-row gap-2">
+          <button
+            onClick={() => {
+              setShowMarketingForm(!showMarketingForm);
+              setShowAddForm(false);
+            }}
+            className="px-4 py-2 bg-info text-white rounded-md hover:bg-info-hover focus:outline-none focus:ring-2 focus:ring-border-focus focus:ring-offset-2 transition-colors whitespace-nowrap"
+          >
+            {showMarketingForm ? t('cancel') : t('marketingEmail.toggleButton')}
+          </button>
+          <button
+            onClick={() => {
+              setShowAddForm(!showAddForm);
+              setShowMarketingForm(false);
+            }}
+            className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-border-focus focus:ring-offset-2 transition-colors whitespace-nowrap"
+          >
+            {showAddForm ? t('cancel') : t('addInvite')}
+          </button>
+        </div>
       </div>
 
       {/* Success/Error Messages */}
@@ -233,6 +343,102 @@ export default function BetaInvitesPage() {
                   setEmail('');
                   setInvitedBy('');
                   setNotes('');
+                }}
+                className="w-full sm:w-auto px-4 py-2 bg-surface-2 text-text-secondary rounded-md hover:bg-surface-3 focus:outline-none focus:ring-2 focus:ring-border-focus focus:ring-offset-2 transition-colors"
+              >
+                {t('cancel')}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* Marketing Email Form */}
+      {showMarketingForm && (
+        <div className="bg-surface-background rounded-lg shadow-sm p-6 border border-border">
+          <h3 className="text-lg font-semibold text-text-primary mb-4">
+            {t('marketingEmail.title')}
+          </h3>
+          <form onSubmit={handleSendMarketingEmail} className="space-y-4">
+            <div>
+              <label
+                htmlFor="emailSubject"
+                className="block text-sm font-medium text-text-secondary mb-2"
+              >
+                {t('marketingEmail.subjectLabel')} *
+              </label>
+              <input
+                type="text"
+                id="emailSubject"
+                value={emailSubject}
+                onChange={(e) => setEmailSubject(e.target.value)}
+                required
+                className="w-full px-4 py-2 border border-border rounded-md focus:ring-2 focus:ring-border-focus focus:border-transparent text-text-primary bg-surface-background"
+                placeholder={t('marketingEmail.subjectPlaceholder')}
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="recipientFilter"
+                className="block text-sm font-medium text-text-secondary mb-2"
+              >
+                {t('marketingEmail.recipientFilterLabel')} *
+              </label>
+              <select
+                id="recipientFilter"
+                value={recipientFilter}
+                onChange={(e) => setRecipientFilter(e.target.value)}
+                className="w-full px-4 py-2 border border-border rounded-md focus:ring-2 focus:ring-border-focus focus:border-transparent text-text-primary bg-surface-background"
+              >
+                <option value="all">{t('marketingEmail.recipientFilterAll')}</option>
+                <option value="approved">{t('marketingEmail.recipientFilterApproved')}</option>
+                <option value="approved_not_used">{t('marketingEmail.recipientFilterApprovedNotUsed')}</option>
+                <option value="used">{t('marketingEmail.recipientFilterUsed')}</option>
+                <option value="pending">{t('marketingEmail.recipientFilterPending')}</option>
+              </select>
+              <p className="mt-1 text-xs text-text-muted">
+                {recipientFilter === 'all' && `${invites.length} recipients`}
+                {recipientFilter === 'approved' && `${invites.filter((i) => i.approved).length} recipients`}
+                {recipientFilter === 'approved_not_used' && `${invites.filter((i) => i.approved && !i.used).length} recipients`}
+                {recipientFilter === 'used' && `${invites.filter((i) => i.used).length} recipients`}
+                {recipientFilter === 'pending' && `${invites.filter((i) => !i.approved && !i.used).length} recipients`}
+              </p>
+            </div>
+
+            <div>
+              <label
+                htmlFor="emailHtml"
+                className="block text-sm font-medium text-text-secondary mb-2"
+              >
+                {t('marketingEmail.htmlLabel')} *
+              </label>
+              <textarea
+                id="emailHtml"
+                value={emailHtml}
+                onChange={(e) => setEmailHtml(e.target.value)}
+                required
+                rows={12}
+                className="w-full px-4 py-2 border border-border rounded-md focus:ring-2 focus:ring-border-focus focus:border-transparent text-text-primary bg-surface-background font-mono text-sm"
+                placeholder={t('marketingEmail.htmlPlaceholder')}
+              />
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button
+                type="submit"
+                disabled={sendingEmail}
+                className="w-full sm:w-auto px-4 py-2 bg-info text-white rounded-md hover:bg-info-hover focus:outline-none focus:ring-2 focus:ring-border-focus focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                {sendingEmail ? t('marketingEmail.sending') : t('marketingEmail.sendButton')}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowMarketingForm(false);
+                  setEmailSubject('');
+                  setEmailHtml('');
+                  setRecipientFilter('all');
                 }}
                 className="w-full sm:w-auto px-4 py-2 bg-surface-2 text-text-secondary rounded-md hover:bg-surface-3 focus:outline-none focus:ring-2 focus:ring-border-focus focus:ring-offset-2 transition-colors"
               >
