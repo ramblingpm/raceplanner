@@ -170,6 +170,12 @@ export default function MarketingEmailsPage() {
       return;
     }
 
+    // Check Resend BCC limit
+    if (selectedEmails.size > 50) {
+      setError(t('errorTooManyRecipients'));
+      return;
+    }
+
     const confirmMessage = t('confirmSend', { count: selectedEmails.size });
     if (!confirm(confirmMessage)) {
       return;
@@ -201,7 +207,18 @@ export default function MarketingEmailsPage() {
         }),
       });
 
-      const data = await response.json();
+      // Try to parse JSON response with better error handling
+      let data;
+      try {
+        const text = await response.text();
+        if (!text) {
+          throw new Error('Empty response from server');
+        }
+        data = JSON.parse(text);
+      } catch (parseError) {
+        console.error('Failed to parse response:', parseError);
+        throw new Error('Invalid response from server. Please check server logs.');
+      }
 
       if (!response.ok) {
         throw new Error(data.error || t('errorSend'));
@@ -211,8 +228,8 @@ export default function MarketingEmailsPage() {
       setEmailSubject('');
       setEmailHtml('');
     } catch (err: any) {
-      setError(err.message || t('errorSend'));
       console.error('Error sending marketing email:', err);
+      setError(err.message || t('errorSend'));
     } finally {
       setSendingEmail(false);
     }

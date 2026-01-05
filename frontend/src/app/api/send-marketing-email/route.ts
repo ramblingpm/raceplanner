@@ -7,11 +7,32 @@ import DOMPurify from 'isomorphic-dompurify';
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: NextRequest) {
+  console.log('📧 [Marketing Email API] Request received');
+
   try {
-    const { subject, html, recipients } = await request.json();
+    // Parse request body with better error handling
+    let requestBody;
+    try {
+      requestBody = await request.json();
+    } catch (parseError) {
+      console.error('❌ [Marketing Email API] Failed to parse request body:', parseError);
+      return NextResponse.json(
+        { error: 'Invalid request body' },
+        { status: 400 }
+      );
+    }
+
+    const { subject, html, recipients } = requestBody;
+
+    console.log('📧 [Marketing Email API] Request data:', {
+      hasSubject: !!subject,
+      hasHtml: !!html,
+      recipientCount: recipients?.length || 0
+    });
 
     // Validate input
     if (!subject || !html) {
+      console.error('❌ [Marketing Email API] Missing subject or HTML');
       return NextResponse.json(
         { error: 'Subject and HTML content are required' },
         { status: 400 }
@@ -19,8 +40,18 @@ export async function POST(request: NextRequest) {
     }
 
     if (!recipients || !Array.isArray(recipients) || recipients.length === 0) {
+      console.error('❌ [Marketing Email API] Invalid recipients array');
       return NextResponse.json(
         { error: 'Recipients array is required and must not be empty' },
+        { status: 400 }
+      );
+    }
+
+    // Check Resend BCC limit (typically 50 recipients per email)
+    if (recipients.length > 50) {
+      console.error('❌ [Marketing Email API] Too many recipients:', recipients.length);
+      return NextResponse.json(
+        { error: `Too many recipients. Maximum 50 allowed, but got ${recipients.length}. Please send in smaller batches.` },
         { status: 400 }
       );
     }
@@ -101,26 +132,35 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log(`📧 Sending marketing email to ${recipients.length} recipients by admin ${user.id}`);
+    console.log(`📧 [Marketing Email API] Sending marketing email to ${recipients.length} recipients by admin ${user.id}`);
 
     // Send emails using BCC to respect privacy
-    const emailResult = await resend.emails.send({
-      from: `${appName} <${fromEmail}>`,
-      to: fromEmail, // Send to self
-      bcc: recipients, // Use BCC for privacy
-      subject: subject,
-      html: sanitizedHtml, // Use sanitized HTML
-    });
-
-    if (emailResult.error) {
-      console.error('❌ Error sending marketing email:', emailResult.error);
+    let emailResult;
+    try {
+      emailResult = await resend.emails.send({
+        from: `${appName} <${fromEmail}>`,
+        to: fromEmail, // Send to self
+        bcc: recipients, // Use BCC for privacy
+        subject: subject,
+        html: sanitizedHtml, // Use sanitized HTML
+      });
+    } catch (resendError) {
+      console.error('❌ [Marketing Email API] Resend API threw error:', resendError);
       return NextResponse.json(
-        { error: 'Failed to send email' },
+        { error: `Email service error: ${resendError instanceof Error ? resendError.message : 'Unknown error'}` },
         { status: 500 }
       );
     }
 
-    console.log(`✅ Marketing email sent successfully to ${recipients.length} recipients`, {
+    if (emailResult.error) {
+      console.error('❌ [Marketing Email API] Resend returned error:', emailResult.error);
+      return NextResponse.json(
+        { error: `Failed to send email: ${emailResult.error.message || emailResult.error}` },
+        { status: 500 }
+      );
+    }
+
+    console.log(`✅ [Marketing Email API] Email sent successfully to ${recipients.length} recipients`, {
       emailId: emailResult.data?.id,
       adminUserId: user.id,
     });
@@ -131,9 +171,10 @@ export async function POST(request: NextRequest) {
       recipientCount: recipients.length,
     });
   } catch (error) {
-    console.error('❌ Error in send-marketing-email:', error);
+    console.error('❌ [Marketing Email API] Unexpected error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: `Internal server error: ${errorMessage}` },
       { status: 500 }
     );
   }

@@ -467,6 +467,7 @@
       "errorEmptyFields": "Ämne och e-postinnehåll krävs.",
       "errorNotLoggedIn": "Du måste vara inloggad för att skicka marknadsförings-e-post.",
       "errorNoRecipientsSelected": "Välj minst en mottagare.",
+      "errorTooManyRecipients": "För många mottagare valda. Maximalt 50 mottagare tillåtna per e-post. Avmarkera några mottagare och skicka i omgångar.",
       "confirmSend": "Är du säker på att du vill skicka detta e-postmeddelande till {count} mottagare?"
     }
   },

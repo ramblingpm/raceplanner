@@ -468,6 +468,7 @@
       "errorEmptyFields": "Subject and email content are required.",
       "errorNotLoggedIn": "You must be logged in to send marketing emails.",
       "errorNoRecipientsSelected": "Please select at least one recipient.",
+      "errorTooManyRecipients": "Too many recipients selected. Maximum 50 recipients allowed per email. Please deselect some recipients and send in batches.",
       "confirmSend": "Are you sure you want to send this email to {count} recipients?"
     }
   },
