@@ -6,11 +6,9 @@ import { defaultLocale, locales } from '@/i18n/config';
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Simple HTML sanitizer for serverless environments (avoids jsdom issues)
+// Allows safe HTML tags: p, br, strong, em, u, h1-h6, ul, ol, li, a, img, div, span, table, tr, td, th, thead, tbody
+// Allows safe attributes: href, src, alt, title, class, style, target
 function sanitizeHtml(html: string): string {
-  // Allowlist of safe tags and attributes
-  const allowedTags = ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'a', 'img', 'div', 'span', 'table', 'tr', 'td', 'th', 'thead', 'tbody'];
-  const allowedAttrs = ['href', 'src', 'alt', 'title', 'class', 'style', 'target'];
-
   // Remove script tags and their content
   let sanitized = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
 
@@ -145,15 +143,19 @@ export async function POST(request: NextRequest) {
     const messages = (await import(`../../../../messages/${validLocale}.json`)).default;
     const appName = messages.common.appName;
 
-    const fromEmail = process.env.EMAIL_FROM || 'onboarding@resend.dev';
+    const fromEmail = process.env.MARKETING_EMAIL_FROM || process.env.EMAIL_FROM || 'onboarding@resend.dev';
     const resendApiKey = process.env.RESEND_API_KEY;
 
     if (!resendApiKey) {
-      console.error('❌ RESEND_API_KEY is not configured!');
+      console.error('❌ [Marketing Email API] RESEND_API_KEY is not configured!');
       return NextResponse.json(
         { error: 'Email service not configured' },
         { status: 500 }
       );
+    }
+
+    if (!process.env.MARKETING_EMAIL_FROM) {
+      console.warn('⚠️ [Marketing Email API] MARKETING_EMAIL_FROM not set, falling back to EMAIL_FROM or default');
     }
 
     console.log(`📧 [Marketing Email API] Sending marketing email to ${recipients.length} recipients by admin ${user.id}`);
