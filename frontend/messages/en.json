@@ -65,7 +65,14 @@
     "checkEmailSentTo": "Email sent to",
     "checkEmailMessage": "We've sent a confirmation email to your inbox. Please click the link in the email to verify your account.",
     "checkSpamFolder": "If you don't see the email please check your spam or junk folder.",
-    "resendEmail": "Resend confirmation email"
+    "resendEmail": "Resend confirmation email",
+    "betaBadge": "BETA",
+    "betaSubtitle": "Race Planner is currently in beta. Sign up to be among the first to plan your perfect race!",
+    "betaFeaturesTitle": "Beta Features Include:",
+    "betaFeature1": "Race time calculations",
+    "betaFeature2": "Speed planning tools",
+    "betaFeature3": "Interactive race maps",
+    "betaFeature4": "Possibility to provide feedback and shape future features"
   },
   "home": {
     "title": "Race Planner",

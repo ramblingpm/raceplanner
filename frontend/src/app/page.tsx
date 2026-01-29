@@ -131,12 +131,15 @@ export default function HomePage() {
             >
               {t('tryCalculator')}
             </TrackedLink>
-            <Link
-              href="/beta-signup"
+            <TrackedLink
+              href="/signup"
+              eventName="cta_get_started"
+              eventLocation="home_cta_section"
+              eventData={{ cta_type: 'primary', destination: 'signup' }}
               className="w-full sm:w-auto bg-primary text-primary-foreground px-8 py-3 md:py-4 rounded-lg hover:bg-primary-hover transition-colors text-base font-semibold focus:outline-none focus:ring-2 focus:ring-border-focus focus:ring-offset-2"
             >
               {t('getStarted')}
-            </Link>
+            </TrackedLink>
             <Link
               href="/login"
               className="w-full sm:w-auto bg-surface-2 text-text-primary px-8 py-3 md:py-4 rounded-lg hover:bg-surface-3 transition-colors text-base font-semibold border border-border focus:outline-none focus:ring-2 focus:ring-border-focus focus:ring-offset-2"

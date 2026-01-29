@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { signUp, trackUserSignup } from '@/lib/auth';
@@ -11,7 +10,6 @@ import { trackFormStart, trackFormSubmit } from '@/lib/analytics';
 
 export default function SignUpPage() {
   const t = useTranslations('auth');
-  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -56,22 +54,8 @@ export default function SignUpPage() {
     trackFormSubmit('signup_form', { page: 'signup' });
 
     try {
-      // Check if email is invited (beta access)
-      const { supabase } = await import('@/lib/supabase');
-      const { data: inviteCheck, error: inviteError } = await supabase
-        .rpc('is_email_invited', { check_email: email });
-
-      if (inviteError || !inviteCheck) {
-        setError(t('betaInviteRequired'));
-        setLoading(false);
-        return;
-      }
-
       // Proceed with signup
       const { user } = await signUp(email, password);
-
-      // Mark invite as used
-      await supabase.rpc('mark_invite_used', { user_email: email });
 
       // Set cookie consent (user agreed during signup)
       const { setConsentStatus } = await import('@/lib/consent');
@@ -134,8 +118,24 @@ export default function SignUpPage() {
       <div className="flex items-center justify-center px-4 py-16">
         <div className="max-w-md w-full bg-surface-background rounded-lg shadow-xl p-8 border border-border">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-text-primary">{t('signupTitle')}</h1>
-          <p className="text-text-secondary mt-2">{t('signupSubtitle')}</p>
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary text-primary-foreground rounded-full text-xs font-semibold mb-4">
+            <span className="w-2 h-2 bg-success rounded-full animate-pulse"></span>
+            {t('betaBadge')}
+          </div>
+          <h1 className="text-3xl font-bold text-text-primary mb-3">{t('signupTitle')}</h1>
+          <p className="text-text-secondary leading-relaxed">
+            {t('betaSubtitle')}
+          </p>
+        </div>
+
+        <div className="bg-surface-1 border border-border rounded-lg p-4 mb-6">
+          <h3 className="text-sm font-semibold text-text-primary mb-2">{t('betaFeaturesTitle')}</h3>
+          <ul className="text-sm text-text-secondary space-y-1">
+            <li>✓ {t('betaFeature1')}</li>
+            <li>✓ {t('betaFeature2')}</li>
+            <li>✓ {t('betaFeature3')}</li>
+            <li>✓ {t('betaFeature4')}</li>
+          </ul>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">

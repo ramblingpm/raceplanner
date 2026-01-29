@@ -65,7 +65,14 @@
     "checkEmailSentTo": "E-post skickad till",
     "checkEmailMessage": "Vi har skickat ett bekräftelsemail till din inkorg. Klicka på länken i e-postmeddelandet för att verifiera ditt konto.",
     "checkSpamFolder": "Ser du inte e-postmeddelandet? Kontrollera din skräppost- eller skräpmapp.",
-    "resendEmail": "Skicka bekräftelsemail igen"
+    "resendEmail": "Skicka bekräftelsemail igen",
+    "betaBadge": "BETA",
+    "betaSubtitle": "Race Planner är för närvarande i beta. Registrera dig för att vara bland de första att planera ditt perfekta lopp!",
+    "betaFeaturesTitle": "Beta-funktioner inkluderar:",
+    "betaFeature1": "Beräkningar av tider",
+    "betaFeature2": "Verktyg för hastighetsplanering",
+    "betaFeature3": "Interaktiva kartor",
+    "betaFeature4": "Möjlighet att ge feedback och påverka framtida funktioner"
   },
   "home": {
     "title": "Träna smart, cykla starkt och klara ditt lopp",
