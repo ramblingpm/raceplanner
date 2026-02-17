@@ -75,7 +75,7 @@ function WizardContent({ onClose, onComplete }: { onClose: () => void; onComplet
       <div className="flex flex-col h-full">
         {/* Header */}
         <div className="flex-shrink-0 border-b border-border bg-surface-background">
-          <div className="px-4 py-4 sm:px-6">
+          <div className="px-3 py-3 sm:px-4 sm:py-4 md:px-6">
             <div className="flex items-center justify-between">
               {/* Back/Close button */}
               <button
@@ -84,32 +84,32 @@ function WizardContent({ onClose, onComplete }: { onClose: () => void; onComplet
                 aria-label={currentStep > 1 ? 'Go back' : 'Close wizard'}
               >
                 {currentStep > 1 ? (
-                  <ArrowLeftIcon className="w-6 h-6 text-text-secondary" />
+                  <ArrowLeftIcon className="w-5 h-5 sm:w-6 sm:h-6 text-text-secondary" />
                 ) : (
-                  <XMarkIcon className="w-6 h-6 text-text-secondary" />
+                  <XMarkIcon className="w-5 h-5 sm:w-6 sm:h-6 text-text-secondary" />
                 )}
               </button>
 
               {/* Title - Desktop */}
-              <h2 className="hidden md:block text-xl font-semibold text-text-primary">
+              <h2 className="hidden sm:block text-base sm:text-lg md:text-xl font-semibold text-text-primary">
                 {state.isEditing ? t('editPlan') : t('createPlan')}
               </h2>
 
               {/* Close button - Desktop only */}
               <button
                 onClick={handleClose}
-                className="hidden md:block p-2 hover:bg-surface-1 rounded-lg transition-colors"
+                className="hidden sm:block p-2 hover:bg-surface-1 rounded-lg transition-colors"
                 aria-label="Close wizard"
               >
-                <XMarkIcon className="w-6 h-6 text-text-secondary" />
+                <XMarkIcon className="w-5 h-5 sm:w-6 sm:h-6 text-text-secondary" />
               </button>
 
               {/* Spacer for mobile */}
-              <div className="md:hidden w-6" />
+              <div className="sm:hidden w-6" />
             </div>
 
             {/* Step Indicator */}
-            <div className="mt-4">
+            <div className="mt-3 sm:mt-4">
               <WizardStepIndicator />
             </div>
           </div>
@@ -123,24 +123,24 @@ function WizardContent({ onClose, onComplete }: { onClose: () => void; onComplet
 
       {/* Confirmation Modal */}
       {showConfirmClose && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
-          <div className="bg-surface-background rounded-lg shadow-xl max-w-sm w-full p-6 border border-border">
-            <h3 className="text-lg font-semibold text-text-primary mb-2">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black bg-opacity-50">
+          <div className="bg-surface-background rounded-t-2xl sm:rounded-lg shadow-xl max-w-sm w-full p-5 sm:p-6 border-t sm:border border-border">
+            <h3 className="text-base sm:text-lg font-semibold text-text-primary mb-2">
               {t('discardChangesTitle')}
             </h3>
-            <p className="text-sm text-text-secondary mb-6">
+            <p className="text-sm text-text-secondary mb-5 sm:mb-6">
               {t('discardChangesMessage')}
             </p>
             <div className="flex gap-3">
               <button
                 onClick={handleCancelDiscard}
-                className="flex-1 px-4 py-2 bg-surface-2 text-text-primary rounded-lg hover:bg-surface-3 transition-colors font-medium border border-border"
+                className="flex-1 px-4 py-2.5 sm:py-2 bg-surface-2 text-text-primary rounded-lg hover:bg-surface-3 transition-colors font-medium border border-border"
               >
                 {t('keepEditing')}
               </button>
               <button
                 onClick={handleConfirmDiscard}
-                className="flex-1 px-4 py-2 bg-error text-white rounded-lg hover:opacity-90 transition-colors font-medium"
+                className="flex-1 px-4 py-2.5 sm:py-2 bg-error text-white rounded-lg hover:opacity-90 transition-colors font-medium"
               >
                 {t('closeAndDiscard')}
               </button>
@@ -173,12 +173,12 @@ export default function WizardModal({ isOpen, onClose, onComplete, initialRace, 
 
   return (
     <WizardProvider initialRace={initialRace} editingCalculation={editingCalculation}>
-      {/* Mobile: Full-screen */}
+      {/* Mobile: Full-screen (< 768px) */}
       <div className="md:hidden fixed inset-0 z-[60] bg-surface-background">
         <WizardContent onClose={onClose} onComplete={onComplete} />
       </div>
 
-      {/* Desktop: Centered modal with backdrop */}
+      {/* Desktop: Centered modal with backdrop (768px+) */}
       <div className="hidden md:block">
         {/* Backdrop */}
         <div

@@ -23,8 +23,8 @@ export default function AuthenticatedLayout({ children }: AuthenticatedLayoutPro
 
       {/* Main content */}
       <main className="flex-1 bg-surface-background">
-        {/* Add padding on mobile to account for the floating menu button */}
-        <div className="lg:p-0">
+        {/* Add bottom padding on mobile for bottom navigation bar */}
+        <div className="pb-20 lg:pb-0">
           {children}
         </div>
       </main>

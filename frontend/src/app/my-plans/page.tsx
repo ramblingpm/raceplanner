@@ -174,29 +174,29 @@ export default function MyPlansPage() {
       <AuthenticatedLayout>
         <Header />
         <div className="min-h-screen bg-surface-background">
-          <main className="container mx-auto px-4 py-8">
+          <main className="px-4 sm:px-6 py-4 sm:py-6 md:py-8 mx-auto max-w-6xl">
             {/* Page Header */}
-            <div className="mb-8">
-              <h1 className="text-3xl md:text-4xl font-bold text-text-primary mb-2">
+            <div className="mb-5 sm:mb-8">
+              <h1 className="text-2xl xs:text-3xl md:text-4xl font-bold text-text-primary mb-1 sm:mb-2">
                 {t('title')}
               </h1>
-              <p className="text-lg text-text-secondary">{t('subtitle')}</p>
+              <p className="text-base sm:text-lg text-text-secondary">{t('subtitle')}</p>
             </div>
 
             {loading ? (
-              <div className="text-center py-12">
-                <div className="text-lg text-text-secondary">{t('loading')}</div>
+              <div className="text-center py-8 sm:py-12">
+                <div className="text-base sm:text-lg text-text-secondary">{t('loading')}</div>
               </div>
             ) : Object.keys(groupedPlans).length === 0 ? (
-              <div className="bg-surface-1 rounded-lg shadow-md p-12 text-center border border-border">
+              <div className="bg-surface-1 rounded-xl sm:rounded-lg shadow-md p-8 sm:p-12 text-center border border-border">
                 <div className="max-w-md mx-auto">
-                  <h3 className="text-xl font-semibold text-text-primary mb-3">
+                  <h3 className="text-lg sm:text-xl font-semibold text-text-primary mb-2 sm:mb-3">
                     {t('noPlans')}
                   </h3>
-                  <p className="text-text-secondary mb-6">{t('noPlansDescription')}</p>
+                  <p className="text-sm sm:text-base text-text-secondary mb-5 sm:mb-6">{t('noPlansDescription')}</p>
                   <Link
                     href="/available-races"
-                    className="inline-block bg-primary text-primary-foreground px-6 py-3 rounded-lg hover:bg-primary-hover transition-colors font-semibold"
+                    className="inline-block bg-primary text-primary-foreground px-6 py-3 rounded-lg hover:bg-primary-hover transition-colors font-semibold text-sm sm:text-base"
                   >
                     {t('goToAvailableRaces')}
                   </Link>
@@ -204,12 +204,12 @@ export default function MyPlansPage() {
               </div>
             ) : (
               <>
-                {/* View Toggle */}
-                <div className="flex justify-end mb-6">
+                {/* View Toggle - cards default on mobile, show toggle on sm+ */}
+                <div className="flex justify-end mb-4 sm:mb-6">
                   <div className="inline-flex rounded-lg border border-border bg-surface-1 p-1">
                     <button
                       onClick={() => setViewMode('cards')}
-                      className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                      className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-md text-sm font-medium transition-colors ${
                         viewMode === 'cards'
                           ? 'bg-primary text-primary-foreground'
                           : 'text-text-secondary hover:text-text-primary'
@@ -219,7 +219,7 @@ export default function MyPlansPage() {
                     </button>
                     <button
                       onClick={() => setViewMode('table')}
-                      className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                      className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-md text-sm font-medium transition-colors hidden sm:block ${
                         viewMode === 'table'
                           ? 'bg-primary text-primary-foreground'
                           : 'text-text-secondary hover:text-text-primary'
@@ -232,12 +232,12 @@ export default function MyPlansPage() {
 
                 {viewMode === 'cards' ? (
                   /* Netflix-Style Card View */
-                  <div className="space-y-8">
+                  <div className="space-y-6 sm:space-y-8">
                     {Object.entries(groupedPlans).map(([raceId, { race, plans }]) => (
                       <div key={raceId}>
                         {/* Race Header */}
-                        <div className="mb-4">
-                          <h2 className="text-2xl font-bold text-text-primary mb-1">
+                        <div className="mb-3 sm:mb-4">
+                          <h2 className="text-xl sm:text-2xl font-bold text-text-primary mb-0.5 sm:mb-1">
                             {race?.name || 'Unknown Race'}
                           </h2>
                           <p className="text-sm text-text-muted">
@@ -246,7 +246,7 @@ export default function MyPlansPage() {
                         </div>
 
                         {/* Cards Grid */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                           {plans.map((plan) => (
                             <RacePlanCard
                               key={plan.id}
@@ -453,12 +453,12 @@ export default function MyPlansPage() {
 
             {/* Delete Confirmation Modal */}
             {showDeleteConfirm && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
-                <div className="bg-surface-background rounded-lg shadow-xl max-w-sm w-full p-6 border border-border">
-                  <h3 className="text-lg font-semibold text-text-primary mb-2">
+              <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black bg-opacity-50">
+                <div className="bg-surface-background rounded-t-2xl sm:rounded-lg shadow-xl max-w-sm w-full p-5 sm:p-6 border-t sm:border border-border">
+                  <h3 className="text-base sm:text-lg font-semibold text-text-primary mb-2">
                     {t('deleteConfirmTitle')}
                   </h3>
-                  <p className="text-sm text-text-secondary mb-6">
+                  <p className="text-sm text-text-secondary mb-5 sm:mb-6">
                     {t('deleteConfirmMessage')}
                   </p>
                   <div className="flex gap-3">
@@ -467,13 +467,13 @@ export default function MyPlansPage() {
                         setShowDeleteConfirm(false);
                         setPlanToDelete(null);
                       }}
-                      className="flex-1 px-4 py-2 bg-surface-2 text-text-primary rounded-lg hover:bg-surface-3 transition-colors font-medium border border-border"
+                      className="flex-1 px-4 py-2.5 sm:py-2 bg-surface-2 text-text-primary rounded-lg hover:bg-surface-3 transition-colors font-medium border border-border"
                     >
                       {tCommon('cancel')}
                     </button>
                     <button
                       onClick={confirmDelete}
-                      className="flex-1 px-4 py-2 bg-error text-white rounded-lg hover:opacity-90 transition-colors font-medium"
+                      className="flex-1 px-4 py-2.5 sm:py-2 bg-error text-white rounded-lg hover:opacity-90 transition-colors font-medium"
                     >
                       {tCommon('delete')}
                     </button>

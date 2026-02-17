@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/components/AuthProvider';
@@ -18,6 +18,13 @@ const inter = Inter({
 
 const appName = process.env.NEXT_PUBLIC_APP_NAME || 'Race Planner';
 const appDescription = process.env.NEXT_PUBLIC_APP_DESCRIPTION || 'Calculate your race times and required speeds for optimal performance';
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  viewportFit: 'cover',
+};
 
 export const metadata: Metadata = generateSEOMetadata({
   title: 'Race Planner - Planera ditt lopp med precision',

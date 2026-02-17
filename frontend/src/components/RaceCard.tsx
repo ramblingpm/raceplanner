@@ -44,12 +44,12 @@ export default function RaceCard({ race, onSelectRace, onViewDetails, comingSoon
 
   return (
     <div
-      className={`bg-surface-background rounded-lg shadow-lg overflow-hidden transition-shadow border border-border ${
-        comingSoon ? '' : 'hover:shadow-xl'
+      className={`bg-surface-background rounded-xl sm:rounded-lg shadow-lg overflow-hidden transition-shadow border border-border tap-transparent ${
+        comingSoon ? '' : 'hover:shadow-xl active:scale-[0.98] sm:active:scale-100'
       }`}
     >
-      {/* Map Preview - Fixed height for consistency */}
-      <div className="relative h-40 overflow-hidden bg-surface-1">
+      {/* Map Preview - Responsive height */}
+      <div className="relative h-36 xs:h-40 sm:h-40 overflow-hidden bg-surface-1">
         {race.route_geometry?.coordinates ? (
           <>
             <div className="absolute inset-0 z-0 flex items-center justify-center">
@@ -64,7 +64,7 @@ export default function RaceCard({ race, onSelectRace, onViewDetails, comingSoon
             {comingSoon ? (
               <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/50 via-black/45 to-black/60 backdrop-blur-[1px] flex items-center justify-center pointer-events-none">
                 <div className="text-center px-4">
-                  <div className="bg-info text-white px-5 py-2.5 rounded-lg font-bold text-base mb-2 shadow-xl inline-block">
+                  <div className="bg-info text-white px-4 py-2 sm:px-5 sm:py-2.5 rounded-lg font-bold text-sm sm:text-base mb-2 shadow-xl inline-block">
                     🔜 {t('comingSoonBadge')}
                   </div>
                   <p className="text-white text-xs font-medium">{t('comingSoonDescription')}</p>
@@ -73,7 +73,7 @@ export default function RaceCard({ race, onSelectRace, onViewDetails, comingSoon
             ) : (
               <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/60 via-black/30 to-transparent flex items-center justify-center pointer-events-none">
                 <div className="text-center text-white">
-                  <div className="text-lg font-semibold drop-shadow-lg">
+                  <div className="text-base sm:text-lg font-semibold drop-shadow-lg">
                     {race.distance_km} km
                   </div>
                 </div>
@@ -84,7 +84,7 @@ export default function RaceCard({ race, onSelectRace, onViewDetails, comingSoon
           // Fallback if no route geometry
           <div className="h-full bg-gradient-to-br from-primary to-primary-hover flex items-center justify-center">
             <div className="text-center text-white">
-              <div className="text-lg font-semibold">
+              <div className="text-base sm:text-lg font-semibold">
                 {race.distance_km} km
               </div>
             </div>
@@ -93,20 +93,20 @@ export default function RaceCard({ race, onSelectRace, onViewDetails, comingSoon
       </div>
 
       {/* Card Content */}
-      <div className="p-6 bg-surface-background">
-        <h3 className="text-xl font-bold text-text-primary mb-2">
+      <div className="p-4 sm:p-6 bg-surface-background">
+        <h3 className="text-lg sm:text-xl font-bold text-text-primary mb-1.5 sm:mb-2">
           {race.name}
         </h3>
 
         {/* Distance */}
-        <div className="flex items-center gap-2 text-text-secondary mb-2">
+        <div className="flex items-center gap-2 text-text-secondary mb-1.5 sm:mb-2">
           <span className="text-sm font-medium">{t('distance')}:</span>
           <span className="text-sm">{race.distance_km} km</span>
         </div>
 
         {/* Elevation gain if available */}
         {race.elevation_gain_m && (
-          <div className="flex items-center gap-2 text-text-secondary mb-2">
+          <div className="flex items-center gap-2 text-text-secondary mb-1.5 sm:mb-2">
             <span className="text-sm font-medium">{t('elevationGain')}:</span>
             <span className="text-sm">{race.elevation_gain_m} m</span>
           </div>
@@ -114,18 +114,18 @@ export default function RaceCard({ race, onSelectRace, onViewDetails, comingSoon
 
         {/* Race dates if available */}
         {formatDateRange() && (
-          <div className="flex items-center gap-2 text-text-secondary mb-4">
+          <div className="flex items-center gap-2 text-text-secondary mb-3 sm:mb-4">
             <span className="text-sm font-medium">{t('raceDates')}:</span>
             <span className="text-sm">{formatDateRange()}</span>
           </div>
         )}
 
         {/* CTA Buttons */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-2 sm:gap-3">
           <button
             onClick={() => !comingSoon && onViewDetails(race)}
             disabled={comingSoon}
-            className={`w-full px-4 py-2.5 rounded-lg font-semibold text-sm border ${
+            className={`w-full px-3 py-2.5 sm:px-4 rounded-lg font-semibold text-sm border ${
               comingSoon
                 ? 'bg-surface-1 text-text-muted border-border cursor-not-allowed opacity-50'
                 : 'bg-surface-2 text-text-primary border-border hover:bg-surface-3 transition-colors'
@@ -136,7 +136,7 @@ export default function RaceCard({ race, onSelectRace, onViewDetails, comingSoon
           <button
             onClick={() => !comingSoon && onSelectRace(race)}
             disabled={comingSoon}
-            className={`w-full px-4 py-2.5 rounded-lg font-semibold text-sm ${
+            className={`w-full px-3 py-2.5 sm:px-4 rounded-lg font-semibold text-sm ${
               comingSoon
                 ? 'bg-surface-1 text-text-muted cursor-not-allowed opacity-50'
                 : 'bg-primary text-primary-foreground hover:bg-primary-hover transition-colors'

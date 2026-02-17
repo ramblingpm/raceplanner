@@ -81,27 +81,26 @@ export default function SignUpPage() {
     return (
       <div className="min-h-screen bg-surface-1">
         <Header />
-        <div className="flex items-center justify-center px-4 py-16">
-          <div className="max-w-md w-full bg-surface-background rounded-lg shadow-xl p-8 border border-border">
+        <div className="flex items-center justify-center px-4 py-8 sm:py-16">
+          <div className="max-w-md w-full bg-surface-background rounded-xl sm:rounded-lg shadow-xl p-5 sm:p-8 border border-border">
             <div className="text-center mb-6">
               <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-success-subtle mb-4">
                 <svg className="h-6 w-6 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h1 className="text-3xl font-bold text-text-primary mb-2">{t('checkEmailTitle')}</h1>
-              <p className="text-text-secondary">{t('checkEmailMessage')}</p>
+              <h1 className="text-2xl sm:text-3xl font-bold text-text-primary mb-2">{t('checkEmailTitle')}</h1>
+              <p className="text-sm sm:text-base text-text-secondary">{t('checkEmailMessage')}</p>
             </div>
 
-            <div className="bg-info-subtle border border-info rounded-md p-4 mb-6">
+            <div className="bg-info-subtle border border-info rounded-md p-3 sm:p-4 mb-6">
               <p className="text-sm text-info-foreground font-medium mb-1">{t('checkEmailSentTo')}: {signupEmail}</p>
-
             </div>
 
-              <div className="text-center mb-6"><p className="text-text-secondary">{t('checkSpamFolder')}</p></div>
+            <div className="text-center mb-6"><p className="text-sm sm:text-base text-text-secondary">{t('checkSpamFolder')}</p></div>
             <Link
               href="/login"
-              className="block w-full text-center bg-primary text-primary-foreground py-2 px-4 rounded-md hover:bg-primary-hover transition-colors"
+              className="block w-full text-center bg-primary text-primary-foreground py-3 sm:py-2 px-4 rounded-lg sm:rounded-md hover:bg-primary-hover transition-colors font-medium"
             >
               {t('backToLogin')}
             </Link>
@@ -115,20 +114,20 @@ export default function SignUpPage() {
     <div className="min-h-screen bg-surface-1">
       <PageViewTracker pageName="Signup Page" />
       <Header />
-      <div className="flex items-center justify-center px-4 py-16">
-        <div className="max-w-md w-full bg-surface-background rounded-lg shadow-xl p-8 border border-border">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary text-primary-foreground rounded-full text-xs font-semibold mb-4">
+      <div className="flex items-center justify-center px-4 py-6 sm:py-16">
+        <div className="max-w-md w-full bg-surface-background rounded-xl sm:rounded-lg shadow-xl p-5 sm:p-8 border border-border">
+        <div className="text-center mb-6 sm:mb-8">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary text-primary-foreground rounded-full text-xs font-semibold mb-3 sm:mb-4">
             <span className="w-2 h-2 bg-success rounded-full animate-pulse"></span>
             {t('betaBadge')}
           </div>
-          <h1 className="text-3xl font-bold text-text-primary mb-3">{t('signupTitle')}</h1>
-          <p className="text-text-secondary leading-relaxed">
+          <h1 className="text-2xl sm:text-3xl font-bold text-text-primary mb-2 sm:mb-3">{t('signupTitle')}</h1>
+          <p className="text-sm sm:text-base text-text-secondary leading-relaxed">
             {t('betaSubtitle')}
           </p>
         </div>
 
-        <div className="bg-surface-1 border border-border rounded-lg p-4 mb-6">
+        <div className="bg-surface-1 border border-border rounded-lg p-3 sm:p-4 mb-5 sm:mb-6">
           <h3 className="text-sm font-semibold text-text-primary mb-2">{t('betaFeaturesTitle')}</h3>
           <ul className="text-sm text-text-secondary space-y-1">
             <li>✓ {t('betaFeature1')}</li>
@@ -138,7 +137,7 @@ export default function SignUpPage() {
           </ul>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
           {error && (
             <div className="bg-error-subtle text-error-foreground p-3 rounded-md text-sm">
               {error}
@@ -159,7 +158,7 @@ export default function SignUpPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               onFocus={handleFormStart}
-              className="w-full px-4 py-2 border border-border rounded-md focus:ring-2 focus:ring-border-focus focus:border-transparent text-text-primary bg-surface-background"
+              className="w-full px-4 py-3 sm:py-2 border border-border rounded-lg sm:rounded-md focus:ring-2 focus:ring-border-focus focus:border-transparent text-text-primary bg-surface-background"
               placeholder={t('emailPlaceholder')}
             />
           </div>
@@ -177,7 +176,7 @@ export default function SignUpPage() {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border border-border rounded-md focus:ring-2 focus:ring-border-focus focus:border-transparent text-text-primary bg-surface-background"
+              className="w-full px-4 py-3 sm:py-2 border border-border rounded-lg sm:rounded-md focus:ring-2 focus:ring-border-focus focus:border-transparent text-text-primary bg-surface-background"
               placeholder={t('passwordPlaceholder')}
             />
           </div>
@@ -195,7 +194,7 @@ export default function SignUpPage() {
               required
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full px-4 py-2 border border-border rounded-md focus:ring-2 focus:ring-border-focus focus:border-transparent text-text-primary bg-surface-background"
+              className="w-full px-4 py-3 sm:py-2 border border-border rounded-lg sm:rounded-md focus:ring-2 focus:ring-border-focus focus:border-transparent text-text-primary bg-surface-background"
               placeholder={t('passwordPlaceholder')}
             />
           </div>
@@ -253,7 +252,7 @@ export default function SignUpPage() {
           <button
             type="submit"
             disabled={loading || !acceptedTerms || !acceptedPrivacy}
-            className="w-full bg-primary text-primary-foreground py-2 px-4 rounded-md hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-border-focus focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="w-full bg-primary text-primary-foreground py-3 sm:py-2 px-4 rounded-lg sm:rounded-md hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-border-focus focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
           >
             {loading ? t('signingUp') : t('signupButton')}
           </button>

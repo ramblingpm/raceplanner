@@ -5,13 +5,104 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  color: rgb(var(--color-text-primary));
-  background-color: rgb(var(--color-surface-background));
+@layer base {
+  /* Mobile-first base styles optimized for iPhone 13 (390x844) */
+  html {
+    /* Prevent font-size inflation on rotation */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    /* Smooth scrolling */
+    scroll-behavior: smooth;
+    /* Safe area insets for notched devices */
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+
+  body {
+    color: rgb(var(--color-text-primary));
+    background-color: rgb(var(--color-surface-background));
+    /* Prevent horizontal overflow on mobile */
+    overflow-x: hidden;
+    /* Optimize text rendering for mobile */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Ensure minimum touch target sizes (44x44px per Apple HIG) */
+  button,
+  a,
+  [role="button"],
+  input[type="checkbox"],
+  input[type="radio"],
+  select {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Exceptions for inline links in text blocks */
+  p a,
+  li a,
+  span a,
+  label a {
+    min-height: auto;
+    min-width: auto;
+  }
+
+  /* Better form input sizing on mobile */
+  input,
+  textarea,
+  select {
+    font-size: 16px; /* Prevents iOS zoom on focus */
+  }
+}
+
+@layer components {
+  /* Mobile-optimized container */
+  .container-mobile {
+    @apply w-full px-4 mx-auto;
+    max-width: 100%;
+  }
+
+  @screen xs {
+    .container-mobile {
+      max-width: 475px;
+    }
+  }
+
+  @screen sm {
+    .container-mobile {
+      @apply px-6;
+      max-width: 640px;
+    }
+  }
+
+  /* Touch-friendly card component */
+  .touch-card {
+    @apply p-4 rounded-xl;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Safe area bottom padding for fixed bottom elements */
+  .safe-bottom {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* Hide scrollbar utility for mobile horizontal scrolling */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Tap highlight removal */
+  .tap-transparent {
+    -webkit-tap-highlight-color: transparent;
   }
 }

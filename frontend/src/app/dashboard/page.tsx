@@ -104,28 +104,28 @@ export default function DashboardPage() {
       <AuthenticatedLayout>
         <Header />
         <div className="min-h-screen bg-surface-1">
-          <main className="container mx-auto px-4 py-8">
+          <main className="px-4 sm:px-6 py-4 sm:py-6 md:py-8 mx-auto max-w-4xl">
           {loading ? (
-            <div className="text-center py-12">
-              <div className="text-lg text-text-secondary">{t('loadingRaces')}</div>
+            <div className="text-center py-8 sm:py-12">
+              <div className="text-base sm:text-lg text-text-secondary">{t('loadingRaces')}</div>
             </div>
           ) : races.length === 0 ? (
-            <div className="bg-surface-background rounded-lg shadow-md p-8 text-center border border-border">
+            <div className="bg-surface-background rounded-lg shadow-md p-6 sm:p-8 text-center border border-border">
               <p className="text-text-secondary">{t('noRaces')}</p>
             </div>
           ) : (
             <>
               {/* Welcome Section */}
-              <div className="text-center mb-12">
-                <h1 className="text-4xl md:text-5xl font-bold text-text-primary mb-4">
+              <div className="text-center mb-6 sm:mb-8 md:mb-12">
+                <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary mb-2 sm:mb-4">
                   {t('welcome')} {tCommon('appName')}
                 </h1>
-                <p className="text-xl text-text-secondary mb-6">{t('welcomeSubtitle')}</p>
+                <p className="text-base sm:text-lg md:text-xl text-text-secondary mb-4 sm:mb-6">{t('welcomeSubtitle')}</p>
 
                 {/* Create Plan Button */}
                 <button
                   onClick={handleOpenWizard}
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary-hover transition-colors shadow-md hover:shadow-lg"
+                  className="inline-flex items-center gap-2 px-5 py-3 sm:px-6 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary-hover transition-colors shadow-md hover:shadow-lg text-sm sm:text-base"
                 >
                   <PlusIcon className="w-5 h-5" />
                   {t('addPlan')}
@@ -133,25 +133,25 @@ export default function DashboardPage() {
               </div>
 
               {/* Race Carousel */}
-              <div className="mb-12">
-                <h2 className="text-2xl font-bold mb-6 text-text-primary">
+              <div className="mb-8 sm:mb-12">
+                <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-text-primary">
                   {t('availableRaces')}
                 </h2>
 
                 <div className="relative max-w-2xl mx-auto">
-                  {/* Left Arrow */}
+                  {/* Left Arrow - positioned inside card on mobile */}
                   {races.length > 1 && (
                     <button
                       onClick={handlePreviousRace}
-                      className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 sm:-translate-x-12 z-20 p-2 sm:p-3 bg-surface-background border border-border rounded-full shadow-lg hover:bg-surface-1 transition-colors"
+                      className="absolute left-1 sm:left-0 top-1/2 -translate-y-1/2 sm:-translate-x-12 z-20 p-2 sm:p-3 bg-surface-background/90 sm:bg-surface-background border border-border rounded-full shadow-lg hover:bg-surface-1 transition-colors"
                       aria-label="Previous race"
                     >
-                      <ChevronLeftIcon className="w-6 h-6 sm:w-8 sm:h-8 text-text-primary" />
+                      <ChevronLeftIcon className="w-5 h-5 sm:w-8 sm:h-8 text-text-primary" />
                     </button>
                   )}
 
                   {/* Race Card */}
-                  <div className="overflow-hidden">
+                  <div className="overflow-hidden rounded-lg">
                     <div
                       className="transition-transform duration-300 ease-in-out"
                       style={{ transform: `translateX(-${currentRaceIndex * 100}%)` }}
@@ -160,14 +160,14 @@ export default function DashboardPage() {
                         {races.map((race) => (
                           <div
                             key={race.id}
-                            className="w-full flex-shrink-0 px-2"
+                            className="w-full flex-shrink-0 px-0 sm:px-2"
                           >
                             <div
-                              className="bg-surface-background rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer border border-border"
+                              className="bg-surface-background rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer border border-border tap-transparent"
                               onClick={() => handleSelectRace(race)}
                             >
                               {/* Map Header */}
-                              <div className="relative h-64 overflow-hidden">
+                              <div className="relative h-48 xs:h-56 sm:h-64 overflow-hidden">
                                 {race.route_geometry?.coordinates ? (
                                   <>
                                     <div className="absolute inset-0">
@@ -179,8 +179,8 @@ export default function DashboardPage() {
                                     {/* Overlay with bike icon and distance */}
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent flex items-center justify-center pointer-events-none">
                                       <div className="text-center text-white">
-                                        <div className="text-5xl mb-2">🚴</div>
-                                        <div className="text-lg font-semibold drop-shadow-lg">
+                                        <div className="text-4xl sm:text-5xl mb-1 sm:mb-2">🚴</div>
+                                        <div className="text-base sm:text-lg font-semibold drop-shadow-lg">
                                           {race.distance_km} km
                                         </div>
                                       </div>
@@ -189,8 +189,8 @@ export default function DashboardPage() {
                                 ) : (
                                   <div className="h-full bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
                                     <div className="text-center text-white">
-                                      <div className="text-5xl mb-2">🚴</div>
-                                      <div className="text-lg font-semibold">
+                                      <div className="text-4xl sm:text-5xl mb-1 sm:mb-2">🚴</div>
+                                      <div className="text-base sm:text-lg font-semibold">
                                         {race.distance_km} km
                                       </div>
                                     </div>
@@ -199,14 +199,13 @@ export default function DashboardPage() {
                               </div>
 
                               {/* Card Content */}
-                              <div className="p-6 bg-surface-background">
-                                <h3 className="text-xl font-bold text-text-primary mb-2">
+                              <div className="p-4 sm:p-6 bg-surface-background">
+                                <h3 className="text-lg sm:text-xl font-bold text-text-primary mb-1 sm:mb-2">
                                   {race.name}
                                 </h3>
-                                <p className="text-text-secondary mb-4">
+                                <p className="text-sm sm:text-base text-text-secondary">
                                   {t('distance')}: {race.distance_km} km
                                 </p>
-
                               </div>
                             </div>
                           </div>
@@ -215,28 +214,28 @@ export default function DashboardPage() {
                     </div>
                   </div>
 
-                  {/* Right Arrow */}
+                  {/* Right Arrow - positioned inside card on mobile */}
                   {races.length > 1 && (
                     <button
                       onClick={handleNextRace}
-                      className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 sm:translate-x-12 z-20 p-2 sm:p-3 bg-surface-background border border-border rounded-full shadow-lg hover:bg-surface-1 transition-colors"
+                      className="absolute right-1 sm:right-0 top-1/2 -translate-y-1/2 sm:translate-x-12 z-20 p-2 sm:p-3 bg-surface-background/90 sm:bg-surface-background border border-border rounded-full shadow-lg hover:bg-surface-1 transition-colors"
                       aria-label="Next race"
                     >
-                      <ChevronRightIcon className="w-6 h-6 sm:w-8 sm:h-8 text-text-primary" />
+                      <ChevronRightIcon className="w-5 h-5 sm:w-8 sm:h-8 text-text-primary" />
                     </button>
                   )}
 
                   {/* Dots Indicator */}
                   {races.length > 1 && (
-                    <div className="relative z-10 flex justify-center gap-2 mt-6">
+                    <div className="relative z-10 flex justify-center gap-2.5 mt-4 sm:mt-6">
                       {races.map((_, index) => (
                         <button
                           key={index}
                           onClick={() => setCurrentRaceIndex(index)}
-                          className={`w-2 h-2 rounded-full transition-all ${
+                          className={`h-2.5 rounded-full transition-all ${
                             index === currentRaceIndex
                               ? 'bg-primary w-8'
-                              : 'bg-border hover:bg-border-focus'
+                              : 'bg-border hover:bg-border-focus w-2.5'
                           }`}
                           aria-label={`Go to race ${index + 1}`}
                         />
@@ -245,8 +244,8 @@ export default function DashboardPage() {
                   )}
                 </div>
 
-                <div className="text-center mt-8">
-                  <p className="text-text-muted italic">{t('moreComingSoon')}</p>
+                <div className="text-center mt-6 sm:mt-8">
+                  <p className="text-sm sm:text-base text-text-muted italic">{t('moreComingSoon')}</p>
                 </div>
               </div>
 

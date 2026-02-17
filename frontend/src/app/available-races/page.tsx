@@ -121,36 +121,36 @@ export default function AvailableRacesPage() {
       <AuthenticatedLayout>
         <Header />
         <div className={`min-h-screen bg-surface-1 ${isWizardOpen ? 'hidden md:block md:invisible' : ''}`}>
-          <main className="container mx-auto px-4 py-8">
+          <main className="px-4 sm:px-6 py-4 sm:py-6 md:py-8 mx-auto max-w-6xl">
             {/* Page Header */}
-            <div className="mb-8">
-              <h1 className="text-3xl md:text-4xl font-bold text-text-primary mb-2">
+            <div className="mb-5 sm:mb-8">
+              <h1 className="text-2xl xs:text-3xl md:text-4xl font-bold text-text-primary mb-1 sm:mb-2">
                 {t('title')}
               </h1>
-              <p className="text-lg text-text-secondary">{t('subtitle')}</p>
+              <p className="text-base sm:text-lg text-text-secondary">{t('subtitle')}</p>
             </div>
 
             {/* Error State */}
             {error && (
-              <div className="mb-6 p-4 bg-error-subtle border border-error rounded-lg">
+              <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-error-subtle border border-error rounded-lg">
                 <p className="text-sm text-text-primary">{error}</p>
               </div>
             )}
 
             {/* Loading State */}
             {loading ? (
-              <div className="text-center py-12">
-                <div className="text-lg text-text-secondary">{t('loading')}</div>
+              <div className="text-center py-8 sm:py-12">
+                <div className="text-base sm:text-lg text-text-secondary">{t('loading')}</div>
               </div>
             ) : races.length === 0 ? (
               /* Empty State */
-              <div className="bg-surface-background rounded-lg shadow-md p-12 text-center border border-border">
+              <div className="bg-surface-background rounded-xl sm:rounded-lg shadow-md p-8 sm:p-12 text-center border border-border">
                 <div className="max-w-md mx-auto">
-                  <div className="text-5xl mb-4">🚴</div>
-                  <h3 className="text-xl font-semibold text-text-primary mb-3">
+                  <div className="text-4xl sm:text-5xl mb-3 sm:mb-4">🚴</div>
+                  <h3 className="text-lg sm:text-xl font-semibold text-text-primary mb-2 sm:mb-3">
                     {t('noRaces')}
                   </h3>
-                  <p className="text-text-secondary">
+                  <p className="text-sm sm:text-base text-text-secondary">
                     {t('noRacesDescription')}
                   </p>
                 </div>
@@ -159,7 +159,7 @@ export default function AvailableRacesPage() {
               <>
                 {/* Admin Info */}
                 {isAdmin && (
-                  <div className="mb-6 p-4 bg-info-subtle border border-info rounded-lg">
+                  <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-info-subtle border border-info rounded-lg">
                     <p className="text-sm text-text-primary">
                       👤 <strong>Admin view:</strong> You can see and plan all races. Private races show as "Coming Soon" for regular users.
                     </p>
@@ -168,11 +168,11 @@ export default function AvailableRacesPage() {
 
                 {/* Available Races */}
                 {races.filter(r => r.is_public).length > 0 && (
-                  <div className="mb-8">
-                    <h2 className="text-2xl font-bold text-text-primary mb-4">
+                  <div className="mb-6 sm:mb-8">
+                    <h2 className="text-xl sm:text-2xl font-bold text-text-primary mb-3 sm:mb-4">
                       {t('availableRacesSection')}
                     </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                       {races.filter(r => r.is_public).map((race) => (
                         <RaceCard
                           key={race.id}
@@ -189,10 +189,10 @@ export default function AvailableRacesPage() {
                 {/* Coming Soon Races */}
                 {races.filter(r => !r.is_public).length > 0 && (
                   <div>
-                    <h2 className="text-2xl font-bold text-text-primary mb-4">
+                    <h2 className="text-xl sm:text-2xl font-bold text-text-primary mb-3 sm:mb-4">
                       {t('comingSoonSection')}
                     </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                       {races.filter(r => !r.is_public).map((race) => (
                         <RaceCard
                           key={race.id}

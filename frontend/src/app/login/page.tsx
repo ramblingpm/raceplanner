@@ -66,14 +66,14 @@ export default function LoginPage() {
     <div className="min-h-screen bg-surface-1">
       <PageViewTracker pageName="Login Page" />
       <Header />
-      <div className="flex items-center justify-center px-4 py-16">
-        <div className="max-w-md w-full bg-surface-background rounded-lg shadow-xl p-8 border border-border">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-text-primary">{t('loginTitle')}</h1>
-          <p className="text-text-secondary mt-2">{t('loginSubtitle')}</p>
+      <div className="flex items-center justify-center px-4 py-8 sm:py-16">
+        <div className="max-w-md w-full bg-surface-background rounded-xl sm:rounded-lg shadow-xl p-5 sm:p-8 border border-border">
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-text-primary">{t('loginTitle')}</h1>
+          <p className="text-sm sm:text-base text-text-secondary mt-2">{t('loginSubtitle')}</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
           {error && (
             <div className="bg-error-subtle text-error-foreground p-3 rounded-md text-sm">
               {error}
@@ -89,7 +89,7 @@ export default function LoginPage() {
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-text-secondary mb-2"
+              className="block text-sm font-medium text-text-secondary mb-1.5 sm:mb-2"
             >
               {t('email')}
             </label>
@@ -100,13 +100,13 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               onFocus={handleFormStart}
-              className="w-full px-4 py-2 border border-border rounded-md focus:ring-2 focus:ring-border-focus focus:border-transparent text-text-primary bg-surface-background"
+              className="w-full px-4 py-3 sm:py-2 border border-border rounded-lg sm:rounded-md focus:ring-2 focus:ring-border-focus focus:border-transparent text-text-primary bg-surface-background"
               placeholder={t('emailPlaceholder')}
             />
           </div>
 
           <div>
-            <div className="flex justify-between items-center mb-2">
+            <div className="flex justify-between items-center mb-1.5 sm:mb-2">
               <label
                 htmlFor="password"
                 className="block text-sm font-medium text-text-secondary"
@@ -126,7 +126,7 @@ export default function LoginPage() {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border border-border rounded-md focus:ring-2 focus:ring-border-focus focus:border-transparent text-text-primary bg-surface-background"
+              className="w-full px-4 py-3 sm:py-2 border border-border rounded-lg sm:rounded-md focus:ring-2 focus:ring-border-focus focus:border-transparent text-text-primary bg-surface-background"
               placeholder={t('passwordPlaceholder')}
             />
           </div>
@@ -145,7 +145,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-primary text-primary-foreground py-2 px-4 rounded-md hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-border-focus focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="w-full bg-primary text-primary-foreground py-3 sm:py-2 px-4 rounded-lg sm:rounded-md hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-border-focus focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
           >
             {loading ? t('loggingIn') : t('loginButton')}
           </button>
