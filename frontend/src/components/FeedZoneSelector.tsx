@@ -121,7 +121,7 @@ export default function FeedZoneSelector({
       {/* Collapsed Summary Card */}
       {localFeedZones.length > 0 && !isExpanded && (
         <div
-          className="bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-200 rounded-lg p-4 cursor-pointer hover:shadow-md transition-shadow"
+          className="bg-surface-1 border border-border rounded-lg p-4 cursor-pointer hover:shadow-md transition-shadow"
           onClick={() => setIsExpanded(true)}
         >
           <div className="flex items-center justify-between mb-2">
@@ -135,12 +135,12 @@ export default function FeedZoneSelector({
               </div>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-bold text-amber-700">
+              <div className="text-2xl font-bold text-text-primary">
                 {totalTime.hours}h {totalTime.minutes}m
               </div>
               <button
                 type="button"
-                className="text-xs text-primary-600 hover:text-primary-700 font-medium"
+                className="text-xs text-primary hover:opacity-70 font-medium"
               >
                 {t('viewDetails')} →
               </button>
@@ -156,14 +156,14 @@ export default function FeedZoneSelector({
               return (
                 <span
                   key={feedZone.id}
-                  className="inline-block px-2 py-1 bg-surface-background border border-amber-300 rounded text-xs text-text-secondary"
+                  className="inline-block px-2 py-1 bg-surface-background border border-border rounded text-xs text-text-secondary"
                 >
                   {feedZone.name}
                 </span>
               );
             })}
             {localFeedZones.length > 3 && (
-              <span className="inline-block px-2 py-1 bg-amber-100 border border-amber-300 rounded text-xs text-amber-800 font-medium">
+              <span className="inline-block px-2 py-1 bg-surface-2 border border-border rounded text-xs text-text-secondary font-medium">
                 +{localFeedZones.length - 3} more
               </span>
             )}
@@ -174,7 +174,7 @@ export default function FeedZoneSelector({
       {/* Expanded view - Selected feed zones */}
       {localFeedZones.length > 0 && isExpanded && (
         <>
-          <div className="flex items-center justify-between bg-amber-50 border border-amber-200 rounded-lg p-3">
+          <div className="flex items-center justify-between bg-surface-1 border border-border rounded-lg p-3">
             <div className="flex items-center gap-2">
               <span className="text-xl">🍔</span>
               <span className="font-semibold text-text-primary">
@@ -184,7 +184,7 @@ export default function FeedZoneSelector({
             <button
               type="button"
               onClick={() => setIsExpanded(false)}
-              className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+              className="text-sm text-primary hover:opacity-70 font-medium"
             >
               {t('collapse')} ↑
             </button>
@@ -257,7 +257,7 @@ export default function FeedZoneSelector({
                   </div>
 
                   {/* Optional arrival/departure times */}
-                  <div className="grid grid-cols-2 gap-3 pt-2 border-t border-gray-100">
+                  <div className="grid grid-cols-2 gap-3 pt-2 border-t border-border-subtle">
                     <div>
                       <label className="block text-xs text-text-secondary mb-1">
                         {t('arrivalTime')} ({t('optional')})
@@ -305,18 +305,18 @@ export default function FeedZoneSelector({
             <button
               type="button"
               onClick={() => setShowAddDropdown(true)}
-              className="w-full py-2 px-4 border-2 border-dashed border-border rounded-lg text-text-secondary hover:border-primary-500 hover:text-primary-600 transition-colors"
+              className="w-full py-2 px-4 border-2 border-dashed border-border rounded-lg text-text-secondary hover:border-primary hover:text-primary transition-colors"
             >
               + {t('addFeedZone')}
             </button>
           ) : (
-            <div className="border-2 border-primary-300 rounded-lg p-3 bg-primary-50">
+            <div className="border border-border rounded-lg p-3 bg-surface-1">
               <label className="block text-sm font-medium text-text-secondary mb-2">
                 {t('selectFeedZones')}
               </label>
               <div className="flex gap-2">
                 <select
-                  className="flex-1 px-3 py-2 border border-border rounded-md text-text-primary focus:ring-2 focus:ring-primary-500"
+                  className="flex-1 px-3 py-2 border border-border rounded-md text-text-primary focus:ring-2 focus:ring-border-focus"
                   onChange={(e) => {
                     if (e.target.value) {
                       handleAddFeedZone(e.target.value);
@@ -336,7 +336,7 @@ export default function FeedZoneSelector({
                 <button
                   type="button"
                   onClick={() => setShowAddDropdown(false)}
-                  className="px-3 py-2 text-text-secondary hover:text-gray-800 border border-border rounded-md"
+                  className="px-3 py-2 text-text-secondary hover:text-text-primary border border-border rounded-md"
                 >
                   {tCommon('cancel')}
                 </button>

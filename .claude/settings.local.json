@@ -5,7 +5,8 @@
       "Bash(npm run build:*)",
       "mcp__ide__getDiagnostics",
       "Bash(gh pr checks:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "WebFetch(domain:www.garmin.com)"
     ],
     "deny": [],
     "ask": []

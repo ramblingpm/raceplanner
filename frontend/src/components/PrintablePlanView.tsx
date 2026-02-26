@@ -272,23 +272,23 @@ function PrintContent({
 
       {/* Key Stats - Large and Bold for Handlebar Visibility */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="border-4 border-black p-4 text-center bg-gray-100">
+        <div className="border-4 border-black p-4 text-center bg-surface-2">
           <p className="text-xs font-bold uppercase mb-1">{tDashboard('startTime')}</p>
           <p className="text-xl font-black">{formatTime(plan.planned_start_time)}</p>
           <p className="text-sm font-bold">{formatDate(plan.planned_start_time)}</p>
         </div>
-        <div className="border-4 border-black p-4 text-center bg-gray-100">
+        <div className="border-4 border-black p-4 text-center bg-surface-2">
           <p className="text-xs font-bold uppercase mb-1">{tDashboard('duration')}</p>
           <p className="text-2xl font-black">{durationHours}h {durationMinutes}m</p>
         </div>
-        <div className="border-4 border-black p-4 text-center bg-gray-100">
+        <div className="border-4 border-black p-4 text-center bg-surface-2">
           <p className="text-xs font-bold uppercase mb-1">{tDashboard('avgSpeed')}</p>
           <p className="text-2xl font-black">{plan.required_speed_kmh.toFixed(1)} km/h</p>
         </div>
       </div>
 
       {/* Finish Time - Prominent */}
-      <div className="border-4 border-black p-4 bg-yellow-100">
+      <div className="border-4 border-black p-4 bg-warning-subtle">
         <p className="text-sm font-bold uppercase mb-1">{tDashboard('finishTime')}</p>
         <p className="text-3xl font-black">{formatTime(plan.calculated_finish_time)}</p>
       </div>
@@ -317,7 +317,7 @@ function PrintContent({
           <h2 className="text-lg font-black mb-3 uppercase">{t('feedZones')}</h2>
           <table className="w-full border-collapse">
             <thead>
-              <tr className="bg-gray-200 border-2 border-black">
+              <tr className="bg-surface-3 border-2 border-black">
                 <th className="border-2 border-black p-2 text-left font-black text-sm">{t('location')}</th>
                 <th className="border-2 border-black p-2 text-left font-black text-sm">{t('distance')}</th>
                 <th className="border-2 border-black p-2 text-left font-black text-sm">{t('arrival')}</th>

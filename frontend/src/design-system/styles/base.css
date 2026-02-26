@@ -19,21 +19,21 @@
   /* -----------------------------------------
      Primary Colors
      ----------------------------------------- */
-  --color-primary: 0 122 255;
-  --color-primary-hover: 0 98 204;
-  --color-primary-active: 0 82 173;
-  --color-primary-subtle: 240 247 255;
-  --color-primary-subtle-hover: 224 240 255;
+  --color-primary: 0 0 0;                   /* #000000 */
+  --color-primary-hover: 26 26 26;          /* #1A1A1A */
+  --color-primary-active: 51 51 51;         /* #333333 */
+  --color-primary-subtle: 242 242 242;      /* #F2F2F2 */
+  --color-primary-subtle-hover: 229 229 229;/* #E5E5E5 */
   --color-primary-foreground: 255 255 255;
 
   /* -----------------------------------------
      Secondary Colors
      ----------------------------------------- */
-  --color-secondary: 142 142 147;
-  --color-secondary-hover: 118 118 128;
-  --color-secondary-active: 99 99 102;
-  --color-secondary-subtle: 242 242 247;
-  --color-secondary-subtle-hover: 229 229 234;
+  --color-secondary: 114 114 114;           /* #727272 — Garmin's gray */
+  --color-secondary-hover: 80 80 80;        /* #505050 */
+  --color-secondary-active: 51 51 51;       /* #333333 */
+  --color-secondary-subtle: 242 242 242;    /* #F2F2F2 */
+  --color-secondary-subtle-hover: 229 229 229; /* #E5E5E5 */
   --color-secondary-foreground: 255 255 255;
 
   /* -----------------------------------------
@@ -79,30 +79,30 @@
   /* -----------------------------------------
      Surface Colors
      ----------------------------------------- */
-  --color-surface-background: 255 255 255;
-  --color-surface-1: 248 250 252;
-  --color-surface-2: 241 245 249;
-  --color-surface-3: 226 232 240;
-  --color-surface-inverse: 15 23 42;
+  --color-surface-background: 255 255 255;  /* Pure white */
+  --color-surface-1: 248 248 248;           /* #F8F8F8 */
+  --color-surface-2: 242 242 242;           /* #F2F2F2 */
+  --color-surface-3: 229 229 229;           /* #E5E5E5 */
+  --color-surface-inverse: 17 17 17;        /* #111111 */
 
   /* -----------------------------------------
      Text Colors
      ----------------------------------------- */
-  --color-text-primary: 15 23 42;
-  --color-text-secondary: 71 85 105;
-  --color-text-muted: 148 163 184;
+  --color-text-primary: 17 17 17;           /* #111111 — near black */
+  --color-text-secondary: 114 114 114;      /* #727272 */
+  --color-text-muted: 170 170 170;          /* #AAAAAA */
   --color-text-inverse: 255 255 255;
-  --color-text-link: 2 132 199;
-  --color-text-link-hover: 3 105 161;
+  --color-text-link: 0 0 0;                 /* Black links */
+  --color-text-link-hover: 114 114 114;
 
   /* -----------------------------------------
      Border Colors
      ----------------------------------------- */
-  --color-border: 226 232 240;
-  --color-border-subtle: 241 245 249;
-  --color-border-strong: 203 213 225;
-  --color-border-focus: 14 165 233;
-  --color-border-error: 244 63 94;
+  --color-border: 216 216 216;              /* #D8D8D8 — Garmin's border */
+  --color-border-subtle: 238 238 238;       /* #EEEEEE */
+  --color-border-strong: 170 170 170;       /* #AAAAAA */
+  --color-border-focus: 0 0 0;              /* Black focus ring */
+  --color-border-error: 220 38 38;          /* Keep red */
 
   /* -----------------------------------------
      Shadows
@@ -115,7 +115,7 @@
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
   --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
   --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
-  --shadow-focus: 0 0 0 3px rgb(14 165 233 / 0.4);
+  --shadow-focus: 0 0 0 2px rgb(0 0 0 / 0.9);
 
   /* -----------------------------------------
      Typography
@@ -233,22 +233,22 @@
   /* -----------------------------------------
      Primary Colors
      ----------------------------------------- */
-  --color-primary: 10 132 255;
-  --color-primary-hover: 64 156 255;
-  --color-primary-active: 100 170 255;
-  --color-primary-subtle: 10 25 51;
-  --color-primary-subtle-hover: 15 35 71;
-  --color-primary-foreground: 255 255 255;
+  --color-primary: 255 255 255;
+  --color-primary-hover: 229 229 229;
+  --color-primary-active: 200 200 200;
+  --color-primary-subtle: 38 38 38;         /* #262626 */
+  --color-primary-subtle-hover: 51 51 51;   /* #333333 */
+  --color-primary-foreground: 17 17 17;     /* Dark text on white button */
 
   /* -----------------------------------------
      Secondary Colors
      ----------------------------------------- */
-  --color-secondary: 142 142 147;
-  --color-secondary-hover: 174 174 178;
-  --color-secondary-active: 199 199 204;
-  --color-secondary-subtle: 28 28 30;
-  --color-secondary-subtle-hover: 44 44 46;
-  --color-secondary-foreground: 255 255 255;
+  --color-secondary: 170 170 170;           /* #AAAAAA */
+  --color-secondary-hover: 200 200 200;
+  --color-secondary-active: 220 220 220;
+  --color-secondary-subtle: 38 38 38;
+  --color-secondary-subtle-hover: 51 51 51;
+  --color-secondary-foreground: 17 17 17;
 
   /* -----------------------------------------
      Success Colors
@@ -293,30 +293,30 @@
   /* -----------------------------------------
      Surface Colors
      ----------------------------------------- */
-  --color-surface-background: 2 6 23;
-  --color-surface-1: 15 23 42;
-  --color-surface-2: 30 41 59;
-  --color-surface-3: 51 65 85;
-  --color-surface-inverse: 248 250 252;
+  --color-surface-background: 17 17 17;     /* #111111 */
+  --color-surface-1: 26 26 26;              /* #1A1A1A */
+  --color-surface-2: 38 38 38;              /* #262626 */
+  --color-surface-3: 51 51 51;              /* #333333 */
+  --color-surface-inverse: 242 242 242;     /* #F2F2F2 */
 
   /* -----------------------------------------
      Text Colors
      ----------------------------------------- */
-  --color-text-primary: 248 250 252;
-  --color-text-secondary: 203 213 225;
-  --color-text-muted: 100 116 139;
-  --color-text-inverse: 15 23 42;
-  --color-text-link: 56 189 248;
-  --color-text-link-hover: 125 211 252;
+  --color-text-primary: 242 242 242;        /* #F2F2F2 */
+  --color-text-secondary: 170 170 170;      /* #AAAAAA */
+  --color-text-muted: 114 114 114;          /* #727272 */
+  --color-text-inverse: 17 17 17;
+  --color-text-link: 229 229 229;
+  --color-text-link-hover: 200 200 200;
 
   /* -----------------------------------------
      Border Colors
      ----------------------------------------- */
-  --color-border: 51 65 85;
-  --color-border-subtle: 30 41 59;
-  --color-border-strong: 71 85 105;
-  --color-border-focus: 56 189 248;
-  --color-border-error: 244 63 94;
+  --color-border: 51 51 51;                 /* #333333 */
+  --color-border-subtle: 38 38 38;          /* #262626 */
+  --color-border-strong: 80 80 80;          /* #505050 */
+  --color-border-focus: 255 255 255;        /* White focus ring */
+  --color-border-error: 248 113 113;        /* Lighter red for dark bg */
 
   /* -----------------------------------------
      Shadows (darker for dark mode)
@@ -328,7 +328,7 @@
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.5);
   --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.6);
   --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.3);
-  --shadow-focus: 0 0 0 3px rgb(56 189 248 / 0.4);
+  --shadow-focus: 0 0 0 2px rgb(255 255 255 / 0.8);
 }
 
 /* ============================================

@@ -10,6 +10,13 @@ body {
   background-color: rgb(var(--color-surface-background));
 }
 
+h1, h2, h3 {
+  letter-spacing: 0.02em;
+}
+h1 {
+  letter-spacing: 0.03em;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
