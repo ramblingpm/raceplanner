@@ -59,10 +59,10 @@ export default async function VatternrundanPage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <TrackedLink
-                  href="/dashboard"
+                  href="/try"
                   eventName="cta_borja_planera"
                   eventLocation="vatternrundan_hero"
-                  eventData={{ cta_type: 'primary', destination: 'dashboard' }}
+                  eventData={{ cta_type: 'primary', destination: 'try' }}
                   className="bg-primary text-primary-foreground px-8 py-4 rounded-lg hover:bg-primary-hover transition-colors text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-border-focus"
                 >
                   {t('hero.cta')}
@@ -207,7 +207,7 @@ export default async function VatternrundanPage() {
                 {t('cta.description')}
               </p>
               <TrackedLink
-                href="/dashboard"
+                href="/try"
                 eventName="cta_kom_igang_nu"
                 eventLocation="vatternrundan_bottom_cta"
                 eventData={{ cta_type: 'final', destination: 'dashboard' }}

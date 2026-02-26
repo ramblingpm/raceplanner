@@ -203,7 +203,7 @@ export default async function VatternrundanGuidePage() {
                   <div className="font-semibold text-text-primary">{t('links.checklist')}</div>
                 </TrackedLink>
                 <TrackedLink
-                  href="/dashboard"
+                  href="/try"
                   eventName="cta_skapa_din_plan"
                   eventLocation="guide_footer"
                   eventData={{ cta_type: 'primary', destination: 'dashboard' }}

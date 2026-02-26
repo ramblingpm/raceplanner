@@ -161,7 +161,7 @@ export default async function VatternChecklistPage() {
                 {t('cta.description')}
               </p>
               <TrackedLink
-                href="/dashboard"
+                href="/try"
                 eventName="cta_skapa_plan"
                 eventLocation="checklist_cta"
                 eventData={{ cta_type: 'primary', destination: 'dashboard' }}
