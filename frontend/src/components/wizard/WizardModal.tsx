@@ -116,7 +116,7 @@ function WizardContent({ onClose, onComplete }: { onClose: () => void; onComplet
         </div>
 
         {/* Step Content */}
-        <div className="flex-1 overflow-y-auto bg-surface-1">
+        <div className="flex-1 overflow-hidden bg-surface-1">
           {renderStep()}
         </div>
       </div>

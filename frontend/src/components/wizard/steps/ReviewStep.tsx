@@ -92,7 +92,7 @@ export default function ReviewStep() {
   return (
     <div className="flex flex-col h-full">
       <div className="flex-1 overflow-y-auto">
-        <div className="container mx-auto px-4 py-6 max-w-4xl">
+        <div className="container mx-auto px-4 py-6 max-w-2xl">
       {/* Header */}
       <div className="mb-6">
         <h2 className="text-2xl sm:text-3xl font-bold text-text-primary mb-2">
@@ -189,7 +189,7 @@ export default function ReviewStep() {
         )}
 
         {/* Results */}
-        <div className="bg-primary-subtle border border-primary rounded-lg p-4">
+        <div className="bg-surface-background border border-border rounded-lg p-4">
           <h3 className="text-sm font-medium text-text-primary mb-3">{t('estimatedResults')}</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
@@ -327,7 +327,7 @@ export default function ReviewStep() {
 
       {/* Action Buttons - always visible */}
       <div className="flex-shrink-0 bg-surface-background border-t border-border p-4">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-2xl mx-auto">
           <button
             onClick={nextStep}
             className="w-full py-3 px-6 rounded-lg font-semibold text-primary-foreground transition-colors bg-primary hover:bg-primary-hover"
