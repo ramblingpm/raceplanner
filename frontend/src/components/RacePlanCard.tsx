@@ -3,16 +3,6 @@
 import { useTranslations } from 'next-intl';
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
 import { ClockIcon, BoltIcon, CalendarIcon } from '@heroicons/react/24/solid';
-import dynamic from 'next/dynamic';
-
-const RaceMap = dynamic(() => import('@/components/RaceMap'), {
-  ssr: false,
-  loading: () => (
-    <div className="h-full bg-surface-1 flex items-center justify-center">
-      <p className="text-text-muted text-xs">Loading map...</p>
-    </div>
-  ),
-});
 
 interface RacePlanCardProps {
   plan: any;
@@ -50,96 +40,66 @@ export default function RacePlanCard({
   const durationMinutes = Math.floor((plan.estimated_duration_seconds % 3600) / 60);
 
   return (
-    <div className="group relative bg-surface-1 rounded-lg overflow-hidden border border-border hover:border-primary transition-all duration-300 shadow-md hover:shadow-xl">
-      {/* Map Background - Netflix-style with overlay */}
-      <div className="relative h-48 overflow-hidden bg-gradient-to-br from-primary/20 to-secondary/20">
-        {race?.route_geometry?.coordinates ? (
-          <>
-            <div className="absolute inset-0 z-0">
-              <RaceMap
-                routeCoordinates={race.route_geometry.coordinates as number[][]}
-                interactive={false}
-              />
-            </div>
-            {/* Dark gradient overlay for better text readability */}
-            <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-          </>
-        ) : (
-          <div className="absolute inset-0 z-0 bg-gradient-to-br from-primary to-primary-hover" />
-        )}
-
-        {/* Content over map */}
-        <div className="absolute inset-0 z-20 p-4 flex flex-col justify-between">
-          {/* Top row - Race info */}
-          <div>
-            <div className="inline-block bg-black/40 backdrop-blur-sm px-3 py-1.5 rounded-lg mb-2">
-              <p className="text-white text-xs font-medium">
-                {race?.name || 'Unknown Race'}
-              </p>
-            </div>
+    <div className="bg-surface-background rounded-lg overflow-hidden border border-border hover:border-border-strong transition-all duration-200 shadow-sm hover:shadow-md">
+      {/* Card header */}
+      <div className="px-4 pt-4 pb-3 flex items-start justify-between gap-2">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2 mb-1 flex-wrap">
+            <span className="text-xs text-text-muted font-medium truncate">
+              {race?.name || 'Unknown Race'}
+            </span>
             {race?.distance_km && (
-              <div className="inline-block bg-primary/90 px-3 py-1 rounded-lg ml-2">
-                <p className="text-white text-xs font-bold">
-                  {race.distance_km} km
-                </p>
-              </div>
+              <span className="text-xs font-bold bg-surface-inverse text-text-inverse px-2 py-0.5 rounded shrink-0">
+                {race.distance_km} km
+              </span>
             )}
           </div>
-
-          {/* Bottom row - Plan name */}
-          <div>
-            <h3 className="text-white text-2xl font-bold drop-shadow-lg mb-1">
-              {plan.label || tDashboard('untitledPlan')}
-            </h3>
-            <div className="flex items-center gap-2">
-              <CalendarIcon className="w-4 h-4 text-white/90" />
-              <p className="text-white/90 text-sm drop-shadow">
-                {formatDate(plan.planned_start_time)} • {formatTime(plan.planned_start_time)}
-              </p>
-            </div>
+          <h3 className="text-base font-bold text-text-primary leading-tight truncate">
+            {plan.label || tDashboard('untitledPlan')}
+          </h3>
+          <div className="flex items-center gap-1.5 mt-1">
+            <CalendarIcon className="w-3.5 h-3.5 text-text-muted shrink-0" />
+            <p className="text-xs text-text-muted">
+              {formatDate(plan.planned_start_time)} • {formatTime(plan.planned_start_time)}
+            </p>
           </div>
         </div>
-
-        {/* Edit overlay — always visible on touch, hover-only on pointer devices */}
         <button
           type="button"
-          className="absolute inset-0 z-30 bg-black/60 opacity-100 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center w-full"
           onClick={() => onEdit(plan)}
           aria-label={tCommon('edit')}
+          className="shrink-0 p-2 rounded-lg border border-border text-text-secondary hover:text-text-primary hover:bg-surface-2 transition-colors"
         >
-          <div className="bg-primary px-6 py-3 rounded-lg flex items-center gap-2">
-            <PencilSquareIcon className="w-5 h-5 text-white" />
-            <span className="text-white font-semibold">{tCommon('edit')}</span>
-          </div>
+          <PencilSquareIcon className="w-4 h-4" />
         </button>
       </div>
 
       {/* Card content - Stats */}
-      <div className="p-5 bg-surface-1">
+      <div className="p-3 bg-surface-1">
         {/* Key Stats Grid */}
-        <div className="grid grid-cols-3 gap-4 mb-4">
+        <div className="grid grid-cols-3 gap-2 mb-3">
           {/* Duration */}
-          <div className="flex flex-col items-center p-3 bg-surface-2 rounded-lg border border-border">
-            <ClockIcon className="w-5 h-5 text-primary mb-1" />
-            <p className="text-xs text-text-muted mb-0.5">{tDashboard('duration')}</p>
+          <div className="flex flex-col items-center p-2 bg-surface-2 rounded-lg border border-border">
+            <ClockIcon className="w-4 h-4 text-primary mb-0.5" />
+            <p className="text-xs text-text-muted">{tDashboard('duration')}</p>
             <p className="text-sm font-bold text-text-primary">
               {durationHours}h {durationMinutes}m
             </p>
           </div>
 
           {/* Speed */}
-          <div className="flex flex-col items-center p-3 bg-surface-2 rounded-lg border border-border">
-            <BoltIcon className="w-5 h-5 text-warning mb-1" />
-            <p className="text-xs text-text-muted mb-0.5">{tDashboard('avgSpeed')}</p>
+          <div className="flex flex-col items-center p-2 bg-surface-2 rounded-lg border border-border">
+            <BoltIcon className="w-4 h-4 text-warning mb-0.5" />
+            <p className="text-xs text-text-muted">{tDashboard('avgSpeed')}</p>
             <p className="text-sm font-bold text-text-primary">
               {plan.required_speed_kmh.toFixed(1)} km/h
             </p>
           </div>
 
           {/* Finish Time */}
-          <div className="flex flex-col items-center p-3 bg-surface-2 rounded-lg border border-border">
-            <ClockIcon className="w-5 h-5 text-success mb-1" />
-            <p className="text-xs text-text-muted mb-0.5">{tDashboard('finishTime')}</p>
+          <div className="flex flex-col items-center p-2 bg-surface-2 rounded-lg border border-border">
+            <ClockIcon className="w-4 h-4 text-success mb-0.5" />
+            <p className="text-xs text-text-muted">{tDashboard('finishTime')}</p>
             <p className="text-sm font-bold text-text-primary">
               {formatTime(plan.calculated_finish_time)}
             </p>
@@ -147,7 +107,7 @@ export default function RacePlanCard({
         </div>
 
         {/* Created date */}
-        <div className="mt-4 pt-4 border-t border-border">
+        <div className="pt-2 border-t border-border">
           <p className="text-xs text-text-muted text-center">
             {t('createdOn')}: {formatDate(plan.created_at)}
           </p>

@@ -90,7 +90,9 @@ export default function ReviewStep() {
   );
 
   return (
-    <div className="container mx-auto px-4 py-6 max-w-4xl pb-24">
+    <div className="flex flex-col h-full">
+      <div className="flex-1 overflow-y-auto">
+        <div className="container mx-auto px-4 py-6 max-w-4xl">
       {/* Header */}
       <div className="mb-6">
         <h2 className="text-2xl sm:text-3xl font-bold text-text-primary mb-2">
@@ -320,14 +322,19 @@ export default function ReviewStep() {
         </div>
       )}
 
-      {/* Action Buttons */}
-      <div className="sticky bottom-0 left-0 right-0 bg-surface-background border-t border-border p-4 z-10 shadow-lg">
-        <button
-          onClick={nextStep}
-          className="w-full py-3 px-6 rounded-lg font-semibold text-primary-foreground transition-colors bg-primary hover:bg-primary-hover"
-        >
-          {t('continueToSave')}
-        </button>
+        </div>
+      </div>
+
+      {/* Action Buttons - always visible */}
+      <div className="flex-shrink-0 bg-surface-background border-t border-border p-4">
+        <div className="max-w-4xl mx-auto">
+          <button
+            onClick={nextStep}
+            className="w-full py-3 px-6 rounded-lg font-semibold text-primary-foreground transition-colors bg-primary hover:bg-primary-hover"
+          >
+            {t('continueToSave')}
+          </button>
+        </div>
       </div>
     </div>
   );

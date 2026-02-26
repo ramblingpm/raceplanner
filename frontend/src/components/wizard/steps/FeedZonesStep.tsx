@@ -219,119 +219,127 @@ export default function FeedZonesStep() {
   const totalStopMinutes = feedZonesWithTimes.reduce((sum, z) => sum + z.stopDurationMinutes, 0);
 
   return (
-    <div className="container mx-auto px-4 py-6 max-w-2xl">
-      {/* Header */}
-      <div className="mb-6">
-        <h2 className="text-2xl sm:text-3xl font-bold text-text-primary mb-2">
-          {t('addFeedZones')} <span className="text-text-muted text-xl font-normal">({t('optional')})</span>
-        </h2>
-        <p className="text-sm sm:text-base text-text-secondary">
-          {t('feedZonesPitStopsDescription')}
-        </p>
+    <div className="flex flex-col h-full">
+      {/* Scrollable content */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="container mx-auto px-4 py-6 max-w-2xl">
+          {/* Header */}
+          <div className="mb-6">
+            <h2 className="text-2xl sm:text-3xl font-bold text-text-primary mb-2">
+              {t('addFeedZones')} <span className="text-text-muted text-xl font-normal">({t('optional')})</span>
+            </h2>
+            <p className="text-sm sm:text-base text-text-secondary">
+              {t('feedZonesPitStopsDescription')}
+            </p>
+          </div>
+
+          {/* Empty State */}
+          {feedZonesWithTimes.length === 0 && (
+            <div className="text-center py-12 mb-6">
+              <p className="text-text-muted">{t('noFeedZones')}</p>
+            </div>
+          )}
+
+          {/* All Feed Zones */}
+          {feedZonesWithTimes.length > 0 && (
+            <div className="space-y-3 mb-6">
+              {feedZonesWithTimes.map((zone, index) => {
+                const previousDistance = index > 0 ? feedZonesWithTimes[index - 1].distance_from_start_km : 0;
+                const distanceFromLast = zone.distance_from_start_km - previousDistance;
+                const isStop = zone.stopDurationMinutes > 0;
+
+                return (
+                  <div
+                    key={zone.id}
+                    className={`border rounded-lg p-3 transition-colors ${
+                      isStop
+                        ? 'bg-warning-subtle border-warning'
+                        : 'bg-surface-background border-border'
+                    }`}
+                  >
+                    {/* Header row: Icon, Name, Distance */}
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-base">{isStop ? '⏸️' : '📍'}</span>
+                      <h4 className="font-semibold text-text-primary">{zone.name}</h4>
+                      <span className="text-xs text-text-secondary ml-auto">
+                        {zone.distance_from_start_km} km
+                        {index > 0 && ` (+${distanceFromLast.toFixed(1)} km)`}
+                      </span>
+                    </div>
+
+                    {/* Input row: Arrival Time, Stop Duration, Departure Time */}
+                    <div className="flex items-center gap-2 text-sm">
+                      {/* Arrival Time */}
+                      <div className="flex items-center gap-1">
+                        <label className="text-xs text-text-secondary whitespace-nowrap">
+                          {t('arrivalTime')}:
+                        </label>
+                        <input
+                          type="time"
+                          value={zone.manualArrivalTime || zone.calculatedArrivalTime}
+                          onChange={(e) => handleUpdateArrivalTime(zone.id, e.target.value)}
+                          className="w-20 px-2 py-1 border border-border rounded text-sm text-text-primary bg-surface-background dark:[color-scheme:dark]"
+                        />
+                      </div>
+
+                      {/* Stop Duration */}
+                      <div className="flex items-center gap-1">
+                        <label className="text-xs text-text-secondary whitespace-nowrap">
+                          {t('stopDurationMinutes')}:
+                        </label>
+                        <input
+                          type="number"
+                          value={zone.stopDurationMinutes}
+                          onChange={(e) => handleUpdateDuration(zone.id, parseInt(e.target.value) || 0)}
+                          min="0"
+                          max="120"
+                          className="w-16 px-2 py-1 border border-border rounded text-sm text-text-primary bg-surface-background"
+                        />
+                        <span className="text-xs text-text-secondary">min</span>
+                      </div>
+
+                      {/* Departure Time */}
+                      {zone.calculatedDepartureTime && (
+                        <div className="flex items-center gap-1 ml-auto">
+                          <span className="text-xs text-text-secondary">{t('departure')}:</span>
+                          <span className="text-sm font-semibold text-text-primary">{zone.calculatedDepartureTime}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+        </div>
       </div>
 
-      {/* Empty State */}
-      {feedZonesWithTimes.length === 0 && (
-        <div className="text-center py-12 mb-6">
-          <p className="text-text-muted">{t('noFeedZones')}</p>
-        </div>
-      )}
-
-      {/* All Feed Zones */}
-      {feedZonesWithTimes.length > 0 && (
-        <div className="space-y-3 mb-6">
-          {feedZonesWithTimes.map((zone, index) => {
-            const previousDistance = index > 0 ? feedZonesWithTimes[index - 1].distance_from_start_km : 0;
-            const distanceFromLast = zone.distance_from_start_km - previousDistance;
-            const isStop = zone.stopDurationMinutes > 0;
-
-            return (
-              <div
-                key={zone.id}
-                className={`border rounded-lg p-3 transition-colors ${
-                  isStop
-                    ? 'bg-warning-subtle border-warning'
-                    : 'bg-surface-background border-border'
-                }`}
-              >
-                {/* Header row: Icon, Name, Distance */}
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-base">{isStop ? '⏸️' : '📍'}</span>
-                  <h4 className="font-semibold text-text-primary">{zone.name}</h4>
-                  <span className="text-xs text-text-secondary ml-auto">
-                    {zone.distance_from_start_km} km
-                    {index > 0 && ` (+${distanceFromLast.toFixed(1)} km)`}
-                  </span>
-                </div>
-
-                {/* Input row: Arrival Time, Stop Duration, Departure Time */}
-                <div className="flex items-center gap-2 text-sm">
-                  {/* Arrival Time */}
-                  <div className="flex items-center gap-1">
-                    <label className="text-xs text-text-secondary whitespace-nowrap">
-                      {t('arrivalTime')}:
-                    </label>
-                    <input
-                      type="time"
-                      value={zone.manualArrivalTime || zone.calculatedArrivalTime}
-                      onChange={(e) => handleUpdateArrivalTime(zone.id, e.target.value)}
-                      className="w-20 px-2 py-1 border border-border rounded text-sm text-text-primary bg-surface-background dark:[color-scheme:dark]"
-                    />
-                  </div>
-
-                  {/* Stop Duration */}
-                  <div className="flex items-center gap-1">
-                    <label className="text-xs text-text-secondary whitespace-nowrap">
-                      {t('stopDurationMinutes')}:
-                    </label>
-                    <input
-                      type="number"
-                      value={zone.stopDurationMinutes}
-                      onChange={(e) => handleUpdateDuration(zone.id, parseInt(e.target.value) || 0)}
-                      min="0"
-                      max="120"
-                      className="w-16 px-2 py-1 border border-border rounded text-sm text-text-primary bg-surface-background"
-                    />
-                    <span className="text-xs text-text-secondary">min</span>
-                  </div>
-
-                  {/* Departure Time */}
-                  {zone.calculatedDepartureTime && (
-                    <div className="flex items-center gap-1 ml-auto">
-                      <span className="text-xs text-text-secondary">{t('departure')}:</span>
-                      <span className="text-sm font-semibold text-text-primary">{zone.calculatedDepartureTime}</span>
-                    </div>
-                  )}
-                </div>
+      {/* Summary + Action Buttons - always visible below scroll area */}
+      <div className="flex-shrink-0 bg-surface-background border-t border-border">
+        <div className="max-w-2xl mx-auto px-4">
+          {stopsCount > 0 && (
+            <div className="bg-info-subtle border border-info rounded-lg p-4 mt-4">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-2xl">⏸️</span>
+                <h3 className="text-sm font-semibold text-text-primary">
+                  {stopsCount} {stopsCount !== 1 ? t('feedZoneCountPlural') : t('feedZoneCount')}
+                </h3>
               </div>
-            );
-          })}
-        </div>
-      )}
-
-      {/* Summary */}
-      {stopsCount > 0 && (
-        <div className="bg-info-subtle border border-info rounded-lg p-4 mb-6">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="text-2xl">⏸️</span>
-            <h3 className="text-sm font-semibold text-text-primary">
-              {stopsCount} {stopsCount !== 1 ? t('feedZoneCountPlural') : t('feedZoneCount')}
-            </h3>
+              <p className="text-sm text-text-secondary">
+                {t('totalStopTime')}: <span className="font-semibold text-text-primary">{totalStopMinutes} {t('minutes')}</span>
+              </p>
+            </div>
+          )}
+          <div className="py-4">
+            <button
+              onClick={handleNext}
+              className="w-full py-3 px-6 rounded-lg font-semibold text-primary-foreground bg-primary hover:bg-primary-hover transition-colors"
+            >
+              {t('nextReviewPlan')}
+            </button>
           </div>
-          <p className="text-sm text-text-secondary">
-            {t('totalStopTime')}: <span className="font-semibold text-text-primary">{totalStopMinutes} {t('minutes')}</span>
-          </p>
         </div>
-      )}
-
-      {/* Action Buttons */}
-      <div className="sticky bottom-0 left-0 right-0 bg-surface-background border-t border-border p-4">
-        <button
-          onClick={handleNext}
-          className="w-full py-3 px-6 rounded-lg font-semibold text-primary-foreground bg-primary hover:bg-primary-hover transition-colors"
-        >
-          {t('nextReviewPlan')}
-        </button>
       </div>
     </div>
   );
