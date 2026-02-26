@@ -17,11 +17,13 @@ interface ThemeContextValue {
   themePreference: ThemePreference;
   setThemePreference: (preference: ThemePreference) => void;
   toggleTheme: () => void;
+  setLoggedIn: (loggedIn: boolean) => void;
 }
 
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
 const STORAGE_KEY = 'rp-theme';
+const LOGGED_IN_KEY = 'rp-logged-in';
 
 function getSystemTheme(): Theme {
   if (typeof window === 'undefined') return 'light';
@@ -61,6 +63,16 @@ export function ThemeProvider({
 
   // Initialize theme on mount
   useEffect(() => {
+    const isLoggedIn = localStorage.getItem(LOGGED_IN_KEY) === 'true';
+
+    if (!isLoggedIn) {
+      setThemePreferenceState('light');
+      setTheme('light');
+      applyTheme('light');
+      setMounted(true);
+      return;
+    }
+
     const storedPreference = getStoredPreference();
     const preference = storedPreference ?? defaultTheme;
     setThemePreferenceState(preference);
@@ -106,11 +118,29 @@ export function ThemeProvider({
     setThemePreference(newTheme);
   }, [theme, setThemePreference]);
 
+  const setLoggedIn = useCallback((loggedIn: boolean) => {
+    if (loggedIn) {
+      localStorage.setItem(LOGGED_IN_KEY, 'true');
+      const storedPreference = getStoredPreference();
+      const preference = storedPreference ?? defaultTheme;
+      setThemePreferenceState(preference);
+      const resolvedTheme = preference === 'system' ? getSystemTheme() : preference;
+      setTheme(resolvedTheme);
+      applyTheme(resolvedTheme);
+    } else {
+      localStorage.removeItem(LOGGED_IN_KEY);
+      setThemePreferenceState('light');
+      setTheme('light');
+      applyTheme('light');
+    }
+  }, [defaultTheme]);
+
   const value: ThemeContextValue = {
     theme,
     themePreference,
     setThemePreference,
     toggleTheme,
+    setLoggedIn,
   };
 
   return (
@@ -133,6 +163,11 @@ export function useTheme(): ThemeContextValue {
 export const themeScript = `
 (function() {
   try {
+    var isLoggedIn = localStorage.getItem('${LOGGED_IN_KEY}') === 'true';
+    if (!isLoggedIn) {
+      document.documentElement.classList.add('light');
+      return;
+    }
     var stored = localStorage.getItem('${STORAGE_KEY}');
     var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     var theme = stored === 'dark' || stored === 'light'

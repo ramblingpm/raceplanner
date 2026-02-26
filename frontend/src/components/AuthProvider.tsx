@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { AuthUser, getCurrentUser, onAuthStateChange, setUserIdentityInAnalytics } from '@/lib/auth';
+import { useTheme } from '@/design-system/theme/ThemeProvider';
 
 interface AuthContextType {
   user: AuthUser | null;
@@ -16,11 +17,13 @@ const AuthContext = createContext<AuthContextType>({
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const { setLoggedIn } = useTheme();
 
   useEffect(() => {
     // Check active sessions and sets the user
     getCurrentUser().then((user) => {
       setUser(user);
+      setLoggedIn(!!user);
       setLoading(false);
 
       // Set user identity in GA4 for session tracking (does not track login event)
@@ -32,6 +35,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Listen for changes on auth state
     const { data: subscription } = onAuthStateChange((user) => {
       setUser(user);
+      setLoggedIn(!!user);
       setLoading(false);
 
       // Set user identity in GA4 for session tracking (does not track login event)
