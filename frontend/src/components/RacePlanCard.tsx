@@ -100,14 +100,18 @@ export default function RacePlanCard({
           </div>
         </div>
 
-        {/* Hover edit overlay */}
-        <div className="absolute inset-0 z-30 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center cursor-pointer"
-          onClick={() => onEdit(plan)}>
+        {/* Edit overlay — always visible on touch, hover-only on pointer devices */}
+        <button
+          type="button"
+          className="absolute inset-0 z-30 bg-black/60 opacity-100 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center w-full"
+          onClick={() => onEdit(plan)}
+          aria-label={tCommon('edit')}
+        >
           <div className="bg-primary px-6 py-3 rounded-lg flex items-center gap-2">
             <PencilSquareIcon className="w-5 h-5 text-white" />
             <span className="text-white font-semibold">{tCommon('edit')}</span>
           </div>
-        </div>
+        </button>
       </div>
 
       {/* Card content - Stats */}

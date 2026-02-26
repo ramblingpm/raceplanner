@@ -120,8 +120,9 @@ export default function FeedZoneSelector({
 
       {/* Collapsed Summary Card */}
       {localFeedZones.length > 0 && !isExpanded && (
-        <div
-          className="bg-surface-1 border border-border rounded-lg p-4 cursor-pointer hover:shadow-md transition-shadow"
+        <button
+          type="button"
+          className="w-full text-left bg-surface-1 border border-border rounded-lg p-4 hover:shadow-md transition-shadow"
           onClick={() => setIsExpanded(true)}
         >
           <div className="flex items-center justify-between mb-2">
@@ -168,7 +169,7 @@ export default function FeedZoneSelector({
               </span>
             )}
           </div>
-        </div>
+        </button>
       )}
 
       {/* Expanded view - Selected feed zones */}

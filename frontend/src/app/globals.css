@@ -10,6 +10,19 @@ body {
   background-color: rgb(var(--color-surface-background));
 }
 
+/* Prevent iOS Safari double-tap-to-zoom behavior on interactive elements.
+   Without this, the first tap fires :hover and the second tap fires click. */
+button,
+a,
+[role="button"],
+input[type="submit"],
+input[type="button"],
+input[type="reset"],
+select,
+label[for] {
+  touch-action: manipulation;
+}
+
 h1, h2, h3 {
   letter-spacing: 0.02em;
 }
