@@ -19,7 +19,9 @@
     "races": "Races",
     "myRaces": "My Races",
     "availableRaces": "Available Races",
-    "menu": "Menu"
+    "menu": "Menu",
+    "tryFree": "Try for free",
+    "vatternrundan": "Vätternrundan"
   },
   "auth": {
     "email": "Email",

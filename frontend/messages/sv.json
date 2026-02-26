@@ -19,7 +19,9 @@
     "races": "Lopp",
     "myRaces": "Mina planer",
     "availableRaces": "Tillgängliga lopp",
-    "menu": "Meny"
+    "menu": "Meny",
+    "tryFree": "Prova gratis",
+    "vatternrundan": "Vätternrundan"
   },
   "auth": {
     "email": "E-post",

@@ -13,6 +13,7 @@ interface HeaderProps {
 
 export default function Header({ className = '' }: HeaderProps) {
   const t = useTranslations('common');
+  const tNav = useTranslations('nav');
   const { user } = useAuth();
 
   return (
@@ -29,13 +30,13 @@ export default function Header({ className = '' }: HeaderProps) {
                 href="/try"
                 className="text-text-secondary hover:text-text-primary transition-colors font-medium"
               >
-                Prova gratis
+                {tNav('tryFree')}
               </Link>
               <Link
                 href="/vatternrundan"
                 className="text-text-secondary hover:text-text-primary transition-colors font-medium"
               >
-                Vätternrundan
+                {tNav('vatternrundan')}
               </Link>
             </nav>
           )}
