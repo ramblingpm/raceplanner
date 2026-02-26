@@ -2,6 +2,7 @@
 
 import { useTheme } from '../theme';
 import { SunIcon, MoonIcon } from '@heroicons/react/24/outline';
+import { useAuth } from '@/components/AuthProvider';
 
 interface ThemeToggleProps {
   className?: string;
@@ -22,6 +23,9 @@ const iconSizeClasses = {
 
 export function ThemeToggle({ className = '', size = 'md' }: ThemeToggleProps) {
   const { theme, toggleTheme } = useTheme();
+  const { user } = useAuth();
+
+  if (!user) return null;
 
   return (
     <button
