@@ -4,7 +4,8 @@
       "Bash(grep:*)",
       "Bash(npm run build:*)",
       "mcp__ide__getDiagnostics",
-      "Bash(gh pr checks:*)"
+      "Bash(gh pr checks:*)",
+      "Bash(npm install:*)"
     ],
     "deny": [],
     "ask": []
