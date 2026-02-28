@@ -10,6 +10,7 @@ import { ThemeProvider, themeScript } from '@/design-system';
 import { FeatureFlagProvider } from '@/contexts/FeatureFlagContext';
 import { generateSEOMetadata, generateOrganizationSchema, generateWebSiteSchema } from '@/lib/seo';
 import StructuredData from '@/components/StructuredData';
+import { FeedbackButton } from '@/components/FeedbackButton';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -53,6 +54,7 @@ export default async function RootLayout({
                 {children}
                 <ConsentManager />
                 <CookieConsent />
+                <FeedbackButton />
               </FeatureFlagProvider>
             </AuthProvider>
           </NextIntlClientProvider>
