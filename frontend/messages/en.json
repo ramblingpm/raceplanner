@@ -763,5 +763,21 @@
     "passing": "passing",
     "note": "Note",
     "noteDescription": "These times are calculated based on constant average speed without stops. Create a plan to add feed zone stops for more accurate times."
+  },
+  "feedback": {
+    "button": "Send feedback",
+    "title": "Send feedback",
+    "closeModal": "Close",
+    "messageLabel": "Your feedback",
+    "messagePlaceholder": "What's on your mind? Bug reports, ideas, anything...",
+    "emailLabel": "Email",
+    "emailOptional": "(optional, if you want a reply)",
+    "emailPlaceholder": "you@example.com",
+    "cancel": "Cancel",
+    "send": "Send feedback",
+    "sending": "Sending...",
+    "errorMessage": "Something went wrong. Please try again.",
+    "successTitle": "Thanks for your feedback!",
+    "successSubtitle": "We appreciate you taking the time."
   }
 }

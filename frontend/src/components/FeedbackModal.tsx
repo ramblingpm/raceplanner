@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { XMarkIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 import { supabase } from '@/lib/supabase';
 
@@ -13,6 +14,7 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
   const [message, setMessage] = useState('');
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const t = useTranslations('feedback');
 
   if (!isOpen) return null;
 
@@ -59,11 +61,11 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
         <div className="relative bg-surface-background rounded-lg shadow-xl w-full max-w-md border border-border">
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-border">
-            <h2 className="text-lg font-semibold text-text-primary">Send Feedback</h2>
+            <h2 className="text-lg font-semibold text-text-primary">{t('title')}</h2>
             <button
               onClick={onClose}
               className="text-text-muted hover:text-text-secondary transition-colors"
-              aria-label="Close modal"
+              aria-label={t('closeModal')}
             >
               <XMarkIcon className="h-5 w-5" />
             </button>
@@ -73,58 +75,58 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
           <div className="p-6">
             {status === 'success' ? (
               <div className="text-center py-6">
-                <CheckCircleIcon className="h-12 w-12 text-green-500 mx-auto mb-3" />
-                <p className="text-text-primary font-medium">Thanks for your feedback!</p>
-                <p className="text-text-secondary text-sm mt-1">We appreciate you taking the time.</p>
+                <CheckCircleIcon className="h-12 w-12 text-success mx-auto mb-3" />
+                <p className="text-text-primary font-medium">{t('successTitle')}</p>
+                <p className="text-text-secondary text-sm mt-1">{t('successSubtitle')}</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-text-primary mb-1">
-                    Your feedback <span className="text-red-500">*</span>
+                  <label className="block text-sm font-medium text-text-secondary mb-1">
+                    {t('messageLabel')} <span className="text-error">*</span>
                   </label>
                   <textarea
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    placeholder="What's on your mind? Bug reports, ideas, anything..."
+                    placeholder={t('messagePlaceholder')}
                     required
                     rows={4}
-                    className="w-full border border-border rounded-md p-2 text-sm bg-surface-background text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                    className="w-full px-3 py-2.5 bg-surface-background border border-border rounded-lg focus:ring-2 focus:ring-border-focus focus:border-border-focus text-sm text-text-primary resize-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-text-primary mb-1">
-                    Email{' '}
-                    <span className="text-text-muted font-normal">(optional, if you want a reply)</span>
+                  <label className="block text-sm font-medium text-text-secondary mb-1">
+                    {t('emailLabel')}{' '}
+                    <span className="text-text-muted font-normal">{t('emailOptional')}</span>
                   </label>
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@example.com"
-                    className="w-full border border-border rounded-md p-2 text-sm bg-surface-background text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder={t('emailPlaceholder')}
+                    className="w-full px-3 py-2.5 bg-surface-background border border-border rounded-lg focus:ring-2 focus:ring-border-focus focus:border-border-focus text-sm text-text-primary"
                   />
                 </div>
 
                 {status === 'error' && (
-                  <p className="text-red-500 text-sm">Something went wrong. Please try again.</p>
+                  <p className="text-sm text-error">{t('errorMessage')}</p>
                 )}
 
                 <div className="flex justify-end gap-2 pt-2">
                   <button
                     type="button"
                     onClick={onClose}
-                    className="px-4 py-2 text-sm text-text-secondary hover:text-text-primary transition-colors"
+                    className="px-4 py-2 text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
                   >
-                    Cancel
+                    {t('cancel')}
                   </button>
                   <button
                     type="submit"
                     disabled={status === 'loading' || !message.trim()}
-                    className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 transition-colors"
+                    className="px-4 py-2 text-sm font-semibold bg-primary text-primary-foreground rounded-lg hover:bg-primary-hover disabled:opacity-50 transition-colors focus:outline-none focus:ring-2 focus:ring-border-focus"
                   >
-                    {status === 'loading' ? 'Sending...' : 'Send Feedback'}
+                    {status === 'loading' ? t('sending') : t('send')}
                   </button>
                 </div>
               </form>

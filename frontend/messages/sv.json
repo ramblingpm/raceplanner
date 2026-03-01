@@ -762,5 +762,21 @@
     "passing": "passerar",
     "note": "Obs",
     "noteDescription": "Dessa tider är beräknade baserat på konstant genomsnittshastighet utan stopp. Skapa en plan för att lägga till depåstopp och få mer exakta tider."
+  },
+  "feedback": {
+    "button": "Skicka feedback",
+    "title": "Skicka feedback",
+    "closeModal": "Stäng",
+    "messageLabel": "Din feedback",
+    "messagePlaceholder": "Vad tänker du på? Buggrapporter, idéer, vad som helst...",
+    "emailLabel": "E-post",
+    "emailOptional": "(valfritt, om du vill ha svar)",
+    "emailPlaceholder": "du@exempel.com",
+    "cancel": "Avbryt",
+    "send": "Skicka feedback",
+    "sending": "Skickar...",
+    "errorMessage": "Något gick fel. Försök igen.",
+    "successTitle": "Tack för din feedback!",
+    "successSubtitle": "Vi uppskattar att du tog dig tid."
   }
 }
