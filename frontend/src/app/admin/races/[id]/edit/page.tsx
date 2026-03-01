@@ -128,12 +128,23 @@ export default function EditRacePage() {
   const handleTogglePublic = async () => {
     try {
       const newValue = !isPublic;
-      const { error } = await supabase
-        .from('races')
-        .update({ is_public: newValue })
-        .eq('id', raceId);
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error('Not authenticated');
 
-      if (error) throw error;
+      const response = await fetch(`/api/admin/races/${raceId}`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ is_public: newValue }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to update race visibility');
+      }
+
       setIsPublic(newValue);
     } catch (err) {
       console.error('Error updating race:', err);
