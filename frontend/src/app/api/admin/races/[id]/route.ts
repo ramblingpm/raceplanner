@@ -41,9 +41,18 @@ export async function PATCH(
 
     const body = await request.json();
 
+    const ALLOWED_FIELDS = ['name', 'is_public', 'start_date', 'end_date', 'distance_km', 'description'];
+    const update = Object.fromEntries(
+      Object.entries(body).filter(([key]) => ALLOWED_FIELDS.includes(key))
+    );
+
+    if (Object.keys(update).length === 0) {
+      return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 });
+    }
+
     const { error } = await supabaseAdmin
       .from('races')
-      .update(body)
+      .update(update)
       .eq('id', raceId);
 
     if (error) {
@@ -64,43 +73,8 @@ export async function DELETE(
 ) {
   try {
     const { id: raceId } = await params;
-
-    console.log('[Admin Delete Race API] Request received for race:', raceId);
-
-    // Get the authorization header
-    const authHeader = request.headers.get('authorization');
-    if (!authHeader) {
-      console.log('[Admin Delete Race API] No authorization header');
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    // Verify the user is authenticated and is an admin
-    const token = authHeader.replace('Bearer ', '');
-    console.log('[Admin Delete Race API] Verifying user token...');
-    const { data: { user }, error: userError } = await supabaseAdmin.auth.getUser(token);
-
-    if (userError || !user) {
-      console.log('[Admin Delete Race API] User verification failed:', userError);
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    console.log('[Admin Delete Race API] User verified:', user.id);
-
-    // Check if user is admin by checking admin_users table
-    const { data: adminUser, error: adminError } = await supabaseAdmin
-      .from('admin_users')
-      .select('user_id')
-      .eq('user_id', user.id)
-      .single();
-
-    console.log('[Admin Delete Race API] Admin check:', { adminUser, adminError });
-
-    if (!adminUser) {
-      console.log('[Admin Delete Race API] User is not admin');
-      return NextResponse.json({ error: 'Forbidden - Admin access required' }, { status: 403 });
-    }
-
-    console.log('[Admin Delete Race API] User is admin, deleting race...');
+    const user = await verifyAdmin(request);
+    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     // First, delete all feed zones for this race
     const { error: feedZonesError } = await supabaseAdmin

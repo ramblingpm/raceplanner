@@ -404,8 +404,14 @@ export default function MarketingEmailsPage() {
 
             {/* HTML Editor or Preview */}
             {showPreview ? (
-              <div className="w-full min-h-[300px] p-4 border border-border border-t-0 rounded-b-md bg-white text-text-primary overflow-auto">
-                <div dangerouslySetInnerHTML={{ __html: emailHtml }} />
+              <div className="w-full border border-border border-t-0 rounded-b-md overflow-hidden">
+                <iframe
+                  srcDoc={emailHtml}
+                  sandbox=""
+                  title="Email preview"
+                  className="w-full min-h-[300px] bg-white"
+                  style={{ border: 'none' }}
+                />
               </div>
             ) : (
               <textarea
