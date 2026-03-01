@@ -13,6 +13,51 @@ const supabaseAdmin = createClient(
   }
 );
 
+async function verifyAdmin(request: NextRequest) {
+  const authHeader = request.headers.get('authorization');
+  if (!authHeader) return null;
+
+  const token = authHeader.replace('Bearer ', '');
+  const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
+  if (error || !user) return null;
+
+  const { data: adminUser } = await supabaseAdmin
+    .from('admin_users')
+    .select('user_id')
+    .eq('user_id', user.id)
+    .single();
+
+  return adminUser ? user : null;
+}
+
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id: raceId } = await params;
+    const user = await verifyAdmin(request);
+    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+    const body = await request.json();
+
+    const { error } = await supabaseAdmin
+      .from('races')
+      .update(body)
+      .eq('id', raceId);
+
+    if (error) {
+      console.error('[Admin PATCH Race API] Error:', error);
+      return NextResponse.json({ error: 'Failed to update race' }, { status: 500 });
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('[Admin PATCH Race API] Unexpected error:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
+
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }

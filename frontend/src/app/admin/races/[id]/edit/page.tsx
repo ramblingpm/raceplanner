@@ -100,18 +100,24 @@ export default function EditRacePage() {
     }
 
     try {
-      const { error } = await supabase
-        .from('races')
-        .update({ name: raceName.trim() })
-        .eq('id', raceId);
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error('Not authenticated');
 
-      if (error) throw error;
+      const response = await fetch(`/api/admin/races/${raceId}`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name: raceName.trim() }),
+      });
 
-      // Update the local race state
-      if (race) {
-        setRace({ ...race, name: raceName.trim() });
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to update race name');
       }
 
+      if (race) setRace({ ...race, name: raceName.trim() });
       alert('Race name updated successfully');
     } catch (err) {
       console.error('Error updating race name:', err);
@@ -137,15 +143,26 @@ export default function EditRacePage() {
 
   const handleUpdateDates = async () => {
     try {
-      const { error } = await supabase
-        .from('races')
-        .update({
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error('Not authenticated');
+
+      const response = await fetch(`/api/admin/races/${raceId}`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           start_date: startDate || null,
           end_date: endDate || null,
-        })
-        .eq('id', raceId);
+        }),
+      });
 
-      if (error) throw error;
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to update race dates');
+      }
+
       alert('Race dates updated successfully');
     } catch (err) {
       console.error('Error updating dates:', err);
